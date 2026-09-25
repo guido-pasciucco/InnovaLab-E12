@@ -3,12 +3,14 @@ import Layout from '../layout/layout';
 
 import Home from '../components/home';
 import About from '../components/about';
+import LoginPage from '../pages/loginPage';
 
 export default function RouterApp() {
     return (
         <div>
             <Router>
                 <Routes>
+                    <Route path='/login' element={<LoginPage />} />
                     {/* Define your routes here */}
                     <Route path="/" element={<Layout />} >
                         <Route index element={<Home />} />
