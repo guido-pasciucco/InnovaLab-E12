@@ -8,7 +8,6 @@ export default function Navbar() {
                     <div className="space-x-4">
                         <a href="/" className="hover:text-gray-300">Home</a>
                         <a href="/about" className="hover:text-gray-300">About</a>
-                        <a href="/contact" className="hover:text-gray-300">Contact</a>
                     </div>
                 </div>
             </div>

@@ -4,9 +4,9 @@ import Footer from '../components/footer'
 
 export default function Layout() {
     return (
-        <div className="flex flex-col min-h-screen">
+        <div >
             <Navbar />
-            <main className="flex-grow">
+            <main >
                 {/* Your main content goes here */}
                 <Outlet />
             </main>
