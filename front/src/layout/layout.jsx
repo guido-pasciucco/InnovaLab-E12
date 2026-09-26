@@ -6,13 +6,11 @@ import Header from '../components/header';
 export default function Layout() {
     return (
         <div >
-            <Header />
             <Navbar />
             <main >
                 {/* Your main content goes here */}
                 <Outlet />
             </main>
-            <Footer />
         </div>
     );
 }
