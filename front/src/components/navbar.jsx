@@ -1,12 +1,15 @@
+import { NavLink } from "react-router-dom";
+
 export default function Navbar() {
+
   return (
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <div className="container-fluid">
+        <NavLink className="navbar-brand" to="/dashboard">
           Navbar
-        </a>
+        </NavLink>
         <button
-          class="navbar-toggler"
+          className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNavDropdown"
@@ -14,39 +17,38 @@ export default function Navbar() {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">
+        <div className="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/dashboard/listado_espacios">
                 Espacios
-              </a>
+              </NavLink>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                Recursos
-              </a>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/">
+                Recursos (disabled)
+              </NavLink>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/dashboard/nueva_actividad">
                 Actividades
-              </a>
+              </NavLink>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                Reservas/ Calendario
-              </a>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/dashboard/reservas">
+                Reservas / Calendario
+              </NavLink>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                Reportes / Dashboard Avanzado
-              </a>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/">
+                Reportes / Dashboard Avanzado (disabled)
+              </NavLink>
             </li>
-            
           </ul>
         </div>
       </div>
     </nav>
-  )
+  );
 }

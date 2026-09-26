@@ -1,6 +1,6 @@
 
 
-export default function detalleEspacio(){
+export default function DetalleEspacio(){
 
     return (
         <>

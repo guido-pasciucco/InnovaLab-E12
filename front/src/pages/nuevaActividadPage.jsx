@@ -1,6 +1,6 @@
 
 
-export default function nuevaActividadPage(){
+export default function NuevaActividadPage(){
 
     return(
         <>
