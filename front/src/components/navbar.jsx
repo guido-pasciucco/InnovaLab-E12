@@ -20,47 +20,30 @@ export default function Navbar() {
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">
-                Home
+                Espacios
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">
-                Features
+                Recursos
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">
-                Pricing
+                Actividades
               </a>
             </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Dropdown link
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                Reservas/ Calendario
               </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="#">
-                    Action
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">
-                    Another action
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">
-                    Something else here
-                  </a>
-                </li>
-              </ul>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                Reportes / Dashboard Avanzado
+              </a>
+            </li>
+            
           </ul>
         </div>
       </div>
