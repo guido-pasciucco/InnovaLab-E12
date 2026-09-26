@@ -1,17 +1,28 @@
-
-import { useNavigate } from "react-router-dom"
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext.jsx'
 
 export default function LoginPage() {
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const { setRole } = useContext(AuthContext)
 
-  const navigate = useNavigate();
-
-  const handleSubmit = (e) =>{
-
+  const handleSubmit = (e) => {
     e.preventDefault()
-    
-    navigate("/dashboard")
 
+    if (email == 'admin@admin.com') {
+      setRole(email)
+      navigate('/dashboard')
+      return
+    }
+    if (email == 'cordinador@cordinador.com') {
+      setRole(email)
+      navigate('/dashboard')
+      return
+    }
+    alert("credenciales incorrectas")
   }
+
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="card shadow" style={{ width: '24rem' }}>
@@ -28,6 +39,7 @@ export default function LoginPage() {
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="usuario@innovalab.com"
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 

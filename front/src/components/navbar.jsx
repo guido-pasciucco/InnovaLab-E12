@@ -1,12 +1,15 @@
-import { NavLink } from "react-router-dom";
+import { useContext } from 'react'
+import { NavLink } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Navbar() {
+  const { role } = useContext(AuthContext)
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/dashboard">
-          Navbar
+          InnovaLab
         </NavLink>
         <button
           className="navbar-toggler"
@@ -27,9 +30,11 @@ export default function Navbar() {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/">
-                Recursos (disabled)
-              </NavLink>
+              {role === 'admin@admin.com' && (
+                <NavLink className="nav-link" to="/">
+                  Recursos (disabled)
+                </NavLink>
+              )}
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/dashboard/nueva_actividad">
@@ -47,8 +52,13 @@ export default function Navbar() {
               </NavLink>
             </li>
           </ul>
+          {role && (
+            <span className="ms-auto text-muted">
+              Rol: <strong>{role}</strong>
+            </span>
+          )}
         </div>
       </div>
     </nav>
-  );
+  )
 }
