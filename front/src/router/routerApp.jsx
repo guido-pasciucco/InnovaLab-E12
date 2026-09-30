@@ -14,10 +14,11 @@ import CalendarioReservasPage from '../pages/calendarioReservasPage'
 import DetalleEspacio from '../pages/detalleEspacio'
 import ListadoEspaciosPage from '../pages/listadoEspaciosPage'
 import NuevaActividadPage from '../pages/nuevaActividadPage'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 export default function RouterApp() {
   return (
-    <div>
+    <>
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
@@ -25,17 +26,74 @@ export default function RouterApp() {
 
           {/* Dashboard con Layout */}
           <Route path="/dashboard" element={<Layout />}>
-            <Route index element={<DashboardPrincipalPage />} />
+            <Route
+              index
+              element={
+                <ProtectedRoute
+                  protectedRoles={[
+                    'admin@admin.com',
+                    'cordinador@cordinador.com',
+                  ]}
+                >
+                  <DashboardPrincipalPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="reservas"
-              element={<CalendarioReservasPage />}
+              element={
+                <ProtectedRoute
+                  protectedRoles={[
+                    'admin@admin.com',
+                    'cordinador@cordinador.com',
+                  ]}
+                >
+                  <CalendarioReservasPage />
+                </ProtectedRoute>
+              }
             />
-            <Route path="detalle_espacio" element={<DetalleEspacio />} />
-            <Route path="listado_espacios" element={<ListadoEspaciosPage />} />
-            <Route path="nueva_actividad" element={<NuevaActividadPage />} />
+            <Route
+              path="detalle_espacio"
+              element={
+                <ProtectedRoute
+                  protectedRoles={[
+                    'admin@admin.com',
+                    'cordinador@cordinador.com',
+                  ]}
+                >
+                  <DetalleEspacio />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="listado_espacios"
+              element={
+                <ProtectedRoute
+                  protectedRoles={[
+                    'admin@admin.com',
+                    'cordinador@cordinador.com',
+                  ]}
+                >
+                  <ListadoEspaciosPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="nueva_actividad"
+              element={
+                <ProtectedRoute
+                  protectedRoles={[
+                    'admin@admin.com',
+                    'cordinador@cordinador.com',
+                  ]}
+                >
+                  <NuevaActividadPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </Router>
-    </div>
+    </>
   )
 }

@@ -1,9 +1,15 @@
 import { useContext } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
 export default function Navbar() {
-  const { role } = useContext(AuthContext)
+  const { role, setRole } = useContext(AuthContext)
+
+
+  const handleLogOut= () =>{
+    alert("sesion cerrada " + role)
+    setRole(null)
+  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -31,7 +37,7 @@ export default function Navbar() {
             </li>
             <li className="nav-item">
               {role === 'admin@admin.com' && (
-                <NavLink className="nav-link" to="/">
+                <NavLink className="nav-link" to={null}>
                   Recursos (disabled)
                 </NavLink>
               )}
@@ -47,7 +53,7 @@ export default function Navbar() {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/">
+              <NavLink className="nav-link" to={null}>
                 Reportes / Dashboard Avanzado (disabled)
               </NavLink>
             </li>
@@ -55,6 +61,7 @@ export default function Navbar() {
           {role && (
             <span className="ms-auto text-muted">
               Rol: <strong>{role}</strong>
+              <NavLink className="mx-3 btn btn-secondary" to='/login' onClick={handleLogOut}>Cerrar sesion</NavLink>
             </span>
           )}
         </div>
