@@ -3,12 +3,12 @@ import { Link, NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
 export default function Navbar() {
-  const { role, setRole } = useContext(AuthContext)
+  const { getRol, limpiarUsuario } = useContext(AuthContext)
 
 
   const handleLogOut= () =>{
-    alert("sesion cerrada " + role)
-    setRole(null)
+    alert("sesion cerrada " + getRol())
+    limpiarUsuario()
   }
 
   return (
@@ -36,7 +36,7 @@ export default function Navbar() {
               </NavLink>
             </li>
             <li className="nav-item">
-              {role === 'admin@admin.com' && (
+              {getRol() === 'admin' && (
                 <NavLink className="nav-link" to={null}>
                   Recursos (disabled)
                 </NavLink>
@@ -58,9 +58,9 @@ export default function Navbar() {
               </NavLink>
             </li>
           </ul>
-          {role && (
+          {getRol() && (
             <span className="ms-auto text-muted">
-              Rol: <strong>{role}</strong>
+              Rol: <strong>{getRol()}</strong>
               <NavLink className="mx-3 btn btn-secondary" to='/login' onClick={handleLogOut}>Cerrar sesion</NavLink>
             </span>
           )}

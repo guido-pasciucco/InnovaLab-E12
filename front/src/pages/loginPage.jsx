@@ -5,18 +5,21 @@ import { AuthContext } from '../context/AuthContext.jsx'
 export default function LoginPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
-  const { setRole } = useContext(AuthContext)
+  const { setAuthData } = useContext(AuthContext)
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    // Provisorio: luego se debera reemplazar
     if (email == 'admin@admin.com') {
-      setRole(email)
+      const usuarioData = {'user':email, 'rol':'admin'}
+      setAuthData(usuarioData)
       navigate('/dashboard')
       return
     }
     if (email == 'cordinador@cordinador.com') {
-      setRole(email)
+      const usuarioData = {'user':email, 'rol':'cordinador'}
+      setAuthData(usuarioData)
       navigate('/dashboard')
       return
     }

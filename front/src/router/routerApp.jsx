@@ -31,8 +31,8 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute
                   protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
+                    'admin',
+                    'cordinador',
                   ]}
                 >
                   <DashboardPrincipalPage />
@@ -44,8 +44,8 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute
                   protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
+                    'admin',
+                    'cordinador',
                   ]}
                 >
                   <CalendarioReservasPage />
@@ -57,8 +57,8 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute
                   protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
+                    'admin',
+                    'cordinador',
                   ]}
                 >
                   <DetalleEspacio />
@@ -70,8 +70,8 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute
                   protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
+                    'admin',
+                    'cordinador',
                   ]}
                 >
                   <ListadoEspaciosPage />
@@ -83,8 +83,8 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute
                   protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
+                    'admin',
+                    'cordinador',
                   ]}
                 >
                   <NuevaActividadPage />
