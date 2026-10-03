@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('actividades', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('tipo'); // p. ej. curso, practica, workshop
+            $table->string('tipo');
             $table->foreignId('responsable_id')->constrained('usuarios')->onDelete('cascade');
             $table->date('fecha');
             $table->time('hora_inicio');

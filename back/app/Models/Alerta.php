@@ -14,6 +14,7 @@ class Alerta extends Model
         'referencia_id',
         'fecha',
         'estado',
+        'fecha_resolucion',
         'mensaje',
     ];
 }

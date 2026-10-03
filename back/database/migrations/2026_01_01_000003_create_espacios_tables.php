@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('espacios', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('tipo'); // p. ej. aula, laboratorio, taller
+            $table->string('tipo');
             $table->integer('capacidad');
             $table->string('ubicacion');
             $table->enum('estado', ['disponible', 'mantenimiento', 'fuera_de_servicio'])->default('disponible');

@@ -13,18 +13,21 @@ class Conflicto extends Model
         'tipo',
         'reserva_espacio_id',
         'reserva_equipamiento_id',
+        'espacio_id',
+        'equipamiento_id',
         'fecha_detectado',
         'resuelto',
+        'fecha_resolucion',
         'descripcion',
     ];
 
-    public function reservaEspacio(): BelongsTo
+    public function espacio(): BelongsTo
     {
-        return $this->belongsTo(ReservaEspacio::class, 'reserva_espacio_id');
+        return $this->belongsTo(Espacio::class, 'espacio_id');
     }
 
-    public function reservaEquipamiento(): BelongsTo
+    public function equipamiento(): BelongsTo
     {
-        return $this->belongsTo(ReservaEquipamiento::class, 'reserva_equipamiento_id');
+        return $this->belongsTo(Equipamiento::class, 'equipamiento_id');
     }
 }

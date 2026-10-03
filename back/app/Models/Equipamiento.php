@@ -16,12 +16,18 @@ class Equipamiento extends Model
         'tipo_movilidad',
         'cantidad',
         'espacio_habitual_id',
+        'espacio_actual_id',
         'estado',
     ];
 
     public function espacioHabitual(): BelongsTo
     {
         return $this->belongsTo(Espacio::class, 'espacio_habitual_id');
+    }
+
+    public function espacioActual(): BelongsTo
+    {
+        return $this->belongsTo(Espacio::class, 'espacio_actual_id');
     }
 
     public function reservas(): HasMany
