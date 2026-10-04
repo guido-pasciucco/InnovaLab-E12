@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
-export default function Navbar() {
+export default function Topbar() {
   const { getRol, limpiarUsuario } = useContext(AuthContext)
 
 
