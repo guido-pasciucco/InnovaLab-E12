@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Usuario extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'usuarios';
 
@@ -28,17 +28,12 @@ class Usuario extends Authenticatable
     ];
 
     protected $casts = [
-        'activo' => 'boolean',
         'password' => 'hashed',
+        'activo' => 'boolean',
     ];
 
     public function rol(): BelongsTo
     {
         return $this->belongsTo(Rol::class, 'rol_id');
-    }
-
-    public function actividades(): HasMany
-    {
-        return $this->hasMany(Actividad::class, 'responsable_id');
     }
 }
