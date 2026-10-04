@@ -1,17 +1,15 @@
-import {Outlet} from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import Navbar from '../components/navbar'
-import Sidebar from '../components/sidebar';
-
+import Sidebar from '../components/sidebar'
 
 export default function Layout() {
-    return (
-        <div >
-            <Navbar />
-            <Sidebar />
-            <main >
-                {/* Your main content goes here */}
-                <Outlet />
-            </main>
-        </div>
-    );
+  return (
+    <div>
+      <Sidebar />
+      <main style={{ marginLeft: '220px', padding: '30px' }}>
+        <Navbar />
+        <Outlet />
+      </main>
+    </div>
+  )
 }

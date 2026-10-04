@@ -29,35 +29,7 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/dashboard/listado_espacios">
-                Espacios
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              {getRol() === 'admin' && (
-                <NavLink className="nav-link" to={null}>
-                  Recursos (disabled)
-                </NavLink>
-              )}
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/dashboard/nueva_actividad">
-                Actividades
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/dashboard/reservas">
-                Reservas / Calendario
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to={null}>
-                Reportes / Dashboard Avanzado (disabled)
-              </NavLink>
-            </li>
-          </ul>
+          
           {getRol() && (
             <span className="ms-auto text-muted">
               Rol: <strong>{getRol()}</strong>
