@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
 
   // Al iniciar, leemos el rol guardado en localStorage
 
-  const getRol = ()=>{
+  const getRol = () => {
     return authData.rol
   }
 

@@ -3,12 +3,8 @@ import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
 export default function Sidebar() {
-  const { getRol, limpiarUsuario } = useContext(AuthContext)
 
-  const handleLogOut = () => {
-    alert('Sesión cerrada ' + getRol())
-    limpiarUsuario()
-  }
+   const  { getRol } = useContext(AuthContext)
 
   return (
     <div
@@ -21,51 +17,83 @@ export default function Sidebar() {
         left: 0,
       }}
     >
-      <h4 className="mb-4">InnovaLab</h4>
+      <h4 className="mb-4">Centro de simulacion</h4>
+      <p>Rol: {getRol()}</p>
 
-      <ul className="nav flex-column">
+      <ul className="nav flex-column mt-5">
+        <li className="nav-item">
+          <NavLink className="nav-link text-white" to="/dashboard">
+            Inicio
+          </NavLink>
+        </li>
         <li className="nav-item">
           <NavLink
             className="nav-link text-white"
-            to="/dashboard/listado_espacios"
+            to="/dashboard/desarrollo"
           >
             Espacios
           </NavLink>
         </li>
-
-        {getRol() === 'admin' && (
-          <li className="nav-item">
-            <NavLink className="nav-link text-white" to="/">
-              Recursos (disabled)
-            </NavLink>
-          </li>
-        )}
-
         <li className="nav-item">
           <NavLink
             className="nav-link text-white"
-            to="/dashboard/nueva_actividad"
+            to="/dashboard/desarrollo"
+          >
+            Equipamiento
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink
+            className="nav-link text-white"
+            to="/dashboard/desarrollo"
+          >
+            Mantenimiento
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink
+            className="nav-link text-white"
+            to="/dashboard/desarrollo"
           >
             Actividades
           </NavLink>
         </li>
-
         <li className="nav-item">
-          <NavLink
-            className="nav-link text-white"
-            to="/dashboard/reservas"
-          >
-            Reservas / Calendario
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+            Calendario
           </NavLink>
         </li>
-
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/">
-            Reportes / Dashboard Avanzado (disabled)
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+            Dashboard
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+            Alertas
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+            Consultas IA
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+            Dashboard
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+            Usuarios
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+            Configuracion
           </NavLink>
         </li>
       </ul>
     </div>
   )
 }
-

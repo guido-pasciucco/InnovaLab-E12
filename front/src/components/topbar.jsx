@@ -1,9 +1,16 @@
 import { useContext } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
 export default function Topbar() {
   const { getRol, limpiarUsuario } = useContext(AuthContext)
+
+  const location = useLocation()
+
+  const path = location.pathname
+
+  const pagina = path.split("/").pop();
+
 
 
   const handleLogOut= () =>{
@@ -17,17 +24,8 @@ export default function Topbar() {
         <NavLink className="navbar-brand" to="/dashboard">
           InnovaLab
         </NavLink>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNavDropdown"
-          aria-controls="navbarNavDropdown"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <span> {pagina} </span>
+
         <div className="collapse navbar-collapse" id="navbarNavDropdown">
           
           {getRol() && (

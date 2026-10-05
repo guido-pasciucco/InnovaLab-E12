@@ -38,57 +38,17 @@ export default function RouterApp() {
                 </ProtectedRoute>
               }
             />
+            {/* se definiran las proximas rutas protegidas en etapas mas avanzadas */}
             <Route
-              path="reservas"
-              element={
-                <ProtectedRoute
-                  protectedRoles={[
-                    'admin',
-                    'cordinador',
-                  ]}
-                >
-                  <CalendarioReservasPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="detalle_espacio"
-              element={
-                <ProtectedRoute
-                  protectedRoles={[
-                    'admin',
-                    'cordinador',
-                  ]}
-                >
-                  <DetalleEspacio />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="listado_espacios"
-              element={
-                <ProtectedRoute
-                  protectedRoles={[
-                    'admin',
-                    'cordinador',
-                  ]}
-                >
-                  <ListadoEspaciosPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="nueva_actividad"
-              element={
-                <ProtectedRoute
-                  protectedRoles={[
-                    'admin',
-                    'cordinador',
-                  ]}
-                >
-                  <NuevaActividadPage />
-                </ProtectedRoute>
-              }
+            path='desarrollo'
+            element={
+              <ProtectedRoute
+              protectedRoles={['admin','cordinador',]}
+
+              >
+                <h1 className='h1'> Paniga en desarrollo</h1>
+              </ProtectedRoute>
+            }
             />
           </Route>
 
