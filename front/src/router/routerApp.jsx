@@ -51,6 +51,22 @@ export default function RouterApp() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path='espacios'
+              element={
+                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
+                    <ListadoEspaciosPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='espacio/:id'
+              element={
+                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
+                    <DetalleEspacio />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* agarrar todas */}
