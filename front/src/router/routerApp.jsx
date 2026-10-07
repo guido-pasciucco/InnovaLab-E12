@@ -3,17 +3,18 @@ import {
   Route,
   Routes,
   Navigate,
-} from 'react-router-dom'
-import Layout from '../layout/layout'
+} from "react-router-dom";
+import Layout from "../layout/layout";
 
+import LoginPage from "../pages/loginPage";
+import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
+import CalendarioReservasPage from "../pages/calendarioReservasPage";
+import DetalleEspacio from "../pages/detalleEspacio";
+import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
+import NuevaActividadPage from "../pages/nuevaActividadPage";
+import ProtectedRoute from "./ProtectedRoute";
 
-import LoginPage from '../pages/loginPage'
-import DashboardPrincipalPage from '../pages/dashboardPrincipalPage'
-import CalendarioReservasPage from '../pages/calendarioReservasPage'
-import DetalleEspacio from '../pages/detalleEspacio'
-import ListadoEspaciosPage from '../pages/listadoEspaciosPage'
-import NuevaActividadPage from '../pages/nuevaActividadPage'
-import ProtectedRoute from './ProtectedRoute'
+import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 
 export default function RouterApp() {
   return (
@@ -28,35 +29,37 @@ export default function RouterApp() {
             <Route
               index
               element={
-                <ProtectedRoute
-                  protectedRoles={[
-                    'admin',
-                    'cordinador',
-                  ]}
-                >
+                <ProtectedRoute protectedRoles={["admin", "cordinador"]}>
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
               }
             />
             {/* se definiran las proximas rutas protegidas en etapas mas avanzadas */}
             <Route
-            path='desarrollo'
-            element={
-              <ProtectedRoute
-              protectedRoles={['admin','cordinador',]}
-
-              >
-                <h1 className='h1'> Paniga en desarrollo</h1>
-              </ProtectedRoute>
-            }
+              path="desarrollo"
+              element={
+                <ProtectedRoute protectedRoles={["admin", "cordinador"]}>
+                  <h1 className="h1"> Paniga en desarrollo</h1>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="usuarios-y-roles"
+              element={
+                <ProtectedRoute protectedRoles={["admin"]}>
+                  <UsuariosYrolesPage />
+                </ProtectedRoute>
+              }
             />
           </Route>
 
           {/* agarrar todas */}
-          <Route path='*' element={ <h1 className='h1'> Pagina no encontrada</h1>} />
-
+          <Route
+            path="*"
+            element={<h1 className="h1"> Pagina no encontrada</h1>}
+          />
         </Routes>
       </Router>
     </>
-  )
+  );
 }
