@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\EspacioController;
 use App\Http\Controllers\Api\EquipamientoController;
 use App\Http\Controllers\Api\ActividadController;
 use App\Http\Controllers\Api\ReservaController;
+use App\Http\Controllers\Api\AlertaController;
+use App\Http\Controllers\Api\ConsultaIaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,11 @@ Route::prefix('v1')->group(function () {
         // ABM Actividades y Reservas
         Route::apiResource('actividades', ActividadController::class);
         Route::apiResource('reservas', ReservaController::class);
+
+        Route::apiResource('alertas', AlertaController::class)->except(['update']);
+        Route::put('/alertas/{id}/resolver', [AlertaController::class, 'resolver']);
+
+        Route::apiResource('consultas-ia', ConsultaIaController::class)->only(['index', 'store', 'show']);
 
 
     });
