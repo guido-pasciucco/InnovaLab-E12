@@ -3,67 +3,65 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Resources\UserResource;
-use App\Models\Usuario;
-use Illuminate\Http\JsonResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     /**
-     * Iniciar sesión y emitir token Bearer (Laravel Sanctum).
+     * Inicio de sesión y generación de token Sanctum.
      */
-    public function login(LoginRequest $request): JsonResponse
+    public function login(Request $request)
     {
-        $usuario = Usuario::with('rol')->where('email', $request->email)->first();
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-        if (! $usuario || ! Hash::check($request->password, $usuario->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Las credenciales ingresadas son incorrectas.'],
-            ]);
-        }
+        // Busca el usuario usando el modelo User (conectado a la tabla 'usuarios')
+        $user = User::where('email', $request->email)->first();
 
-        if (! $usuario->activo) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'El usuario se encuentra inactivo. Contacte al administrador.'
-            ], 403);
+                'message' => 'Las credenciales ingresadas son incorrectas.',
+                'errors' => [
+                    'email' => ['Las credenciales ingresadas son incorrectas.']
+                ]
+            ], 401);
         }
 
-        // Crear token Sanctum
-        $token = $usuario->createToken('auth_token')->plainTextToken;
+        // Genera el token de acceso
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Inicio de sesión exitoso',
+            'message' => 'Inicio de sesión exitoso.',
             'access_token' => $token,
+            'token' => $token,
             'token_type' => 'Bearer',
-            'usuario' => new UserResource($usuario),
+            'user' => $user,
         ]);
     }
 
     /**
-     * Cerrar sesión y revocar el token actual del usuario.
+     * Cierre de sesión (revoca el token actual).
      */
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Sesión cerrada correctamente'
+            'message' => 'Sesión cerrada correctamente.'
         ]);
     }
 
     /**
-     * Obtener perfil del usuario autenticado.
+     * Obtiene los datos del usuario autenticado.
      */
-    public function me(Request $request): JsonResponse
+    public function me(Request $request)
     {
-        $usuario = $request->user()->load('rol');
-
         return response()->json([
-            'usuario' => new UserResource($usuario)
+            'user' => $request->user()
         ]);
     }
 }
