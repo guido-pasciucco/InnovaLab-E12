@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EspacioController;
 use App\Http\Controllers\Api\EquipamientoController;
+use App\Http\Controllers\Api\ActividadController;
+use App\Http\Controllers\Api\ReservaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,5 +28,15 @@ Route::prefix('v1')->group(function () {
 
         // ABM Equipamiento
         Route::apiResource('equipamiento', EquipamientoController::class);
+
+        // ABM Espacios y Equipamiento
+        Route::apiResource('espacios', EspacioController::class);
+        Route::apiResource('equipamiento', EquipamientoController::class);
+
+        // ABM Actividades y Reservas
+        Route::apiResource('actividades', ActividadController::class);
+        Route::apiResource('reservas', ReservaController::class);
+
+
     });
 });
