@@ -19,7 +19,7 @@ export default function Topbar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary mb-5">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/dashboard">
           InnovaLab
