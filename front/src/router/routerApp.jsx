@@ -13,7 +13,7 @@ import DetalleEspacio from "../pages/detalleEspacio";
 import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
 import NuevaActividadPage from "../pages/nuevaActividadPage";
 import ProtectedRoute from "./ProtectedRoute";
-
+import { listaItems } from "../services/items";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 
 export default function RouterApp() {
@@ -63,7 +63,7 @@ export default function RouterApp() {
               path='espacio/:id'
               element={
                 <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
-                    <DetalleEspacio />
+                    <DetalleEspacio espacios={listaItems} />
                 </ProtectedRoute>
               }
             />

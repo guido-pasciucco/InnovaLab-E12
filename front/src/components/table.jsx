@@ -25,7 +25,7 @@ function GenericTable({ items }) {
             <td>{item.capacidad}</td>
             <td>{item.estado}</td>
             <td>
-              <Link to={`/item/${item.id}`}>
+              <Link to={`/dashboard/${item.categoria}/${item.id}`}>
                 Ver
               </Link>
             </td>
