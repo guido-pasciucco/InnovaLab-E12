@@ -5,7 +5,7 @@
 - Diagrama ER v1/10 (borrador) — `diagrama-er-centro-simulacion.md` *(Rebeca)*
 - PRD Backend Laravel v1.0 — `prd-backend-laravel.md` *(Equipo Backend)*
 
-**Última actualización:** Semana 2 — revisión post PRD de backend
+**Última actualización:** Semana 2 — revisión post migraciones reales de backend (rama `feature/backend`)
 
 ---
 
@@ -149,15 +149,29 @@ alerts: id, type ENUM, entity_type VARCHAR, entity_id INT, message TEXT,
 
 ---
 
-## 4. Cambios resueltos respecto a la versión anterior de este documento
+## 4. Estado real de cambios — revisión de migraciones (`feature/backend`)
 
-Estos problemas que detecté en el ER de Rebeca **ya están resueltos en el PRD de backend**:
+Se revisaron las migraciones reales commiteadas por backend en la rama `feature/backend`. El commit `5b89188` dice explícitamente "actualiza migraciones y modelos **según requerimientos de Data e IA**". Esto es lo que efectivamente implementaron:
 
-| Problema anterior | Cómo lo resuelve el PRD de Backend |
+### ✅ Cambios implementados por backend
+
+| Cambio solicitado | Estado en migraciones reales | Detalle |
+|---|---|---|
+| `timestamps` en todas las tablas | ✅ Implementado | Todas las tablas tienen `$table->timestamps()` |
+| `espacio_historial` | ✅ Implementado | En migración `000003` — tiene `espacio_id`, `estado`, `fecha_inicio`, `fecha_fin`, `motivo`, `timestamps` |
+| `equipo_historial` | ✅ Implementado | En migración `000004` — tiene `equipamiento_id`, `estado`, `espacio_id` FK, `ubicacion_texto`, `fecha_inicio`, `fecha_fin`, `motivo`, `timestamps` |
+| `current_space_id` FK en equipamiento | ✅ Implementado | Campo `espacio_actual_id` FK → `espacios` con comentario "Solicitado por Data" |
+| Tabla `conflicto` persistente | ✅ Implementado | En migración `000006` — incluye `espacio_id` y `equipamiento_id` FK directas + `fecha_resolucion` con comentario "Solicitado por Data" |
+| Tabla `alerta` persistente | ✅ Implementado | En migración `000006` — incluye `fecha_resolucion` con comentario "Solicitado por Data" |
+| Tabla `consulta_ia` | ✅ Implementado | En migración `000006` — tiene `usuario_id`, `pregunta`, `respuesta`, `fecha`, `timestamps` |
+
+### ⚠️ Diferencias menores a tener en cuenta
+
+| Punto | Situación |
 |---|---|
-| Falta `created_at`/`updated_at` 🔴 | Laravel `timestamps` automático en todas las tablas ✅ |
-| Sin trazabilidad de ubicación actual 🟡 | Campo `current_location` en `equipment` ✅ |
-| Patrón polimórfico en alertas 🟢 | No aplica: alertas se calculan on-demand ✅ |
+| `consulta_ia` — campos extra | No tiene `tokens_used` ni `response_time_ms` que habíamos sugerido. No es bloqueante para el MVP. |
+| `alerta` — sigue usando `referencia_tipo` + `referencia_id` (patrón polimórfico) | Aceptable para el MVP. Las queries analíticas requieren filtrar por `referencia_tipo` primero. |
+| `reserva_espacio` y `reserva_equipamiento` — tablas separadas | Backend mantuvo el modelo de Rebeca (no el del PRD Laravel). Esto es **mejor para Data**: tenemos timestamps propios en cada reserva. |
 
 ---
 
@@ -194,27 +208,29 @@ El endpoint `/api/v1/ai/context-query` está definido en el PRD de backend. Para
 
 ---
 
-## 7. Resumen consolidado de cambios a solicitar al backend
+## 7. Resumen consolidado — estado final de cambios solicitados a backend
 
-| Prioridad | Acción | Qué agregar | Sprint en que se necesita |
-|---|---|---|---|
-| 🔴 Alta | Crear tabla historial de estados de espacios | `space_status_history` | Sprint 3 (semana 5-6) |
-| 🔴 Alta | Crear tabla historial de estados de equipamiento | `equipment_status_history` | Sprint 3 (semana 5-6) |
-| 🔴 Alta | Crear tabla de conflictos persistentes | `conflicts` | Sprint 3 (semana 6) |
-| 🔴 Alta | Crear tabla de historial de consultas IA | `ai_queries` | Sprint 4 (semana 7) |
-| 🔴 Alta | Crear tabla de alertas persistentes | `alerts` | Sprint 3 (semana 6) |
-| 🟡 Media | Agregar FK de espacio actual en equipamiento | `current_space_id` en `equipment` | Sprint 2 (semana 3-4) |
-| 🟢 Baja | Timestamps propios en `activity_equipment` | `start_datetime`, `end_datetime` | Post-MVP |
+| Prioridad | Cambio solicitado | Estado actual |
+|---|---|---|
+| 🔴 Alta | Tabla `espacio_historial` | ✅ Implementado en migración `000003` |
+| 🔴 Alta | Tabla `equipo_historial` | ✅ Implementado en migración `000004` |
+| 🔴 Alta | Tabla `conflicto` persistente con FK directas | ✅ Implementado en migración `000006` |
+| 🔴 Alta | Tabla `alerta` persistente con `fecha_resolucion` | ✅ Implementado en migración `000006` |
+| 🔴 Alta | Tabla `consulta_ia` | ✅ Implementado en migración `000006` |
+| 🟡 Media | `espacio_actual_id` FK en equipamiento | ✅ Implementado en migración `000004` |
+| 🟢 Baja | Timestamps propios en reservas de equipamiento | ✅ Implementado — `reserva_equipamiento` tiene `hora_inicio`, `hora_fin`, `timestamps` |
+
+**Todos los cambios solicitados fueron implementados.** El modelo está listo para construir los indicadores y el módulo de IA del MVP.
 
 ---
 
 ## 8. Conclusión
 
-El modelo de backend en Laravel cubre correctamente el núcleo operativo del MVP (espacios, equipamiento, actividades, reservas y disponibilidad). Sin embargo, **4 tablas críticas para Data/IA no están definidas** y deben solicitarse al equipo de backend antes del Sprint 3.
+El modelo de backend implementado en Laravel cubre **todos** los requerimientos del equipo de Data/IA para el MVP. Backend incorporó todas las tablas solicitadas (historial de espacios y equipamiento, conflictos persistentes, alertas y consultas IA) con sus campos de auditoría (`timestamps`, `fecha_resolucion`, FK directas).
 
-Sin esas tablas, el equipo de Data/IA podrá construir los indicadores básicos del Sprint 3 pero no podrá cumplir con el historial de conflictos, el análisis de tendencias completo ni el módulo de consultas inteligentes del Sprint 4.
+El modelo está preparado para soportar los indicadores del Sprint 3, el módulo de análisis de datos del Sprint 3-4, y las consultas inteligentes mediante IA del Sprint 4.
 
-**Acción inmediata:** Llevar este análisis a la próxima reunión de equipo y acordar con backend la incorporación de las tablas faltantes en sus migraciones del Sprint 2 (semanas 3-4), antes de que sea costoso modificar el modelo.
+**No hay bloqueos pendientes con backend para arrancar el trabajo de Data/IA.**
 
 ---
 
