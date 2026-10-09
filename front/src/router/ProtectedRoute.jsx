@@ -8,10 +8,12 @@ export default function ProtectedRoute({ children, protectedRoles = [] }) {
   const { getRol } = useContext(AuthContext)
 
   if (!getRol()) {
+    alert('Por favor inicia sesión para acceder a esta ruta')
     return <Navigate to={'/login'} replace />
   }
 
   if (protectedRoles && !protectedRoles.includes(getRol())) {
+    alert('No tienes permisos para acceder a esta ruta, por favor inicia sesión')
     return <Navigate to={'/dashboard'} replace />
   }
 
