@@ -1,24 +1,33 @@
 // apiRoutes.js
 
-const SERVIDOR_PATH = ""
-const PUERTO = ""
-const API_BASE = `http://${SERVIDOR_PATH}:${PUERTO}/api/v1`;
+// Definición de rutas de la API local
+// const SERVIDOR_PATH = ""
+// const PUERTO = ""
+// const API_BASE = `http://${SERVIDOR_PATH}:${PUERTO}/api/v1`;
 
+// definición de rutas de la API remota
+const API_BASE = "https://improved-succotash-r4jrqgw57q5c5j75-8000.app.github.dev";
 
 // Login: Conecten el form a POST /api/v1/auth/login.
-export const LOGIN = `${API_BASE}/auth/login`
-
-// Persistencia del usuario (/me): Al recargar la app, llamen a GET /api/v1/auth/me para mantener la sesión viva y sacar el nombre + rol.
-
-export const PERSISTENCIA = `${API_BASE}/auth/me`
+export const LOGIN = `${API_BASE}/api/v1/auth/login`
+export const LOGIN_ADMIN_CREDENTIALS ={
+  "email": "admin@innovalab.edu.ar",
+  "password": "admin123"
+}
 
 // Logout: Manden POST /api/v1/auth/logout para revocar el token.
 
 export const LOGOUT = `${API_BASE}/logout`
 
+// Persistencia del usuario (/me): Al recargar la app, llamen a GET /api/v1/auth/me para mantener la sesión viva y sacar el nombre + rol.
+
+export const PERSISTENCIA = `${API_BASE}/auth/me`
+
+
+
 
 // Ruta base de espacios
-export const ESPACIOS_ROUTE = `${API_BASE}/espacios`;
+export const ESPACIOS_ROUTE = `${API_BASE}/api/v1/espacios`;
 
 // Helper para armar la URL con query params
 export const ESPACIOS_LISTADO = ({ search = "", tipo = "", estado = "" } = {}) => {

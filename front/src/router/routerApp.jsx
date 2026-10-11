@@ -29,7 +29,7 @@ export default function RouterApp() {
             <Route
               index
               element={
-                <ProtectedRoute protectedRoles={["admin", "cordinador"]}>
+                <ProtectedRoute protectedRoles={["Administrador", "coordinador"]}>
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
               }
@@ -38,7 +38,7 @@ export default function RouterApp() {
             <Route
               path="desarrollo"
               element={
-                <ProtectedRoute protectedRoles={["admin", "cordinador"]}>
+                <ProtectedRoute protectedRoles={["Administrador", "coordinador"]}>
                   <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
               }
@@ -46,7 +46,7 @@ export default function RouterApp() {
             <Route
               path="usuarios-y-roles"
               element={
-                <ProtectedRoute protectedRoles={["admin"]}>
+                <ProtectedRoute protectedRoles={["Administrador"]}>
                   <UsuariosYrolesPage />
                 </ProtectedRoute>
               }
@@ -54,7 +54,7 @@ export default function RouterApp() {
             <Route
               path='espacios'
               element={
-                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
+                <ProtectedRoute protectedRoles={['Administrador', 'coordinador',]}>
                     <ListadoEspaciosPage />
                 </ProtectedRoute>
               }
@@ -62,7 +62,7 @@ export default function RouterApp() {
             <Route
               path='espacio/:id'
               element={
-                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
+                <ProtectedRoute protectedRoles={['Administrador', 'coordinador',]}>
                     <DetalleEspacio espacios={listaItems} />
                 </ProtectedRoute>
               }

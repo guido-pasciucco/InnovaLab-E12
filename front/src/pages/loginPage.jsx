@@ -1,29 +1,43 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext.jsx'
+import { LOGIN } from '../utils/apiRoutes.js'
+
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('admin@innovalab.edu.ar')
+  const [password, setPassword] = useState('admin123')
   const { setAuthData } = useContext(AuthContext)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(LOGIN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-    // Provisorio: luego se debera reemplazar
-    if (email == 'admin@admin.com') {
-      const usuarioData = {'user':email, 'rol':'admin'}
-      setAuthData(usuarioData)
-      navigate('/dashboard')
-      return
+      const data = await response.json();
+
+      if (response.ok) {
+        setAuthData(data);
+        console.log('Login exitoso:', data);
+        navigate('/dashboard');
+      } else {
+        alert('Credenciales incorrectas');
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      alert('Error al iniciar sesión');
     }
-    if (email == 'cordinador@cordinador.com') {
-      const usuarioData = {'user':email, 'rol':'cordinador'}
-      setAuthData(usuarioData)
-      navigate('/dashboard')
-      return
-    }
-    alert("credenciales incorrectas")
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin();   
   }
 
   return (
@@ -42,6 +56,7 @@ export default function LoginPage() {
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="usuario@innovalab.com"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -55,6 +70,8 @@ export default function LoginPage() {
                 className="form-control"
                 id="exampleInputPassword1"
                 placeholder="******"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
