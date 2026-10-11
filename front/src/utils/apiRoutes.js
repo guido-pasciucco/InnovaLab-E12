@@ -3,10 +3,11 @@
 // Definición de rutas de la API local
 // const SERVIDOR_PATH = ""
 // const PUERTO = ""
+
 // const API_BASE = `http://${SERVIDOR_PATH}:${PUERTO}/api/v1`;
 
 // definición de rutas de la API remota
-const API_BASE = "https://improved-succotash-r4jrqgw57q5c5j75-8000.app.github.dev";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 
 // Login: Conecten el form a POST /api/v1/auth/login.
 export const LOGIN = `${API_BASE}/api/v1/auth/login`
