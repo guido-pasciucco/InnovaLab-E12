@@ -18,7 +18,7 @@
 ```json
 {
   "email": "admin@innovalab.edu.ar",
-  "password": "password123"
+  "password": "admin123"
 }
 ```
 * **Respuesta Exitosa (200 OK):**
@@ -26,14 +26,17 @@
 {
   "message": "Inicio de sesión exitoso.",
   "access_token": "1|xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  "token": "1|xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   "token_type": "Bearer",
-  "user": {
+  "usuario": {
     "id": 1,
     "nombre": "Administrador InnovaLab",
     "email": "admin@innovalab.edu.ar",
-    "rol_id": 1,
-    "estado": "activo"
+    "activo": true,
+    "rol": {
+      "id": 1,
+      "nombre": "Administrador"
+    },
+    "created_at": "2026-10-11T18:39:06+00:00"
   }
 }
 ```
@@ -41,18 +44,18 @@
 ### **1.2. Usuario Autenticado**
 * **Método:** `GET`
 * **URL:** `/api/v1/auth/me`
-* **Headers:** `Authorization: Bearer <token>`, `Accept: application/json`
+* **Headers:** `Authorization: Bearer <access_token>`, `Accept: application/json`
 
 ### **1.3. Logout**
 * **Método:** `POST`
 * **URL:** `/api/v1/auth/logout`
-* **Headers:** `Authorization: Bearer <token>`, `Accept: application/json`
+* **Headers:** `Authorization: Bearer <access_token>`, `Accept: application/json`
 
 ---
 
 ## 🏛️ 2. Módulo de Espacios Físicos (`/api/v1/espacios`)
 
-* **Headers obligatorios:** `Authorization: Bearer <token>`, `Accept: application/json`
+* **Headers obligatorios:** `Authorization: Bearer <access_token>`, `Accept: application/json`
 
 ### **2.1. Listar Espacios**
 * **Método:** `GET`
@@ -166,7 +169,7 @@
 ```json
 {
   "message": "Reserva creada exitosamente",
-  "data": { "id": 1, "estado": "confirmada", ... }
+  "data": { "id": 1, "estado": "confirmada" }
 }
 ```
 
