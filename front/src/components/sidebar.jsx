@@ -39,7 +39,7 @@ export default function Sidebar() {
             className="nav-link text-white"
             to="/dashboard/desarrollo"
           >
-            Equipamiento
+            Actividades
           </NavLink>
         </li>
         <li className="nav-item">

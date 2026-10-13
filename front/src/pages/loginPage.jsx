@@ -1,48 +1,48 @@
-import { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext.jsx'
-import { LOGIN } from '../utils/apiRoutes.js'
-
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
+import { LOGIN } from "../utils/apiRoutes.js";
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('admin@innovalab.edu.ar')
-  const [password, setPassword] = useState('admin123')
-  const { setAuthData } = useContext(AuthContext)
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("admin@innovalab.edu.ar");
+  const [password, setPassword] = useState("admin123");
+  const { setAuthData } = useContext(AuthContext);
 
   const handleLogin = async () => {
     try {
+      console.log("Iniciando login")
       const response = await fetch(LOGIN, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         setAuthData(data);
-        console.log('Login exitoso:', data);
-        navigate('/dashboard');
+        console.log("Login exitoso:", data);
+        navigate("/dashboard");
       } else {
-        alert('Credenciales incorrectas');
+        alert("Credenciales incorrectas");
       }
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      alert('Error al iniciar sesión');
+      console.error("Error al iniciar sesión:", error);
+      alert("Error al iniciar sesión");
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleLogin();   
-  }
+    handleLogin();
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow" style={{ width: '24rem' }}>
+      <div className="card shadow" style={{ width: "24rem" }}>
         <div className="card-body p-5">
           <h3 className="card-title text-center mb-4">Iniciar sesion</h3>
           <form onSubmit={handleSubmit}>
@@ -99,5 +99,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
