@@ -9,12 +9,15 @@ import Layout from "../layout/layout";
 import LoginPage from "../pages/loginPage";
 import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
 import CalendarioReservasPage from "../pages/calendarioReservasPage";
-import DetalleEspacio from "../pages/detalleEspacio";
+import DetalleEspacio from "../pages/detalleEspacioPage";
 import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
 import NuevaActividadPage from "../pages/nuevaActividadPage";
 import ProtectedRoute from "./ProtectedRoute";
-import { listaItems } from "../services/items";
+import { listaEspacios } from "../services/espacios";
+import { listaReservas } from "../services/reservas";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
+import ReservationTable from "../components/reservationTable";
+import ReservationForm from "../components/reservationForm";
 
 export default function RouterApp() {
   return (
@@ -62,8 +65,24 @@ export default function RouterApp() {
             <Route
               path='espacio/:id'
               element={
-                <ProtectedRoute protectedRoles={['Administrador', 'coordinador',]}>
-                    <DetalleEspacio espacios={listaItems} />
+                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
+                    <DetalleEspacio espacios={listaEspacios} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='reservas'
+              element={
+                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
+                  <ReservationTable items={listaReservas} /> 
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='nueva-reserva'
+              element={
+                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
+                  <ReservationForm /> 
                 </ProtectedRoute>
               }
             />

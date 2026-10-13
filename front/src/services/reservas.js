@@ -1,0 +1,38 @@
+export const listaReservas = [
+  {
+    id: 1,
+    actividad: 'Sala Sim 1',
+    espacio: 'espacio',
+    fecha: '2026-10-15',
+    horaInicio: '10:00',
+    horaFin: '12:00',
+    participantes: 14,
+    equipamiento: 'Proyector, Micrófono',
+    responsable: 'Juan Pérez',
+    estado: 'Pendiente',
+  },
+  {
+    id: 2,
+    actividad: 'Sala Sim 2',
+    espacio: 'espacio',
+    fecha: '2026-10-15',
+    horaInicio: '14:00',
+    horaFin: '16:00',
+    participantes: 20,
+    equipamiento: 'Proyector, Micrófono',
+    responsable: 'María García',
+    estado: 'Reservado',
+  },
+  {
+    id: 3,
+    actividad: 'Auditorio',
+    espacio: 'espacio',
+    fecha: '2026-10-15',
+    horaInicio: '18:00',
+    horaFin: '20:00',
+    participantes: 30,
+    equipamiento: 'Proyector, Micrófono',
+    responsable: 'Carlos López',
+    estado: 'En uso',
+  }
+];

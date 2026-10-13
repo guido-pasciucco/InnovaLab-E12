@@ -7,7 +7,7 @@ function GenericTable({ items }) {
     <Table striped bordered hover>
       <thead>
         <tr>
-          <th>#</th>
+          {/* <th>#</th> */}
           <th>Nombre</th>
           <th>Tipo</th>
           <th>Capacidad</th>
@@ -19,7 +19,7 @@ function GenericTable({ items }) {
       <tbody>
         {items.map((item) => (
           <tr key={item.id}>
-            <td>{item.id}</td>
+            {/* <td>{item.id}</td> */}
             <td>{item.nombre}</td>
             <td>{item.tipo}</td>
             <td>{item.capacidad}</td>

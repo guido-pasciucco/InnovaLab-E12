@@ -1,7 +1,7 @@
 import GenericTable from "../components/table";
 import Search from "../components/search";
 import GenericSelect from "../components/select";
-import { listaItems } from "../services/items";
+import { listaEspacios} from "../services/espacios";
 import { useState } from "react";
 import { ESPACIOS_ROUTE } from "../utils/apiRoutes.js";
 import { useContext, useEffect } from "react";

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext.jsx'
 import { LOGIN } from '../utils/apiRoutes.js'
 
+import styles from './login.module.css';
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -41,14 +42,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow" style={{ width: '24rem' }}>
-        <div className="card-body p-5">
-          <h3 className="card-title text-center mb-4">Iniciar sesion</h3>
+    // <div className="d-flex justify-content-center align-items-center vh-100">
+    <div className={styles.homeMainContainer}>
+      <div className={styles.imgHomeContainer}>
+        <img src="../src/assets/Home.png" alt="Logo" className="img-fluid vh-100"/>
+      </div>
+      {/* <div className="card shadow" style={{ width: '24rem' }}> */}
+      <div className={styles.loginContainer}>  
+        {/* <div className="card-body p-5"> */}
+        <div className={styles.loginCard}>
+          {/* <h3 className="card-title text-center mb-4">Iniciar sesion</h3> */}
+          <h3 className="card-title text-center mb-4">Ingresá al sistema</h3>
+          <span>Usá tu cuenta institucional</span>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
-                Usuario
+                Correo
               </label>
               <input
                 type="email"
@@ -92,7 +101,7 @@ export default function LoginPage() {
               </a>
             </div>
 
-            <button type="submit" className="btn btn-primary w-100">
+            <button type="submit" className="btn btn-warning w-100">
               Ingresar
             </button>
           </form>

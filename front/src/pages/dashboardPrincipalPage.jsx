@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Navbar from "../components/topbar";
 
 export default function DashboardPrincipalPage() {
@@ -38,7 +39,10 @@ export default function DashboardPrincipalPage() {
           <small className="text-muted">Viernes 2 de octubre</small>
         </div>
 
-        <button className="btn btn-primary">Nueva reserva</button>
+        {/* <button className="btn btn-primary">Nueva reserva</button> */}
+        <Link to="/dashboard/nueva-reserva" className="btn btn-primary">
+          Nueva reserva
+        </Link>
       </div>
       {/* Gráfico + alertas */}
       <div className="row g-3 mb-3">
