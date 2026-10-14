@@ -3,7 +3,7 @@ import Search from "../components/search";
 import GenericSelect from "../components/select";
 import { listaItems } from "../services/items";
 import { useState } from "react";
-import { ESPACIOS_ROUTE } from "../utils/apiRoutes.js";
+import { ESPACIOS_ROUTE, handleGet } from "../utils/apiRoutes.js";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { Modal, Button, Form } from "react-bootstrap";
@@ -21,33 +21,41 @@ export default function ListadoEspaciosPage() {
   const { getTypeAndToken } = useContext(AuthContext);
   const { token_type, access_token } = getTypeAndToken();
 
-  const handleGet = async () => {
-    try {
-      const response = await fetch(ESPACIOS_ROUTE, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token_type} ${access_token}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Datos obtenidos:", data);
-        setDatosAPI(data.data);
-        setCargando(false);
-      } else {
-        console.error("Error al obtener los datos:", data);
-      }
-    } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
-    }
-  };
+  // const handleGet = async () => {
+  //   try {
+  //     const response = await fetch(ESPACIOS_ROUTE, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `${token_type} ${access_token}`,
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       console.log("Datos obtenidos:", data);
+  //       setDatosAPI(data.data);
+  //       setCargando(false);
+  //     } else {
+  //       console.error("Error al obtener los datos:", data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error al realizar la solicitud:", error);
+  //   }
+  // };
 
   // Llamar a handleGet cuando se monte el componente
   useEffect(() => {
-    handleGet();
+    // handleGet();
     // cargamos los datos de la API al montar el componente
     // ...
+
+    handleGet(
+      ESPACIOS_ROUTE,
+      token_type,
+      access_token,
+      setDatosAPI,
+      setCargando,
+    );
   }, []);
 
   const [show, setShow] = useState(false);
@@ -73,21 +81,21 @@ export default function ListadoEspaciosPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Datos enviados:", formData);
-    // acá podrías hacer un fetch/axios POST a tu 
+    // acá podrías hacer un fetch/axios POST a tu
     await fetch(CREATE_ESPACIO_ROUTE, {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
         Authorization: `${token_type} ${access_token}`,
       },
-      body:JSON.stringify(formData)
+      body: JSON.stringify(formData),
     })
-    .then((data)=>{
-      console.log("Equipamiento creado: ", data)
-    })
-    .catch((error)=>{
-      console.error("Error al crear espacio: ", error)
-    })
+      .then((data) => {
+        console.log("Equipamiento creado: ", data);
+      })
+      .catch((error) => {
+        console.error("Error al crear espacio: ", error);
+      });
 
     handleClose();
   };
@@ -164,10 +172,10 @@ export default function ListadoEspaciosPage() {
               <Form.Group className="mb-3" controlId="formIdDocente">
                 <Form.Label>Docente Id</Form.Label>
                 <Form.Control
-                type="number"
-                name="id-docente"
-                value={formData.docente_id}
-                onChange={handleChange}
+                  type="number"
+                  name="id-docente"
+                  value={formData.docente_id}
+                  onChange={handleChange}
                 />
               </Form.Group>
 
