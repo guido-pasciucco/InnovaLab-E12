@@ -8,8 +8,6 @@ import Layout from "../layout/layout";
 
 import LoginPage from "../pages/loginPage";
 import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
-import CalendarioReservasPage from "../pages/calendarioReservasPage";
-import DetalleEspacio from "../pages/detalleEspacioPage";
 import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { listaEspacios } from "../services/espacios";
@@ -88,16 +86,7 @@ export default function RouterApp() {
               }
             />
 
-            <Route
-              path="espacio/:id"
-              element={
-                <ProtectedRoute
-                  protectedRoles={["Administrador", "coordinador"]}
-                >
-                  <DetalleEspacio espacios={listaItems} />
-                </ProtectedRoute>
-              }
-            />
+            
           </Route>
 
           {/* agarrar todas */}

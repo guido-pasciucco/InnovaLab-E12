@@ -17,9 +17,6 @@ export default function ListadoEspaciosPage() {
   const [datosAPI, setDatosAPI] = useState([]); // Estado para almacenar los datos obtenidos de la API
   const [cargando, setCargando] = useState(true);
 
-  const resultadosFiltrados = listaItems.filter((item) =>
-    item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()),
-  );
 
   const { getTypeAndToken } = useContext(AuthContext);
   const { token_type, access_token } = getTypeAndToken();
