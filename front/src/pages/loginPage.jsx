@@ -38,24 +38,26 @@ export default function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleLogin();   
+    handleLogin();
   }
 
   return (
     // <div className="d-flex justify-content-center align-items-center vh-100">
     <div className={styles.homeMainContainer}>
       <div className={styles.imgHomeContainer}>
-        <img src="../src/assets/Home.png" alt="Logo" className="img-fluid vh-100"/>
+        <img src="../src/assets/Home.png" alt="Logo" className="img-fluid vh-100" />
       </div>
       {/* <div className="card shadow" style={{ width: '24rem' }}> */}
-      <div className={styles.loginContainer}>  
+      <div className={styles.loginContainer}>
         {/* <div className="card-body p-5"> */}
         <div className={styles.loginCard}>
           {/* <h3 className="card-title text-center mb-4">Iniciar sesion</h3> */}
-          <h3 className="card-title text-center mb-4">Ingresá al sistema</h3>
-          <span>Usá tu cuenta institucional</span>
+          <div className={styles.loginCardTitleArea}>
+            <h3 className={styles.loginCardTitle}>Ingresá al sistema</h3>
+            <span>Usá tu cuenta institucional</span>
+          </div>
           <form onSubmit={handleSubmit}>
-            <div className="mb-3">
+            <div className={styles.formData}>
               <label htmlFor="exampleInputEmail1" className="form-label">
                 Correo
               </label>
@@ -70,7 +72,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="mb-3">
+            <div className={styles.formData}>
               <label htmlFor="exampleInputPassword1" className="form-label">
                 Contrasena
               </label>
