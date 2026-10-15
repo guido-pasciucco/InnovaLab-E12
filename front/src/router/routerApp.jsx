@@ -15,6 +15,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import { listaItems } from "../services/items";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 import ListadoActividadesPage from "../pages/listadoEquipamientoPage";
+import EspacioDetallePage from "../pages/EspacioDetallePage";
 
 export default function RouterApp() {
   return (
@@ -62,6 +63,14 @@ export default function RouterApp() {
                   protectedRoles={["Administrador", "coordinador"]}
                 >
                   <ListadoEspaciosPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="espacios/:id"
+              element={
+                <ProtectedRoute protectedRoles={["Administrador", "Coordinador"]}>
+                  <EspacioDetallePage />
                 </ProtectedRoute>
               }
             />

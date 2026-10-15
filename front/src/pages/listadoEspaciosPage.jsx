@@ -8,6 +8,9 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { Modal, Button, Form } from "react-bootstrap";
 import { CREATE_ESPACIO_ROUTE } from "../utils/apiRoutes.js";
+import useApi from "../components/useApi.jsx";
+import FiltroEspacios from "../components/filtrosEspacios.jsx";
+import { Link } from "react-router-dom";
 
 export default function ListadoEspaciosPage() {
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
@@ -20,28 +23,6 @@ export default function ListadoEspaciosPage() {
 
   const { getTypeAndToken } = useContext(AuthContext);
   const { token_type, access_token } = getTypeAndToken();
-
-  // const handleGet = async () => {
-  //   try {
-  //     const response = await fetch(ESPACIOS_ROUTE, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `${token_type} ${access_token}`,
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     if (response.ok) {
-  //       console.log("Datos obtenidos:", data);
-  //       setDatosAPI(data.data);
-  //       setCargando(false);
-  //     } else {
-  //       console.error("Error al obtener los datos:", data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error al realizar la solicitud:", error);
-  //   }
-  // };
 
   // Llamar a handleGet cuando se monte el componente
   useEffect(() => {
@@ -98,6 +79,20 @@ export default function ListadoEspaciosPage() {
       });
 
     handleClose();
+  };
+
+  // logica para filtrar datos
+
+  const handleFilter = async () => {
+    const [dataFilter, setDataFilter] = useState();
+    const api = useApi();
+    try {
+      console.log("consultando enpoint con filtros...");
+      const res = await api.get("/espacios", { params: { tipo: "Aula" } });
+      setDataFilter(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -192,15 +187,24 @@ export default function ListadoEspaciosPage() {
       {cargando ? (
         <h2>Cargando</h2>
       ) : (
-        <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
+        <div className="list-group mt-3">
           {/* mostramos la data en una tabla donde cada key es la columna */}
+          <h1 className="h1">Datos</h1>
           {Array.isArray(datosAPI) ? (
-            datosAPI.map((item) => <div key={item.id}>{item.nombre}</div>)
+            (console.log("cargando: ", datosAPI),
+            datosAPI.map((item) => (
+              <div className="list-group-item" key={item.id}>
+                <Link to={`${item.id}`}>{item.nombre}</Link>
+              </div>
+            )))
           ) : (
             <p>No hay datos disponibles</p>
           )}
         </div>
       )}
+
+      {/* filtramos espacios */}
+      <FiltroEspacios></FiltroEspacios>
     </>
   );
 }
