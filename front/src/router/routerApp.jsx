@@ -11,13 +11,14 @@ import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
 import CalendarioReservasPage from "../pages/calendarioReservasPage";
 import DetalleEspacio from "../pages/detalleEspacioPage";
 import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
-import NuevaActividadPage from "../pages/nuevaActividadPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { listaEspacios } from "../services/espacios";
 import { listaReservas } from "../services/reservas";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 import ReservationTable from "../components/reservationTable";
 import ReservationForm from "../components/reservationForm";
+import ListadoActividadesPage from "../pages/listadoEquipamientoPage";
+import EspacioDetallePage from "../pages/EspacioDetallePage";
 
 export default function RouterApp() {
   return (
@@ -32,7 +33,9 @@ export default function RouterApp() {
             <Route
               index
               element={
-                <ProtectedRoute protectedRoles={["Administrador", "coordinador"]}>
+                <ProtectedRoute
+                  protectedRoles={["Administrador", "coordinador"]}
+                >
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
               }
@@ -41,7 +44,9 @@ export default function RouterApp() {
             <Route
               path="desarrollo"
               element={
-                <ProtectedRoute protectedRoles={["Administrador", "coordinador"]}>
+                <ProtectedRoute
+                  protectedRoles={["Administrador", "coordinador"]}
+                >
                   <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
               }
@@ -55,34 +60,41 @@ export default function RouterApp() {
               }
             />
             <Route
-              path='espacios'
+              path="espacios"
               element={
-                <ProtectedRoute protectedRoles={['Administrador', 'coordinador',]}>
-                    <ListadoEspaciosPage />
+                <ProtectedRoute
+                  protectedRoles={["Administrador", "coordinador"]}
+                >
+                  <ListadoEspaciosPage />
                 </ProtectedRoute>
               }
             />
             <Route
-              path='espacio/:id'
+              path="espacios/:id"
               element={
-                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
-                    <DetalleEspacio espacios={listaEspacios} />
+                <ProtectedRoute protectedRoles={["Administrador", "Coordinador"]}>
+                  <EspacioDetallePage />
                 </ProtectedRoute>
               }
             />
             <Route
-              path='reservas'
+              path="actividades"
               element={
-                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
-                  <ReservationTable items={listaReservas} /> 
+                <ProtectedRoute
+                  protectedRoles={["Administrador", "coordinador"]}
+                >
+                  <ListadoActividadesPage />
                 </ProtectedRoute>
               }
             />
+
             <Route
-              path='nueva-reserva'
+              path="espacio/:id"
               element={
-                <ProtectedRoute protectedRoles={['admin', 'cordinador',]}>
-                  <ReservationForm /> 
+                <ProtectedRoute
+                  protectedRoles={["Administrador", "coordinador"]}
+                >
+                  <DetalleEspacio espacios={listaItems} />
                 </ProtectedRoute>
               }
             />
