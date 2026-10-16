@@ -15,8 +15,9 @@ import { listaReservas } from "../services/reservas";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 import ReservationTable from "../components/reservationTable";
 import ReservationForm from "../components/reservationForm";
-import ListadoActividadesPage from "../pages/listadoEquipamientoPage";
+import ListadoEquipamientoPage from "../pages/listadoEquipamientoPage"
 import EspacioDetallePage from "../pages/EspacioDetallePage";
+import ListadoReservasPage from "../pages/nuevaReservaPage";
 
 export default function RouterApp() {
   return (
@@ -76,17 +77,27 @@ export default function RouterApp() {
               }
             />
             <Route
-              path="actividades"
+              path="equipamiento"
               element={
                 <ProtectedRoute
                   protectedRoles={["Administrador", "coordinador"]}
                 >
-                  <ListadoActividadesPage />
+                  <ListadoEquipamientoPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="nueva-reserva"
+              element={
+                <ProtectedRoute
+                  protectedRoles={["Administrador", "coordinador"]}
+                >
+                  <ListadoReservasPage />
                 </ProtectedRoute>
               }
             />
 
-            
+
           </Route>
 
           {/* agarrar todas */}
