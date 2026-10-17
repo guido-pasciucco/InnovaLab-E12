@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Rol;
 use App\Models\Usuario;
 use App\Models\Espacio;
 use App\Models\Equipamiento;
@@ -13,62 +13,38 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Crear Roles
-        $adminRolId = DB::table('roles')->insertGetId([
-            'nombre' => 'Administrador',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // 1. Roles
+        $adminRol = Rol::firstOrCreate(['id' => 1], ['nombre' => 'Administrador']);
+        $coordRol = Rol::firstOrCreate(['id' => 2], ['nombre' => 'Gestión/Coordinación']);
 
-        $gestionRolId = DB::table('roles')->insertGetId([
-            'nombre' => 'Gestión / Coordinación',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // 2. Usuario Administrador
+        Usuario::firstOrCreate(
+            ['email' => 'admin@innovalab.edu.ar'],
+            [
+                'nombre' => 'Admin InnovaLab',
+                'password' => Hash::make('admin123'),
+                'rol_id' => $adminRol->id,
+                'activo' => true,
+            ]
+        );
 
-        // 2. Crear Usuario Admin Inicial
-        Usuario::create([
-            'nombre' => 'Administrador InnovaLab',
-            'email' => 'admin@innovalab.edu.ar',
-            'password' => Hash::make('admin123'),
-            'rol_id' => $adminRolId,
-            'activo' => true,
-        ]);
+        // 3. Espacios
+        $sala1 = Espacio::firstOrCreate(
+            ['nombre' => 'Laboratorio de Simulación A'],
+            ['tipo' => 'laboratorio', 'capacidad' => 20, 'ubicacion' => 'Piso 1 - Ala Norte', 'estado' => 'operativo']
+        );
 
-        // 3. Crear Espacios de Ejemplo
-        $lab1 = Espacio::create([
-            'nombre' => 'Laboratorio de Simulación Médica 1',
-            'tipo' => 'Laboratorio',
-            'capacidad' => 25,
-            'ubicacion' => 'Piso 2 - Ala Norte',
-            'estado' => 'disponible',
-        ]);
-
-        $aula1 = Espacio::create([
-            'nombre' => 'Aula Teórica A',
-            'tipo' => 'Aula',
-            'capacidad' => 40,
-            'ubicacion' => 'Piso 1',
-            'estado' => 'disponible',
-        ]);
-
-        // 4. Crear Equipamiento Inicial
-        Equipamiento::create([
-            'nombre' => 'Simulador de Paciente Adulto (Maniquí)',
-            'categoria' => 'Simuladores',
-            'tipo_movilidad' => 'fijo',
-            'cantidad' => 2,
-            'espacio_habitual_id' => $lab1->id,
-            'estado' => 'disponible',
-        ]);
-
-        Equipamiento::create([
-            'nombre' => 'Proyector Portátil HD',
-            'categoria' => 'Audiovisual',
-            'tipo_movilidad' => 'trasladable',
-            'cantidad' => 5,
-            'espacio_habitual_id' => null,
-            'estado' => 'disponible',
-        ]);
+        // 4. Equipamiento
+        Equipamiento::firstOrCreate(
+            ['nombre' => 'Simulador de Alta Fidelidad HAL S3201'],
+            [
+                'categoria' => 'Simulador Médico',
+                'tipo_movilidad' => 'fijo',
+                'cantidad' => 1,
+                'espacio_habitual_id' => $sala1->id,
+                'espacio_actual_id' => $sala1->id,
+                'estado' => 'disponible',
+            ]
+        );
     }
 }
