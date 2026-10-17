@@ -2,7 +2,7 @@
 
 ## 🔑 Autenticación & Base URL
 
-* **Base URL:** `http://localhost:8000/api/v1` (o la IP/Host del contenedor Docker)
+* **Base URL:** `http://localhost:8000/api/v1` (o la IP/Host del contenedor Docker / Render)
 * **Formato:** `JSON`
 * **Autenticación:** Laravel Sanctum mediante Header `Authorization: Bearer <access_token>`
 
@@ -24,7 +24,7 @@
 * **Respuesta Exitosa (200 OK):**
 ```json
 {
-  "message": "Inicio de sesión exitoso.",
+  "message": "Inicio de sesión exitoso",
   "access_token": "1|xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   "token_type": "Bearer",
   "usuario": {
@@ -256,3 +256,106 @@
 ### **7.2. Listar Historial de Interacciones**
 * **Método:** `GET`
 * **URL:** `/api/v1/consultas-ia`
+
+---
+
+## 📊 8. Módulo de Dashboard y Métricas (`/api/v1/dashboard`)
+
+* **Headers obligatorios:** `Authorization: Bearer <access_token>`, `Accept: application/json`
+
+### **8.1. Resumen General / KPIs en Tiempo Real**
+* **Método:** `GET`
+* **URL:** `/api/v1/dashboard/resumen`
+* **Respuesta (200 OK):**
+```json
+{
+  "kpis": {
+    "total_espacios": 8,
+    "espacios_operativos": 7,
+    "espacios_mantenimiento": 1,
+    "reservas_hoy": 5,
+    "reservas_semana": 18,
+    "alertas_activas": 2,
+    "equipos_fuera_de_servicio": 1
+  },
+  "alertas_recientes": [
+    {
+      "id": 1,
+      "tipo": "conflicto_reserva",
+      "mensaje": "Solapamiento de horario en Sala de Simulación 1",
+      "fecha": "2026-10-17T09:30:00+00:00"
+    }
+  ]
+}
+```
+
+### **8.2. Ocupación y Utilización de Espacios**
+* **Método:** `GET`
+* **URL:** `/api/v1/dashboard/ocupacion-espacios`
+* **Query Params opcionales:** `?fecha_desde=2026-10-01&fecha_hasta=2026-10-31`
+* **Respuesta (200 OK):**
+```json
+{
+  "periodo": {
+    "desde": "2026-10-01",
+    "hasta": "2026-10-31"
+  },
+  "espacios_mas_utilizados": [
+    {
+      "espacio_id": 1,
+      "nombre": "Sala de Simulación Clínica 1",
+      "horas_reservadas": 120,
+      "porcentaje_ocupacion": 75.0
+    }
+  ],
+  "espacios_menos_utilizados": [
+    {
+      "espacio_id": 3,
+      "nombre": "Taller de Habilidades Básicas",
+      "horas_reservadas": 24,
+      "porcentaje_ocupacion": 15.0
+    }
+  ]
+}
+```
+
+### **8.3. Uso y Trazabilidad de Equipamiento**
+* **Método:** `GET`
+* **URL:** `/api/v1/dashboard/uso-equipamiento`
+* **Respuesta (200 OK):**
+```json
+{
+  "equipos_mas_demandados": [
+    {
+      "equipamiento_id": 1,
+      "nombre": "Simulador de Paciente Adulto HAL S3201",
+      "total_reservas": 14,
+      "tipo_movilidad": "fijo"
+    }
+  ],
+  "equipamiento_critico_mantenimiento": [
+    {
+      "equipamiento_id": 1,
+      "nombre": "Simulador de Paciente Adulto HAL S3201",
+      "veces_en_mantenimiento": 3,
+      "dias_fuera_de_servicio": 12
+    }
+  ]
+}
+```
+
+### **8.4. Análisis Operativo y Métricas de Conflictos**
+* **Método:** `GET`
+* **URL:** `/api/v1/dashboard/metricas-conflictos`
+* **Respuesta (200 OK):**
+```json
+{
+  "total_conflictos_detectados": 8,
+  "conflictos_resueltos": 6,
+  "conflictos_pendientes": 2,
+  "desglose_por_tipo": {
+    "espacio": 5,
+    "equipamiento": 3
+  }
+}
+```
