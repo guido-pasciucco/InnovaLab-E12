@@ -15,7 +15,7 @@ import { listaReservas } from "../services/reservas";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 import ReservationTable from "../components/reservationTable";
 import ReservationForm from "../components/reservationForm";
-import ListadoActividadesPage from "../pages/listadoEquipamientoPage";
+import EquipamientoPage from "../pages/EquipamientoPage";
 import EspacioDetallePage from "../pages/EspacioDetallePage";
 
 export default function RouterApp() {
@@ -76,12 +76,12 @@ export default function RouterApp() {
               }
             />
             <Route
-              path="actividades"
+              path="equipamiento"
               element={
                 <ProtectedRoute
                   protectedRoles={["Administrador", "coordinador"]}
                 >
-                  <ListadoActividadesPage />
+                  <EquipamientoPage />
                 </ProtectedRoute>
               }
             />

@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { EQUIPAMIENTO_ROUTE, handleGet } from "../utils/apiRoutes";
 
-export default function ListadoEquipamientoPage() {
+export default function EquipamientoPage() {
   const [cargando, setCargando] = useState(true)
   const [datosAPI, setDatosAPI] = useState([
     {
