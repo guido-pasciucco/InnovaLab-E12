@@ -16,8 +16,18 @@ export default function Calendar() {
 
   // Lista de eventos
   const [events, setEvents] = useState([
-    { id: "1", title: "Reserva 1", date: "2026-10-17", extendedProps: { cliente: "Juan Pérez", hora: "10:00 AM" } },
-    { id: "2", title: "Reserva 2", date: "2026-10-20", extendedProps: { cliente: "María Gómez", hora: "03:00 PM" } },
+    {
+      id: "1",
+      title: "Reserva 1",
+      date: "2026-10-17",
+      extendedProps: { cliente: "Juan Pérez", hora: "10:00 AM" },
+    },
+    {
+      id: "2",
+      title: "Reserva 2",
+      date: "2026-10-20",
+      extendedProps: { cliente: "María Gómez", hora: "03:00 PM" },
+    },
   ]);
 
   // Se ejecuta al hacer clic en una reserva
@@ -28,7 +38,9 @@ export default function Calendar() {
 
   // Funciones de acción
   const handleVerDatos = () => {
-    alert(`Viendo detalles de: ${selectedEvent.title} - Cliente: ${selectedEvent.extendedProps.cliente}`);
+    alert(
+      `Viendo detalles de: ${selectedEvent.title} - Cliente: ${selectedEvent.extendedProps.cliente}`,
+    );
   };
 
   const handleModificar = () => {
@@ -44,56 +56,87 @@ export default function Calendar() {
     }
   };
 
+  const handleCrear = () =>{
+    alert("Formulario de creacion de datos")
+  }
+
   return (
     <div className="container mt-5" style={{ maxWidth: "600px" }}>
-      <FullCalendar
-        plugins={[dayGridPlugin, themePlugin, multiMonthPlugin]}
-        initialView="dayGridMonth"
-        locales={[esLocale]}
-        locale="es"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,multiMonthYear",
-        }}
-        buttonText={{
-          today: "Hoy",
-          month: "Mes",
-          year: "Año",
-        }}
-        views={{
-          multiMonthYear: {
-            type: "multiMonth",
-            duration: { years: 1 },
-          },
-        }}
-        weekends={true}
-        events={events}
-        eventClick={handleEventClick} // <--- AQUÍ CAPTURAMOS EL CLIC
-        height="auto"
-      />
+      <div className="row">
+        <FullCalendar
+          plugins={[dayGridPlugin, themePlugin, multiMonthPlugin]}
+          initialView="dayGridMonth"
+          locales={[esLocale]}
+          locale="es"
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,multiMonthYear",
+          }}
+          buttonText={{
+            today: "Hoy",
+            month: "Mes",
+            year: "Año",
+          }}
+          views={{
+            multiMonthYear: {
+              type: "multiMonth",
+              duration: { years: 1 },
+            },
+          }}
+          weekends={true}
+          events={events}
+          eventClick={handleEventClick} // <--- AQUÍ CAPTURAMOS EL CLIC
+          height="auto"
+        />
+      </div>
 
       {/* MODAL DE BOOTSTRAP */}
       {modalOpen && selectedEvent && (
-        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">{selectedEvent.title}</h5>
-                <button type="button" className="btn-close" onClick={() => setModalOpen(false)}></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setModalOpen(false)}
+                ></button>
               </div>
               <div className="modal-body">
-                <p><strong>Fecha:</strong> {selectedEvent.startStr}</p>
-                <p><strong>Cliente:</strong> {selectedEvent.extendedProps?.cliente || "No especificado"}</p>
+                <p>
+                  <strong>Fecha:</strong> {selectedEvent.startStr}
+                </p>
+                <p>
+                  <strong>Cliente:</strong>{" "}
+                  {selectedEvent.extendedProps?.cliente || "No especificado"}
+                </p>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-info text-white" onClick={handleVerDatos}>
+                <button
+                  type="button"
+                  className="btn btn-info text-white"
+                  onClick={handleVerDatos}
+                >
                   Ver datos
                 </button>
-                <button type="button" className="btn btn-warning" onClick={handleModificar}>
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={handleModificar}
+                >
                   Modificar
                 </button>
-                <button type="button" className="btn btn-danger" onClick={handleEliminar}>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleEliminar}
+                >
                   Eliminar
                 </button>
               </div>
@@ -101,6 +144,10 @@ export default function Calendar() {
           </div>
         </div>
       )}
+
+      <div className="row mt-3 w-50">
+        <button className="btn btn-primary" onClick={handleCrear}>Agregar Reserva</button>
+      </div>
     </div>
   );
 }
