@@ -2,11 +2,18 @@
 import './App.css'
 import RouterApp from './router/routerApp'
 
+// import de pruebas
+import Calendar from './pages/calendarioReservasPage'
+
 function App() {
 
   return (
     <>
-      <RouterApp />
+      {/* <RouterApp /> */}
+
+      {/* area pruebas */}
+
+      <Calendar />
     </>
   )
 }
