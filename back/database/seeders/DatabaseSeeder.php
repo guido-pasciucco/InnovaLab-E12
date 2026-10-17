@@ -28,10 +28,15 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3. Espacios
+        // 3. Espacios (estado permitido: disponible)
         $sala1 = Espacio::firstOrCreate(
             ['nombre' => 'Laboratorio de Simulación A'],
-            ['tipo' => 'laboratorio', 'capacidad' => 20, 'ubicacion' => 'Piso 1 - Ala Norte', 'estado' => 'operativo']
+            [
+                'tipo' => 'laboratorio', 
+                'capacidad' => 20, 
+                'ubicacion' => 'Piso 1 - Ala Norte', 
+                'estado' => 'disponible'
+            ]
         );
 
         // 4. Equipamiento
