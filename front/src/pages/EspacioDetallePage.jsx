@@ -1,7 +1,6 @@
 // EspacioDetallePage.jsx
 import { useEffect, useState,useMemo } from "react";
 import { useParams } from "react-router-dom";
-import useApi from "../components/useApi";
 import styles from './detalleEspacio.module.css';
 import ReservationTable from '../components/reservationTable';
 import { listaReservas } from '../services/reservas';
@@ -12,20 +11,8 @@ export default function EspacioDetallePage() {
   const [espacio, setEspacio] = useState(null);
   const fechaDeHoy = new Date().toISOString().split('T')[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
   console.log(listaReservas)
-  useEffect(() => {
-    const fetchDetalle = async () => {
-      try {
-        const res = await api.get(`/espacios/${id}`);
-        console.log("fetch detalle: ", res.data.data)
-        setEspacio(res.data.data);
-      } catch (err) {
-        console.error("Error al obtener detalle:", err);
-      }
-    };
-    if (id) {
-      fetchDetalle();
-    }
-  }, [id, api]);
+  
+  
 
   const reservasProximas = listaReservas.filter((reserva) => reserva.fecha >= fechaDeHoy);
   

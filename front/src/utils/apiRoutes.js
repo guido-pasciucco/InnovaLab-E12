@@ -12,7 +12,7 @@ const LOGOUT = `${API_BASE}/logout`;
 const PERSISTENCIA = `${API_BASE}/auth/me`;
 
 // Ruta base de espacios
-const ESPACIOS_ROUTE = `${API_BASE}/api/v1/espacios`;
+const ESPACIOS_ROUTE = `/api/v1/espacios`;
 
 // Helper para armar la URL con query params
 const ESPACIOS_LISTADO = ({
@@ -89,7 +89,7 @@ export const configApiInterceptor = (token) =>{
 
 }
 
-export const getEspaciosApi = () => {
-  api.get(ESPACIOS_ROUTE)
-  .then((res)=> console.log("getEspaciosApi: ", res.data))
+export const getEspaciosApi = async() => {
+  const res = await api.get(ESPACIOS_ROUTE)
+  return res
 }
