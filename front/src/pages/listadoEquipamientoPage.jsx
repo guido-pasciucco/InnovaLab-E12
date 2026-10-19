@@ -1,7 +1,7 @@
 import { Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { EQUIPAMIENTO_ROUTE, handleGet } from "../utils/apiRoutes";
+import { EQUIPAMIENTO_ROUTE } from "../utils/apiRoutes";
 
 export default function ListadoEquipamientoPage() {
   const [cargando, setCargando] = useState(true)
@@ -20,7 +20,7 @@ export default function ListadoEquipamientoPage() {
   const { token_type, access_token } = getTypeAndToken();
 
   useEffect(()=>{
-    handleGet(EQUIPAMIENTO_ROUTE, token_type, access_token, setDatosAPI, setCargando)
+    // handleGet(EQUIPAMIENTO_ROUTE, token_type, access_token, setDatosAPI, setCargando)
   }, [])
 
   return (

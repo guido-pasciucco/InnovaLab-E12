@@ -3,7 +3,6 @@ import Search from "../components/search.jsx";
 import GenericSelect from "../components/select.jsx";
 // import { listaItems } from "../services/items.js";
 import { useState } from 'react';
-import { ESPACIOS_ROUTE, handleGet } from "../utils/apiRoutes.js";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { Modal, Button, Form } from "react-bootstrap";
@@ -31,13 +30,13 @@ export default function ListadoEspaciosPage() {
         // cargamos los datos de la API al montar el componente
         // ...
 
-        handleGet(
-            ESPACIOS_ROUTE,
-            token_type,
-            access_token,
-            setDatosAPI,
-            setCargando,
-        );
+        // handleGet(
+        //     ESPACIOS_ROUTE,
+        //     token_type,
+        //     access_token,
+        //     setDatosAPI,
+        //     setCargando,
+        // );
     }, []);
 
     const [show, setShow] = useState(false);

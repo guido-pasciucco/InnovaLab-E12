@@ -33,7 +33,7 @@ export default function RouterApp() {
               index
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador", "coordinador"]}
+                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
                 >
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
@@ -44,7 +44,7 @@ export default function RouterApp() {
               path="desarrollo"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador", "coordinador"]}
+                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
                 >
                   <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
@@ -53,7 +53,7 @@ export default function RouterApp() {
             <Route
               path="usuarios-y-roles"
               element={
-                <ProtectedRoute protectedRoles={["Administrador"]}>
+                <ProtectedRoute protectedRoles={["Administrador InnovaLab"]}>
                   <UsuariosYrolesPage />
                 </ProtectedRoute>
               }
@@ -62,7 +62,7 @@ export default function RouterApp() {
               path="espacios"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador", "coordinador"]}
+                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
                 >
                   <ListadoEspaciosPage />
                 </ProtectedRoute>
@@ -71,7 +71,7 @@ export default function RouterApp() {
             <Route
               path="espacios/:id"
               element={
-                <ProtectedRoute protectedRoles={["Administrador", "Coordinador"]}>
+                <ProtectedRoute protectedRoles={["Administrador InnovaLab", "Coordinador"]}>
                   <EspacioDetallePage />
                 </ProtectedRoute>
               }
@@ -80,7 +80,7 @@ export default function RouterApp() {
               path="equipamiento"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador", "coordinador"]}
+                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
                 >
                   <ListadoEquipamientoPage />
                 </ProtectedRoute>
@@ -90,7 +90,7 @@ export default function RouterApp() {
               path="nueva-reserva"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador", "coordinador"]}
+                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
                 >
                   <ListadoReservasPage />
                 </ProtectedRoute>

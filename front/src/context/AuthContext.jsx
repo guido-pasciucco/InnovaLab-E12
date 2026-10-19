@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }) => {
   // Al iniciar, leemos el rol guardado
 
   const getRol = () => {
-    console.log("obtuvimos el rol del usuario:", authData.usuario.rol.nombre);
-    return authData.usuario.rol.nombre;
+    console.log("obtuvimos el rol del usuario:", authData.user.nombre);
+    return authData.user.nombre;
   };
 
   const getTypeAndToken = () => {
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     const usuarioLimpio = {
       message: null,
       access_token: null,
-      token_type: null,
+      token: null,
       usuario: {
         id: null,
         nombre: null,
