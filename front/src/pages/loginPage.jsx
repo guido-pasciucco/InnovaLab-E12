@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext.jsx'
 import { LOGIN, loginPostCredentials } from '../utils/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
+import home from "../assets/Home.png"
 
 import styles from './login.module.css'
 
@@ -10,7 +11,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('admin@innovalab.edu.ar')
   const [password, setPassword] = useState('admin123')
-  const { setAuthData } = useContext(AuthContext)
+  const { setAuthData, getConfigApiInterceptor } = useContext(AuthContext)
   const [showSpinner, setShowSpinner] = useState(true)
 
   const handleLogin = async () => {
@@ -24,35 +25,14 @@ export default function LoginPage() {
       console.log(res.status == '200')
 
       setAuthData(res.data)
+      getConfigApiInterceptor(res.data.token)
       console.log('Login exitoso:', res.data)
       navigate('/dashboard')
     } else {
       console.error('Error al hacer login...')
     }
 
-    // try {
-    //   console.log("iniciando login> ", LOGIN)
-    //   const response = await fetch(LOGIN, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ email, password }),
-    //   })
-
-    //   const data = await response.json()
-
-    //   if (response.ok) {
-    //     setAuthData(data)
-    //     console.log('Login exitoso:', data)
-    //     navigate('/dashboard')
-    //   } else {
-    //     alert('Credenciales incorrectas')
-    //   }
-    // } catch (error) {
-    //   console.error('Error al iniciar sesión:', error)
-    //   alert('Error al iniciar sesión')
-    // }
+    
   }
 
   const handleSubmit = (e) => {
@@ -67,7 +47,7 @@ export default function LoginPage() {
     <div className={styles.homeMainContainer}>
       <div className={styles.imgHomeContainer}>
         <img
-          src="../src/assets/Home.png"
+          src="/Home.png"
           alt="Logo"
           className="img-fluid vh-100"
         />

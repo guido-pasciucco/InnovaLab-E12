@@ -10,11 +10,7 @@ import LoginPage from "../pages/loginPage";
 import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
 import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
 import ProtectedRoute from "./ProtectedRoute";
-import { listaEspacios } from "../services/espacios";
-import { listaReservas } from "../services/reservas";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
-import ReservationTable from "../components/reservationTable";
-import ReservationForm from "../components/reservationForm";
 import ListadoEquipamientoPage from "../pages/listadoEquipamientoPage"
 import EspacioDetallePage from "../pages/EspacioDetallePage";
 import ListadoReservasPage from "../pages/nuevaReservaPage";
@@ -33,7 +29,7 @@ export default function RouterApp() {
               index
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
@@ -44,7 +40,7 @@ export default function RouterApp() {
               path="desarrollo"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
                   <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
@@ -53,7 +49,7 @@ export default function RouterApp() {
             <Route
               path="usuarios-y-roles"
               element={
-                <ProtectedRoute protectedRoles={["Administrador InnovaLab"]}>
+                <ProtectedRoute protectedRoles={["Admin InnovaLab"]}>
                   <UsuariosYrolesPage />
                 </ProtectedRoute>
               }
@@ -62,7 +58,7 @@ export default function RouterApp() {
               path="espacios"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
                   <ListadoEspaciosPage />
                 </ProtectedRoute>
@@ -71,7 +67,7 @@ export default function RouterApp() {
             <Route
               path="espacios/:id"
               element={
-                <ProtectedRoute protectedRoles={["Administrador InnovaLab", "Coordinador"]}>
+                <ProtectedRoute protectedRoles={["Admin InnovaLab", "Coordinador"]}>
                   <EspacioDetallePage />
                 </ProtectedRoute>
               }
@@ -80,7 +76,7 @@ export default function RouterApp() {
               path="equipamiento"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
                   <ListadoEquipamientoPage />
                 </ProtectedRoute>
@@ -90,7 +86,7 @@ export default function RouterApp() {
               path="nueva-reserva"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Administrador InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
                   <ListadoReservasPage />
                 </ProtectedRoute>

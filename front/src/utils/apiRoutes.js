@@ -104,3 +104,30 @@ export const loginPostCredentials = async (credentials) => {
 }
 
 
+
+
+
+export const api = axios.create(
+  {baseURL: API_BASE}
+)
+
+
+export const configApiInterceptor = (token) =>{
+  api.interceptors.request.use(
+    (config) =>{
+      if(token){
+        config.headers.Authorization= `Bearer ${token}`
+      }
+      console.log("seteado el config en: ", config)
+      return config
+    },
+    (error) => Promise.reject(error)
+    
+  )
+
+}
+
+export const getEspaciosApi = () => {
+  api.get(ESPACIOS_ROUTE)
+  .then((res)=> console.log("getEspaciosApi: ", res.data))
+}

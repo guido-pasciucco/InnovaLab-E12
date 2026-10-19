@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { Modal, Button, Form } from "react-bootstrap";
+import { getEspaciosApi } from "../utils/apiRoutes.js";
 
 
 export default function ListadoEspaciosPage() {
@@ -37,6 +38,8 @@ export default function ListadoEspaciosPage() {
         //     setDatosAPI,
         //     setCargando,
         // );
+
+        getEspaciosApi()
     }, []);
 
     const [show, setShow] = useState(false);

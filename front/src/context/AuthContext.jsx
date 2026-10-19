@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-
+import { api, configApiInterceptor } from "../utils/apiRoutes";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -21,9 +21,16 @@ export const AuthProvider = ({ children }) => {
   });
 
   // Al iniciar, leemos el rol guardado
+  const useApi = api
+
+  const getConfigApiInterceptor = (token) =>{
+    console.log("get config token: ", token)
+    console.log("api: ", api)
+    configApiInterceptor(token)
+  }
+
 
   const getRol = () => {
-    console.log("obtuvimos el rol del usuario:", authData.user.nombre);
     return authData.user.nombre;
   };
 
@@ -55,7 +62,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ getRol, limpiarUsuario, setAuthData, getTypeAndToken }}>
+    <AuthContext.Provider value={{ getRol, limpiarUsuario, setAuthData, getTypeAndToken, useApi, getConfigApiInterceptor }}>
       {children}
     </AuthContext.Provider>
   );
