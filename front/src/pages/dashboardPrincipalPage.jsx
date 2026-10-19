@@ -35,7 +35,7 @@ export default function DashboardPrincipalPage() {
       {/* Título */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h2 className="h1 mb-0">Hoy en el centro</h2>
+          <h2 className="h1 mb-0">Hoy en el centro (SIMULADO/ SIN DB)</h2>
           <small className="text-muted">Viernes 2 de octubre</small>
         </div>
 

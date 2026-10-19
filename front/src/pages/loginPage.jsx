@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext.jsx'
-import { LOGIN, loginPostCredentials } from '../utils/apiRoutes.js'
+import { loginPostCredentials } from '../utils/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
-import home from "../assets/Home.png"
+
 
 import styles from './login.module.css'
 

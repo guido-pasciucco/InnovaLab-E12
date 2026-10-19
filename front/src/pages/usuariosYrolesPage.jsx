@@ -23,7 +23,7 @@ export default function UsuariosYRolesPage() {
   return (
     <>
       <div className="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h1 className="h1">Usuarios y roles page</h1>
+        <h1 className="h1">Usuarios y roles page (SIMULADO)</h1>
         <button
           className="btn btn-primary"
           data-bs-toggle="modal"

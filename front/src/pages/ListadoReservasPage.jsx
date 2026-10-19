@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { CREATE_ESPACIO_ROUTE } from "../utils/apiRoutes.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 export default function ListadoReservasPage() {
@@ -32,20 +31,7 @@ export default function ListadoReservasPage() {
         e.preventDefault();
         console.log("Datos enviados:", formData);
         // acá podrías hacer un fetch/axios POST a tu
-        await fetch(CREATE_ESPACIO_ROUTE, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `${token_type} ${access_token}`,
-            },
-            body: JSON.stringify(formData),
-        })
-            .then((data) => {
-                console.log("Nueva actividad creada: ", data);
-            })
-            .catch((error) => {
-                console.error("Error al crear actividad: ", error);
-            });
+        
 
         handleClose();
     };

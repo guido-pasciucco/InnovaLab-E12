@@ -1,7 +1,6 @@
 import { Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { EQUIPAMIENTO_ROUTE } from "../utils/apiRoutes";
 
 export default function ListadoEquipamientoPage() {
   const [cargando, setCargando] = useState(true)
@@ -25,7 +24,7 @@ export default function ListadoEquipamientoPage() {
 
   return (
     <>
-      <h1>Equipamiento page</h1>
+      <h1>Equipamiento page (SIMULADO/ NO DB</h1>
       <Table striped bordered hover>
         <thead>
           <tr>

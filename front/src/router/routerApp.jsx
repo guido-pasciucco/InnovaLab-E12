@@ -13,7 +13,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 import ListadoEquipamientoPage from "../pages/listadoEquipamientoPage"
 import EspacioDetallePage from "../pages/EspacioDetallePage";
-import ListadoReservasPage from "../pages/nuevaReservaPage";
+import ListadoReservasPage from "../pages/ListadoReservasPage";
 
 export default function RouterApp() {
   return (
