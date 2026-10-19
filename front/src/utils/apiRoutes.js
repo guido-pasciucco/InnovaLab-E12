@@ -65,3 +65,43 @@ export const EQUIPAMIENTO_BY_ID = (id) => `${EQUIPAMIENTO_ROUTE}/${id}`;
 
 // Traslados/Mantenimiento (PUT con ID dinámico)
 export const UPDATE_EQUIPAMIENTO_ROUTE = (id) => `${EQUIPAMIENTO_ROUTE}/${id}`;
+
+
+// agregamos axios para hacer las consultas
+
+import axios from "axios"
+
+const getEspacios = async (token) => {
+  console.log("Utilizando getEspacios...")
+  axios.get(ESPACIOS_ROUTE)
+  .then( (res) =>{
+    console.log(res.data)
+  })
+  .catch((err)=>{
+    console.log(err)
+  })
+}
+
+
+
+
+export const loginPostCredentials = async (credentials) => {
+  console.log("Haciendo login...")
+  // const response = await fetch(LOGIN, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({ email, password })
+  //     });
+  try{
+    const res = await axios.post(LOGIN, credentials)
+    console.log(res)
+    return res
+  }
+  catch (err){
+    throw new Error(err)
+  }
+}
+
+

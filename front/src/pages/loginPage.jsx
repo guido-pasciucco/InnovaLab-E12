@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext.jsx'
-import { LOGIN } from '../utils/apiRoutes.js'
+import { LOGIN, loginPostCredentials } from '../utils/apiRoutes.js'
 
-import styles from './login.module.css';
+import styles from './login.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -12,43 +12,64 @@ export default function LoginPage() {
   const { setAuthData } = useContext(AuthContext)
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch(LOGIN, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+    const credentials = { email: email, password: password }
+    const res = await loginPostCredentials(credentials)
 
-      const data = await response.json();
+    if (res) {
+      console.log('resultado res: ', res)
+      console.log(res.data)
 
-      if (response.ok) {
-        setAuthData(data);
-        console.log('Login exitoso:', data);
-        navigate('/dashboard');
-      } else {
-        alert('Credenciales incorrectas');
-      }
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      alert('Error al iniciar sesión');
+      console.log(res.status == '200')
+
+      setAuthData(res.data)
+      console.log('Login exitoso:', res.data)
+      navigate('/dashboard')
+    } else {
+      console.error('Error al hacer login...')
     }
-  };
+
+    // try {
+    //   console.log("iniciando login> ", LOGIN)
+    //   const response = await fetch(LOGIN, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ email, password }),
+    //   })
+
+    //   const data = await response.json()
+
+    //   if (response.ok) {
+    //     setAuthData(data)
+    //     console.log('Login exitoso:', data)
+    //     navigate('/dashboard')
+    //   } else {
+    //     alert('Credenciales incorrectas')
+    //   }
+    // } catch (error) {
+    //   console.error('Error al iniciar sesión:', error)
+    //   alert('Error al iniciar sesión')
+    // }
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin();   
+    e.preventDefault()
+    handleLogin()
   }
 
   return (
     // <div className="d-flex justify-content-center align-items-center vh-100">
     <div className={styles.homeMainContainer}>
       <div className={styles.imgHomeContainer}>
-        <img src="../src/assets/Home.png" alt="Logo" className="img-fluid vh-100"/>
+        <img
+          src="../src/assets/Home.png"
+          alt="Logo"
+          className="img-fluid vh-100"
+        />
       </div>
       {/* <div className="card shadow" style={{ width: '24rem' }}> */}
-      <div className={styles.loginContainer}>  
+      <div className={styles.loginContainer}>
         {/* <div className="card-body p-5"> */}
         <div className={styles.loginCard}>
           {/* <h3 className="card-title text-center mb-4">Iniciar sesion</h3> */}
