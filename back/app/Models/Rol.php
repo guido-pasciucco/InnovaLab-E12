@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Rol extends Model
 {
@@ -12,13 +10,8 @@ class Rol extends Model
 
     protected $fillable = ['nombre'];
 
-    public function usuarios(): HasMany
+    public function usuarios()
     {
         return $this->hasMany(Usuario::class, 'rol_id');
-    }
-
-    public function permisos(): BelongsToMany
-    {
-        return $this->belongsToMany(Permiso::class, 'rol_permiso', 'rol_id', 'permiso_id');
     }
 }

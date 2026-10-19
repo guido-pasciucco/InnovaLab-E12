@@ -6,10 +6,10 @@ import { LOGIN, loginPostCredentials } from '../utils/apiRoutes.js'
 import styles from './login.module.css'
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('admin@innovalab.edu.ar')
-  const [password, setPassword] = useState('admin123')
-  const { setAuthData } = useContext(AuthContext)
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("admin@innovalab.edu.ar");
+  const [password, setPassword] = useState("admin123");
+  const { setAuthData } = useContext(AuthContext);
 
   const handleLogin = async () => {
     const credentials = { email: email, password: password }
@@ -70,13 +70,16 @@ export default function LoginPage() {
       </div>
       {/* <div className="card shadow" style={{ width: '24rem' }}> */}
       <div className={styles.loginContainer}>
+      <div className={styles.loginContainer}>
         {/* <div className="card-body p-5"> */}
         <div className={styles.loginCard}>
           {/* <h3 className="card-title text-center mb-4">Iniciar sesion</h3> */}
-          <h3 className="card-title text-center mb-4">Ingresá al sistema</h3>
-          <span>Usá tu cuenta institucional</span>
+          <div className={styles.loginCardTitleArea}>
+            <h3 className={styles.loginCardTitle}>Ingresá al sistema</h3>
+            <span>Usá tu cuenta institucional</span>
+          </div>
           <form onSubmit={handleSubmit}>
-            <div className="mb-3">
+            <div className={styles.formData}>
               <label htmlFor="exampleInputEmail1" className="form-label">
                 Correo
               </label>
@@ -91,7 +94,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="mb-3">
+            <div className={styles.formData}>
               <label htmlFor="exampleInputPassword1" className="form-label">
                 Contrasena
               </label>
@@ -129,5 +132,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -37,7 +37,7 @@ export default function Sidebar() {
         <li className="nav-item">
           <NavLink
             className="nav-link text-white"
-            to="/dashboard/desarrollo"
+            to="/dashboard/equipamiento"
           >
             Equipamiento
           </NavLink>
@@ -59,7 +59,7 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/reservas">
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Calendario
           </NavLink>
         </li>
