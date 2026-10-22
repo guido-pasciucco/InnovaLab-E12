@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import MyModal from './MyModal'
 import { useNavigate } from 'react-router-dom'
+import { logoutPost } from '../utils/apiRoutes'
 
 export default function Topbar() {
   const { getRol, limpiarUsuario } = useContext(AuthContext)
@@ -16,6 +17,7 @@ export default function Topbar() {
   const pagina = path.split('/').pop()
 
   const cerrarSesion = async () => {
+    await logoutPost()
     limpiarUsuario()
     console.log('Sesion cerrada, se limpian credenciales de usuario')
     await navigate("/login")

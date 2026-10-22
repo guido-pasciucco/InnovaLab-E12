@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 const LOGIN = `${API_BASE}/api/v1/auth/login`;
 
 // Logout: Manden POST /api/v1/auth/logout para revocar el token.
-const LOGOUT = `${API_BASE}/logout`;
+const LOGOUT = `${API_BASE}/api/v1/auth/logout`;
 
 // Persistencia del usuario (/me): Al recargar la app, llamen a GET /api/v1/auth/me para mantener la sesión viva y sacar el nombre + rol.
 
@@ -68,6 +68,12 @@ export const loginPostCredentials = async (credentials) => {
   catch (err){
     throw new Error(err)
   }
+}
+
+export const logoutPost = async () =>{
+  console.log("cerrando sesion en api...")
+  const res = await api.post(LOGOUT)
+  console.log("sesion en api cerrado: ", res.data)
 }
 
 export const api = axios.create(
