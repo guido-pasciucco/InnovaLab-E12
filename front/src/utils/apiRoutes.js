@@ -56,6 +56,7 @@ const UPDATE_EQUIPAMIENTO_ROUTE = (id) => `${EQUIPAMIENTO_ROUTE}/${id}`;
 // agregamos axios para hacer las consultas
 
 import axios from "axios"
+import { data } from "react-router-dom";
 
 export const loginPostCredentials = async (credentials) => {
   console.log("Haciendo login desde: ", API_BASE)
@@ -86,7 +87,7 @@ export const configApiInterceptor = (token) =>{
       if(token){
         config.headers.Authorization= `Bearer ${token}`
       }
-      console.log("seteado el config en: ", config)
+      console.log("seteado el config en: ", config.headers)
       return config
     },
     (error) => Promise.reject(error)
@@ -98,4 +99,15 @@ export const configApiInterceptor = (token) =>{
 export const getEspaciosApi = async() => {
   const res = await api.get(ESPACIOS_ROUTE)
   return res
+}
+
+export const postEspaciosApi = async (data) =>{
+  try{
+    const res = await api.post(ESPACIOS_ROUTE, data)
+    return res
+  }catch(err){
+    console.log("erroooor", err.response?.data)
+    return err
+  }
+  
 }

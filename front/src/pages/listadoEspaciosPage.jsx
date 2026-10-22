@@ -6,8 +6,8 @@ import { useState } from "react";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { Modal, Button, Form } from "react-bootstrap";
-import { getEspaciosApi } from "../utils/apiRoutes.js";
-import {Spinner} from "react-bootstrap";
+import { getEspaciosApi, postEspaciosApi } from "../utils/apiRoutes.js";
+import { Spinner } from "react-bootstrap";
 
 export default function ListadoEspaciosPage() {
   const [showSpinner, setShowSpinner] = useState(true);
@@ -27,7 +27,7 @@ export default function ListadoEspaciosPage() {
     const res = await getEspaciosApi();
     console.log(res.data.data);
     setDatosAPI(res.data.data);
-    setShowSpinner(false)
+    setShowSpinner(false);
   };
 
   useEffect(() => {
@@ -39,8 +39,9 @@ export default function ListadoEspaciosPage() {
     nombre: "Taller de RCP y Reanimación Avanzada",
     descripcion: "Práctica intensiva con simuladores de alta fidelidad",
     tipo: "Taller",
-    cantidad_alumnos: 25,
+    capacidad: 25,
     estado: "planificada",
+    ubicacion: "Planta baja",
     docente_id: 1,
   });
 
@@ -58,20 +59,12 @@ export default function ListadoEspaciosPage() {
     e.preventDefault();
     console.log("Datos enviados:", formData);
     // acá podrías hacer un fetch/axios POST a tu
-    await fetch(CREATE_ESPACIO_ROUTE, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${token_type} ${access_token}`,
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((data) => {
-        console.log("Equipamiento creado: ", data);
-      })
-      .catch((error) => {
-        console.error("Error al crear espacio: ", error);
-      });
+    try {
+      postEspaciosApi(formData);
+    } catch (err) {
+      console.log("Error:");
+      console.log(err.response?.data);
+    }
 
     handleClose();
   };
@@ -116,11 +109,7 @@ export default function ListadoEspaciosPage() {
           Agregar espacio
         </button>
       </div>
-      {showSpinner ? (
-        <Spinner />
-      ) : (
-        <GenericTable items={resultadosFiltrados} />
-      )}
+      {showSpinner ? <Spinner /> : <GenericTable items={resultadosFiltrados} />}
 
       {/* modal del post */}
       <Modal show={show} onHide={handleClose}>
@@ -161,24 +150,35 @@ export default function ListadoEspaciosPage() {
                 required
               />
             </Form.Group>
+            <Form.Group className="mb-3" controlId="formDescripcion">
+              <Form.Label>ubicacion</Form.Label>
+              <Form.Control
+                type="text"
+                name="ubicacion"
+                value={formData.ubicacion}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
             <Form.Group>
-              <Form.Label>Cantidad de alumnos</Form.Label>
+              <Form.Label>Capacidad</Form.Label>
               <Form.Control
                 type="number"
                 name="cantidad"
-                value={formData.cantidad_alumnos}
+                value={formData.capacidad}
                 onChange={handleChange}
               />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formEstado">
               <Form.Label>estado</Form.Label>
-              <Form.Select>
+              <Form.Select
+                name="estado"
+                value={formData.estado}
+                onChange={handleChange}
+              >
                 <option value="">Seleccione...</option>
-                <option value="efectivo">Planificada</option>
-                <option value="tarjeta">en_curso</option>
-                <option value="transferencia">finalizada</option>
-                <option value="transferencia">Cancelada</option>
+                <option value="disponible">Disponible</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formIdDocente">
