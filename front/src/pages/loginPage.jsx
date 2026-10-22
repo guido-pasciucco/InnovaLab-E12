@@ -4,7 +4,6 @@ import { AuthContext } from '../context/AuthContext.jsx'
 import { loginPostCredentials } from '../utils/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
 
-
 import styles from './login.module.css'
 
 export default function LoginPage() {
@@ -19,20 +18,13 @@ export default function LoginPage() {
     const res = await loginPostCredentials(credentials)
 
     if (res) {
-      console.log('resultado res: ', res)
-      console.log(res.data)
-
-      console.log(res.status == '200')
-
       setAuthData(res.data)
       getConfigApiInterceptor(res.data.token)
-      console.log('Login exitoso:', res.data)
+      console.log('Login exitoso')
       navigate('/dashboard')
     } else {
       console.error('Error al hacer login...')
     }
-
-    
   }
 
   const handleSubmit = (e) => {
@@ -46,11 +38,7 @@ export default function LoginPage() {
     // <div className="d-flex justify-content-center align-items-center vh-100">
     <div className={styles.homeMainContainer}>
       <div className={styles.imgHomeContainer}>
-        <img
-          src="/Home.png"
-          alt="Logo"
-          className="img-fluid vh-100"
-        />
+        <img src="/Home.png" alt="Logo" className="img-fluid vh-100" />
       </div>
       {/* <div className="card shadow" style={{ width: '24rem' }}> */}
       <div className={styles.loginContainer}>
