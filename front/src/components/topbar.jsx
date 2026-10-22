@@ -16,9 +16,9 @@ export default function Topbar() {
   const pagina = path.split('/').pop()
 
   const cerrarSesion = async () => {
-    await navigate("/login")
     limpiarUsuario()
     console.log('Sesion cerrada, se limpian credenciales de usuario')
+    await navigate("/login")
   }
 
   const handleCancel = () =>{
@@ -43,12 +43,12 @@ export default function Topbar() {
           {getRol() && (
             <span className="ms-auto text-muted">
               Rol: <strong>{getRol()}</strong>
-              <NavLink
+              <button
                 className="mx-3 btn btn-secondary"
                 onClick={handleLogOut}
               >
                 Cerrar sesion
-              </NavLink>
+              </button>
             </span>
           )}
         </div>

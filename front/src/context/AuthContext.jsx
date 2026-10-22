@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
 
   const getRol = () => {
-    return authData.user.nombre;
+    return authData.user?.nombre || ""; 
   };
 
   const getTypeAndToken = () => {
