@@ -1,38 +1,76 @@
 // EspacioDetallePage.jsx
-import { useEffect, useState,useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
+import { useParams, Link } from "react-router-dom";
 import styles from './detalleEspacio.module.css';
 import ReservationTable from '../components/reservationTable';
 import { listaReservas } from '../services/reservas';
+import { getEspaciosApi } from "../utils/apiRoutes";
+
 
 export default function EspacioDetallePage() {
-  const { id } = useParams();
-  const api = useApi();
-  const [espacio, setEspacio] = useState(null);
-  const fechaDeHoy = new Date().toISOString().split('T')[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
-  console.log(listaReservas)
-  
-  
+    const { id } = useParams();
+    //   const api = useApi();
+    const [espacio, setEspacio] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(true);
 
-  const reservasProximas = listaReservas.filter((reserva) => reserva.fecha >= fechaDeHoy);
-  
+    const fechaDeHoy = new Date().toISOString().split('T')[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
+    console.log(listaReservas)
 
-  if (!espacio) return <p>Cargando detalle...</p>;
+    useEffect(() => {
+        const getData = async () => {
+            setLoading(true);
+            setError(null);
 
-  // return (
-  //   <div className="container mt-4">
-  //     <h3>Detalle del Espacio</h3>
-  //     <div className="card">
-  //       <div className="card-body">
-  //         <h5 className="card-title">{espacio.nombre}</h5>
-  //         <p className="card-text"><strong>Tipo:</strong> {espacio.tipo}</p>
-  //         <p className="card-text"><strong>Estado:</strong> {espacio.estado}</p>
-  //         <p className="card-text"><strong>Descripción:</strong> {espacio.descripcion}</p>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-  return (
+            try {
+                const res = await getEspaciosApi();
+                const espacios = res.data.data;
+
+                if (!espacios) return <p>Cargando detalle...</p>;
+
+                const espacioId = espacios.find((espacio) => String(espacio.id) === String(id));
+                setEspacio(espacioId);
+            }
+            catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        getData();
+    }, [id]);
+
+    if (loading) {
+        return <p>Cargando espacio desde la API...</p>;
+    }
+
+    if (error) {
+        return <p style={{ color: 'red' }}>Error: {error}</p>;
+    }
+
+    if (!espacio) {
+        return <p>El producto no existe.</p>;
+    }
+
+    const reservasProximas = listaReservas.filter((reserva) => reserva.fecha >= fechaDeHoy);
+
+
+    // if (!espacio) return <p>Cargando detalle...</p>;
+
+    // return (
+    //   <div className="container mt-4">
+    //     <h3>Detalle del Espacio</h3>
+    //     <div className="card">
+    //       <div className="card-body">
+    //         <h5 className="card-title">{espacio.nombre}</h5>
+    //         <p className="card-text"><strong>Tipo:</strong> {espacio.tipo}</p>
+    //         <p className="card-text"><strong>Estado:</strong> {espacio.estado}</p>
+    //         <p className="card-text"><strong>Descripción:</strong> {espacio.descripcion}</p>
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
+    return (
         <>
             <div className={styles.topContainer}>
                 <div className='d-flex justify-content-start gap-3 align-items-center'>
@@ -43,7 +81,11 @@ export default function EspacioDetallePage() {
                     </span>
                 </div>
                 <div className='d-flex justify-content-start gap-3 align-items-center'>
-                    <button className="btn btn-secondary">Editar</button>
+                    {/* <button className="btn btn-secondary">Editar</button> */}
+                    <Link to={`/dashboard/espacios/${espacio.id}/editar-espacio`} state={ {espacio} } className="btn btn-secondary">
+                    {/* <Link to="/dashboard/espacios/${espacio.id}editar-espacio" className="btn btn-secondary"> */}
+                        Editar
+                    </Link>
                     <button className="btn btn-primary">Reservar</button>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 // definición de rutas de la API remota
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE || "https://innovalab-e12.onrender.com";
 
 // Login: Conecten el form a POST /api/v1/auth/login.
 const LOGIN = `${API_BASE}/api/v1/auth/login`;
