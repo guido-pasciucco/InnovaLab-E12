@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Actividad extends Model
 {
+    use HasFactory;
+
     protected $table = 'actividades';
 
     protected $fillable = [
@@ -26,13 +28,8 @@ class Actividad extends Model
         return $this->belongsTo(Usuario::class, 'responsable_id');
     }
 
-    public function reservasEspacio(): HasMany
+    public function docente(): BelongsTo
     {
-        return $this->hasMany(ReservaEspacio::class, 'actividad_id');
-    }
-
-    public function reservasEquipamiento(): HasMany
-    {
-        return $this->hasMany(ReservaEquipamiento::class, 'actividad_id');
+        return $this->belongsTo(Usuario::class, 'responsable_id');
     }
 }
