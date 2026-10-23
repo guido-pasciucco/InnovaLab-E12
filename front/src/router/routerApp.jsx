@@ -3,18 +3,17 @@ import {
   Route,
   Routes,
   Navigate,
-} from 'react-router-dom'
-import Layout from '../layout/layout'
+} from "react-router-dom";
+import Layout from "../layout/layout";
 
-import Home from '../components/home'
-import About from '../components/about'
-import LoginPage from '../pages/loginPage'
-import DashboardPrincipalPage from '../pages/dashboardPrincipalPage'
-import CalendarioReservasPage from '../pages/calendarioReservasPage'
-import DetalleEspacio from '../pages/detalleEspacio'
-import ListadoEspaciosPage from '../pages/listadoEspaciosPage'
-import NuevaActividadPage from '../pages/nuevaActividadPage'
-import ProtectedRoute from '../components/ProtectedRoute'
+import LoginPage from "../pages/loginPage";
+import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
+import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
+import ProtectedRoute from "./ProtectedRoute";
+import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
+import ListadoEquipamientoPage from "../pages/listadoEquipamientoPage"
+import EspacioDetallePage from "../pages/EspacioDetallePage";
+import ListadoReservasPage from "../pages/ListadoReservasPage";
 
 export default function RouterApp() {
   return (
@@ -30,70 +29,80 @@ export default function RouterApp() {
               index
               element={
                 <ProtectedRoute
-                  protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
-                  ]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
               }
             />
+            {/* se definiran las proximas rutas protegidas en etapas mas avanzadas */}
             <Route
-              path="reservas"
+              path="desarrollo"
               element={
                 <ProtectedRoute
-                  protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
-                  ]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
-                  <CalendarioReservasPage />
+                  <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
               }
             />
             <Route
-              path="detalle_espacio"
+              path="usuarios-y-roles"
               element={
-                <ProtectedRoute
-                  protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
-                  ]}
-                >
-                  <DetalleEspacio />
+                <ProtectedRoute protectedRoles={["Admin InnovaLab"]}>
+                  <UsuariosYrolesPage />
                 </ProtectedRoute>
               }
             />
             <Route
-              path="listado_espacios"
+              path="espacios"
               element={
                 <ProtectedRoute
-                  protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
-                  ]}
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
                   <ListadoEspaciosPage />
                 </ProtectedRoute>
               }
             />
             <Route
-              path="nueva_actividad"
+              path="espacios/:id"
               element={
-                <ProtectedRoute
-                  protectedRoles={[
-                    'admin@admin.com',
-                    'cordinador@cordinador.com',
-                  ]}
-                >
-                  <NuevaActividadPage />
+                <ProtectedRoute protectedRoles={["Admin InnovaLab", "Coordinador"]}>
+                  <EspacioDetallePage />
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="equipamiento"
+              element={
+                <ProtectedRoute
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
+                >
+                  <ListadoEquipamientoPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="nueva-reserva"
+              element={
+                <ProtectedRoute
+                  protectedRoles={["Admin InnovaLab", "coordinador"]}
+                >
+                  <ListadoReservasPage />
+                </ProtectedRoute>
+              }
+            />
+
+
           </Route>
+
+          {/* agarrar todas */}
+          <Route
+            path="*"
+            element={<h1 className="h1"> Pagina no encontrada</h1>}
+          />
         </Routes>
       </Router>
     </>
-  )
+  );
 }

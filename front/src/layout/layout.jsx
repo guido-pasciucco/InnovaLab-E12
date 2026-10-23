@@ -1,16 +1,15 @@
-import {Outlet} from 'react-router-dom'
-import Navbar from '../components/navbar'
-import Footer from '../components/footer'
-import Header from '../components/header';
+import { Outlet } from 'react-router-dom'
+import Topbar from '../components/topbar'
+import Sidebar from '../components/sidebar'
 
 export default function Layout() {
-    return (
-        <div >
-            <Navbar />
-            <main >
-                {/* Your main content goes here */}
-                <Outlet />
-            </main>
-        </div>
-    );
+  return (
+    <div>
+      <Sidebar />
+      <main style={{ marginLeft: '220px', padding: '30px' }}>
+        <Topbar />
+        <Outlet />
+      </main>
+    </div>
+  )
 }
