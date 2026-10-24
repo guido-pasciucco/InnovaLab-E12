@@ -1,5 +1,4 @@
-import { createContext, useState, useEffect } from "react";
-import { api, configApiInterceptor } from "../utils/apiRoutes";
+import { createContext, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -21,8 +20,6 @@ export const AuthProvider = ({ children }) => {
   });
 
   // Al iniciar, leemos el rol guardado
-  
-
 
   const getRol = () => {
     return authData.user?.nombre || ""; 
@@ -33,6 +30,10 @@ export const AuthProvider = ({ children }) => {
       token_type: authData.token_type,
       access_token: authData.access_token,
     };
+  }
+
+  const getTokken= () =>{
+    return `${authData.token_type} ${authData.access_token}`
   }
 
   const limpiarUsuario = () => {
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ getRol, limpiarUsuario, setAuthData, getTypeAndToken }}>
+    <AuthContext.Provider value={{ getRol, limpiarUsuario, setAuthData, getTypeAndToken, getTokken }}>
       {children}
     </AuthContext.Provider>
   );

@@ -34,40 +34,40 @@ export default function ListadoEspaciosPage() {
     getData();
   }, []);
 
-  const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState({
-    nombre: "Taller de RCP y Reanimación Avanzada",
-    descripcion: "Práctica intensiva con simuladores de alta fidelidad",
-    tipo: "Taller",
-    capacidad: 25,
-    estado: "planificada",
-    ubicacion: "Planta baja",
-    docente_id: 1,
-  });
+  // const [show, setShow] = useState(false);
+  // const [formData, setFormData] = useState({
+  //   nombre: "Taller de RCP y Reanimación Avanzada",
+  //   descripcion: "Práctica intensiva con simuladores de alta fidelidad",
+  //   tipo: "Taller",
+  //   capacidad: 25,
+  //   estado: "planificada",
+  //   ubicacion: "Planta baja",
+  //   docente_id: 1,
+  // });
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  // const handleChange = (e) => {
+  //   setFormData({
+  //     ...formData,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Datos enviados:", formData);
-    // acá podrías hacer un fetch/axios POST a tu
-    try {
-      postEspaciosApi(formData);
-    } catch (err) {
-      console.log("Error:");
-      console.log(err.response?.data);
-    }
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Datos enviados:", formData);
+  //   // acá podrías hacer un fetch/axios POST a tu
+  //   try {
+  //     postEspaciosApi(formData);
+  //   } catch (err) {
+  //     console.log("Error:");
+  //     console.log(err.response?.data);
+  //   }
 
-    handleClose();
-  };
+  //   handleClose();
+  // };
 
   return (
     <>
@@ -111,7 +111,7 @@ export default function ListadoEspaciosPage() {
       </div>
       {showSpinner ? <Spinner /> : <GenericTable items={resultadosFiltrados} />}
 
-      {/* modal del post */}
+      {/* modal del post
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Formulario</Modal.Title>
@@ -196,7 +196,7 @@ export default function ListadoEspaciosPage() {
             </Button>
           </Form>
         </Modal.Body>
-      </Modal>
+      </Modal> */}
     </>
   );
 }
