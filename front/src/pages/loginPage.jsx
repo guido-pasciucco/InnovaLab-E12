@@ -19,7 +19,6 @@ export default function LoginPage() {
 
     if (res) {
       setAuthData(res.data)
-      getConfigApiInterceptor(res.data.token)
       console.log('Login exitoso')
       navigate('/dashboard')
     } else {
