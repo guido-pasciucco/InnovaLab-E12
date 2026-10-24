@@ -65,22 +65,12 @@ export default function Sidebar() {
         </li>
         <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
-            Dashboard
-          </NavLink>
-        </li>
-        <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Alertas
           </NavLink>
         </li>
         <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Consultas IA
-          </NavLink>
-        </li>
-        <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
-            Dashboard
           </NavLink>
         </li>
         <li className="nav-item">

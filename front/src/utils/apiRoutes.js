@@ -95,3 +95,18 @@ export const postEspaciosApi = async (data, token) => {
     throw err;
   }
 };
+
+const DASHBOARD_ROUTE = `${API_BASE}/api/v1/dashboard/resumen`
+export const getDashboardApi = async (token) => {
+  try{
+    console.log("Servicio api get dashboard...")
+    const res = await api.get(DASHBOARD_ROUTE, {
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return res
+  } catch(err){
+    throw err
+  }
+}
