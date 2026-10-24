@@ -15,11 +15,7 @@ const PERSISTENCIA = `${API_BASE}/auth/me`;
 const ESPACIOS_ROUTE = `/api/v1/espacios`;
 
 // Helper para armar la URL con query params
-const ESPACIOS_LISTADO = ({
-  search = "",
-  tipo = "",
-  estado = "",
-} = {}) => {
+const ESPACIOS_LISTADO = ({ search = "", tipo = "", estado = "" } = {}) => {
   const params = new URLSearchParams();
 
   if (search) params.append("search", search);
@@ -52,62 +48,50 @@ const EQUIPAMIENTO_BY_ID = (id) => `${EQUIPAMIENTO_ROUTE}/${id}`;
 // Traslados/Mantenimiento (PUT con ID dinámico)
 const UPDATE_EQUIPAMIENTO_ROUTE = (id) => `${EQUIPAMIENTO_ROUTE}/${id}`;
 
-
 // agregamos axios para hacer las consultas
 
-import axios from "axios"
+import axios from "axios";
 import { data } from "react-router-dom";
 
 export const loginPostCredentials = async (credentials) => {
-  console.log("Haciendo login desde: ", API_BASE)
+  console.log("Haciendo login desde: ", API_BASE);
+  const res = await axios.post(LOGIN, credentials);
+  console.log(res);
+  return res;
+};
 
-  try{
-    const res = await axios.post(LOGIN, credentials)
-    console.log(res)
-    return res
-  }
-  catch (err){
-    throw new Error(err)
-  }
-}
+export const logoutPost = async () => {
+  console.log("cerrando sesion en api...");
+  const res = await api.post(LOGOUT);
+  console.log("sesion en api cerrado: ", res.data);
+};
 
-export const logoutPost = async () =>{
-  console.log("cerrando sesion en api...")
-  const res = await api.post(LOGOUT)
-  console.log("sesion en api cerrado: ", res.data)
-}
+export const api = axios.create({ baseURL: API_BASE });
 
-export const api = axios.create(
-  {baseURL: API_BASE}
-)
-
-export const configApiInterceptor = (token) =>{
+export const configApiInterceptor = (token) => {
   api.interceptors.request.use(
-    (config) =>{
-      if(token){
-        config.headers.Authorization= `Bearer ${token}`
+    (config) => {
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
-      console.log("seteado el config en: ", config.headers)
-      return config
+      console.log("seteado el config en: ", config.headers);
+      return config;
     },
-    (error) => Promise.reject(error)
-    
-  )
+    (error) => Promise.reject(error),
+  );
+};
 
-}
+export const getEspaciosApi = async () => {
+  const res = await api.get(ESPACIOS_ROUTE);
+  return res;
+};
 
-export const getEspaciosApi = async() => {
-  const res = await api.get(ESPACIOS_ROUTE)
-  return res
-}
-
-export const postEspaciosApi = async (data) =>{
-  try{
-    const res = await api.post(ESPACIOS_ROUTE, data)
-    return res
-  }catch(err){
-    console.log("erroooor", err.response?.data)
-    return err
+export const postEspaciosApi = async (data) => {
+  try {
+    const res = await api.post(ESPACIOS_ROUTE, data);
+    return res;
+  } catch (err) {
+    console.log("erroooor", err.response?.data);
+    return err;
   }
-  
-}
+};

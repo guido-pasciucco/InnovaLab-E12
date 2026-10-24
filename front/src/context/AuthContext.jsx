@@ -21,13 +21,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   // Al iniciar, leemos el rol guardado
-  const useApi = api
-
-  const getConfigApiInterceptor = (token) =>{
-    console.log("get config token: ", token)
-    console.log("api: ", api)
-    configApiInterceptor(token)
-  }
+  
 
 
   const getRol = () => {
@@ -62,7 +56,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ getRol, limpiarUsuario, setAuthData, getTypeAndToken, useApi, getConfigApiInterceptor }}>
+    <AuthContext.Provider value={{ getRol, limpiarUsuario, setAuthData, getTypeAndToken }}>
       {children}
     </AuthContext.Provider>
   );
