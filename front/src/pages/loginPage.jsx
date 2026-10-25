@@ -1,38 +1,49 @@
-import { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext.jsx'
-import { loginPostCredentials } from '../utils/apiRoutes.js'
-import { Spinner } from 'react-bootstrap'
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
+import { loginPostCredentials } from "../utils/apiRoutes.js";
+import { Spinner } from "react-bootstrap";
+import { Alert } from "react-bootstrap";
 
-import styles from './login.module.css'
+import styles from "./login.module.css";
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('admin@innovalab.edu.ar')
-  const [password, setPassword] = useState('admin123')
-  const { setAuthData, getConfigApiInterceptor } = useContext(AuthContext)
-  const [showSpinner, setShowSpinner] = useState(true)
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("admin@innovalab.edu.ar");
+  const [password, setPassword] = useState("admin123");
+  const { setAuthData, getConfigApiInterceptor } = useContext(AuthContext);
+  const [showSpinner, setShowSpinner] = useState(true);
 
+  const [error, setError] = useState(null);
+  // funcion principal del login
   const handleLogin = async () => {
-    const credentials = { email: email, password: password }
-    const res = await loginPostCredentials(credentials)
+    const credentials = { email: email, password: password };
+    try {
+      const res = await loginPostCredentials(credentials);
+      setAuthData(res.data);
+      console.log("Login exitoso");
+      navigate("/dashboard");
+    } catch (err) {
+      console.log("Datos de respuesta:", err.response?.data);
+      console.log("Estado:", err.response?.status);
 
-    if (res) {
-      setAuthData(res.data)
-      getConfigApiInterceptor(res.data.token)
-      console.log('Login exitoso')
-      navigate('/dashboard')
-    } else {
-      console.error('Error al hacer login...')
+      if (err.response?.status === 401) {
+        setError("Usuario o contraseña incorrectos");
+      } else if (err.response?.status === 422) {
+        setError("Los datos ingresados no son válidos");
+      } else {
+        setError("Error al iniciar sesión. Intentá nuevamente.");
+      }
+      setShowSpinner(true)
     }
-  }
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    setShowSpinner(true)
-    handleLogin()
-    setShowSpinner(false)
-  }
+    e.preventDefault();
+    setShowSpinner(true);
+    handleLogin();
+    setShowSpinner(false);
+  };
 
   return (
     // <div className="d-flex justify-content-center align-items-center vh-100">
@@ -96,14 +107,16 @@ export default function LoginPage() {
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
+              {error && <Alert variant="danger">{error}</Alert>}
 
               <button type="submit" className="btn btn-warning w-100">
                 {!showSpinner ? <Spinner></Spinner> : <p>Ingresar</p>}
               </button>
+              {/* mostrar error */}
             </form>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

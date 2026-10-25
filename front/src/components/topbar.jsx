@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import { logoutPost } from '../utils/apiRoutes'
 
 export default function Topbar() {
-  const { getRol, limpiarUsuario } = useContext(AuthContext)
-  const [ mostrarModal, setMostrarModal ] = useState(false)
+  const { getRol, limpiarUsuario, getTokken } = useContext(AuthContext)
+  const [mostrarModal, setMostrarModal] = useState(false)
   const navigate = useNavigate()
 
   const location = useLocation()
@@ -17,21 +17,19 @@ export default function Topbar() {
   const pagina = path.split('/').pop()
 
   const cerrarSesion = async () => {
-    await logoutPost()
+    await logoutPost(getTokken())
     limpiarUsuario()
+    await navigate('/login')
     console.log('Sesion cerrada, se limpian credenciales de usuario')
-    await navigate("/login")
   }
 
-  const handleCancel = () =>{
+  const handleCancel = () => {
     setMostrarModal(false)
   }
 
   const handleLogOut = () => {
     setMostrarModal(true)
   }
-
-  
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary mb-5">
@@ -45,10 +43,7 @@ export default function Topbar() {
           {getRol() && (
             <span className="ms-auto text-muted">
               Rol: <strong>{getRol()}</strong>
-              <button
-                className="mx-3 btn btn-secondary"
-                onClick={handleLogOut}
-              >
+              <button className="mx-3 btn btn-secondary" onClick={handleLogOut}>
                 Cerrar sesion
               </button>
             </span>

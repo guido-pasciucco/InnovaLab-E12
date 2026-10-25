@@ -1,14 +1,15 @@
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import { Image } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 
 export default function Sidebar() {
-
-   const  { getRol } = useContext(AuthContext)
+  const { getRol } = useContext(AuthContext)
 
   return (
     <div
-      className="bg-dark text-white p-3 d-flex flex-column"
+      className="text-white p-3 d-flex flex-column background-primary"
       style={{
         width: '220px',
         height: '100vh',
@@ -17,6 +18,13 @@ export default function Sidebar() {
         left: 0,
       }}
     >
+      <Row>
+        <Col className='m-3'>
+          <img src="/icon_cs.png" alt="" width={34} height={34} className='mx-1' />
+          <span>Innova.lab</span>
+        </Col>
+      </Row>
+
       <h4 className="mb-4">Centro de simulacion</h4>
       <p>Rol: {getRol()}</p>
 
@@ -27,45 +35,28 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink
-            className="nav-link text-white"
-            to="/dashboard/espacios"
-          >
+          <NavLink className="nav-link text-white" to="/dashboard/espacios">
             Espacios
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink
-            className="nav-link text-white"
-            to="/dashboard/equipamiento"
-          >
+          <NavLink className="nav-link text-white" to="/dashboard/equipamiento">
             Equipamiento
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink
-            className="nav-link text-white"
-            to="/dashboard/desarrollo"
-          >
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Mantenimiento
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink
-            className="nav-link text-white"
-            to="/dashboard/desarrollo"
-          >
+          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Actividades
           </NavLink>
         </li>
         <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Calendario
-          </NavLink>
-        </li>
-        <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
-            Dashboard
           </NavLink>
         </li>
         <li className="nav-item">
@@ -79,12 +70,10 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
-            Dashboard
-          </NavLink>
-        </li>
-        <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/usuarios-y-roles">
+          <NavLink
+            className="nav-link text-white"
+            to="/dashboard/usuarios-y-roles"
+          >
             Usuarios
           </NavLink>
         </li>
