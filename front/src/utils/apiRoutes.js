@@ -37,7 +37,7 @@ const CREATE_ESPACIO_ROUTE = ESPACIOS_ROUTE;
 const UPDATE_ESPACIO_ROUTE = (id) => `${ESPACIOS_ROUTE}/${id}`;
 
 // Rutas de Equipamiento
-const EQUIPAMIENTO_ROUTE = `${API_BASE}/equipamiento`;
+const EQUIPAMIENTO_ROUTE = `/api/v1/equipamiento`;
 
 // Listado con filtro de movilidad (?tipo_movilidad=trasladable|fijo)
 const EQUIPAMIENTO_LISTADO = ({ tipo_movilidad = "" } = {}) => {
@@ -110,4 +110,9 @@ export const postEspaciosApi = async (data) =>{
     return err
   }
   
+}
+
+export const getEquipamientoApi = async() => {
+  const res = await api.get(EQUIPAMIENTO_ROUTE)
+  return res
 }

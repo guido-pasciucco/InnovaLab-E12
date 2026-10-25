@@ -1,26 +1,41 @@
 import { Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { getEquipamientoApi } from "../utils/apiRoutes";
 
 export default function ListadoEquipamientoPage() {
   const [cargando, setCargando] = useState(true)
-  const [datosAPI, setDatosAPI] = useState([
-    {
-      nombre: "Simulador de Paciente Adulto HAL S3201",
-      categoria: "Simulador de Alta Fidelidad",
-      tipo_movilidad: "fijo",
-      cantidad: 2,
-      espacio_habitual_id: 1,
-      estado: "disponible",
-    },
-  ]);
+  // const [datosAPI, setDatosAPI] = useState([
+  //   {
+  //     nombre: "Simulador de Paciente Adulto HAL S3201",
+  //     categoria: "Simulador de Alta Fidelidad",
+  //     tipo_movilidad: "fijo",
+  //     cantidad: 2,
+  //     espacio_habitual_id: 1,
+  //     estado: "disponible",
+  //   },
+  // ]);
+  const [datosAPI, setDatosAPI] = useState([]);
+
+  const getData = async () => {
+    
+    const res = await getEquipamientoApi();
+    console.log(res)
+
+  }
+  getData();
 
   const { getTypeAndToken } = useContext(AuthContext);
   const { token_type, access_token } = getTypeAndToken();
 
-  useEffect(()=>{
-    // handleGet(EQUIPAMIENTO_ROUTE, token_type, access_token, setDatosAPI, setCargando)
-  }, [])
+  useEffect(() => {
+    getData();
+  }, []);
+
+
+  // useEffect(() => {
+  //   // handleGet(EQUIPAMIENTO_ROUTE, token_type, access_token, setDatosAPI, setCargando)
+  // }, [])
 
   return (
     <>
