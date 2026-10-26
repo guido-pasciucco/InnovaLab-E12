@@ -112,7 +112,11 @@ export const getDashboardApi = async (token) => {
   
 }
 
-export const getEquipamientoApi = async() => {
-  const res = await api.get(EQUIPAMIENTO_ROUTE)
+export const getEquipamientoApi = async(token) => {
+  const res = await api.get(EQUIPAMIENTO_ROUTE, {
+    headers:{
+      Authorization:`Bearer ${token}`
+    }
+  });
   return res
 }
