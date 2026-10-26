@@ -185,7 +185,7 @@
 
 .background-primary{
   background-color: #1D3343;
-  color: red;
+  color: #FFFFFF;
 }
 
 
@@ -208,4 +208,19 @@
 .nav-item.active {
   background-color: #ffc107;
   color: #212529;
+}
+
+.btn:hover{
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn.active{
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn{
+  background-color: #1D3343;
+  color: #FFFFFF;
 }

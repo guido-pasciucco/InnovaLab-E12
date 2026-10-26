@@ -92,7 +92,7 @@ export default function LoginPage() {
               </div>
 
               {/* Recordarme y Olvidaste contraseña en la misma fila */}
-              <div className="d-flex justify-content-between align-items-center mb-3">
+              {/* <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="form-check">
                   <input
                     type="checkbox"
@@ -106,10 +106,10 @@ export default function LoginPage() {
                 <a href="/forgot-password" className="text-decoration-none">
                   ¿Olvidaste tu contraseña?
                 </a>
-              </div>
+              </div> */}
               {error && <Alert variant="danger">{error}</Alert>}
 
-              <button type="submit" className="btn btn-warning w-100">
+              <button type="submit" className="btn w-100 mt-4 background-primary">
                 {!showSpinner ? <Spinner></Spinner> : <p>Ingresar</p>}
               </button>
               {/* mostrar error */}
