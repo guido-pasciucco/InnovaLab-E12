@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import styles from "./detalleEspacio.module.css";
 import ReservationTable from "../components/reservationTable";
 import { listaReservas } from "../services/reservas";
-import { getEspaciosApi } from "../utils/apiRoutes";
+import { getEspaciosApi, getEspaciosApiId } from "../utils/apiRoutes";
 import { AuthContext } from "../context/AuthContext";
 
 export default function EspacioDetallePage() {
@@ -15,7 +15,6 @@ export default function EspacioDetallePage() {
   const [error, setError] = useState(true);
 
   const fechaDeHoy = new Date().toISOString().split("T")[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
-  console.log(listaReservas);
   const { getTokken } = useContext(AuthContext);
 
   useEffect(() => {
@@ -24,15 +23,17 @@ export default function EspacioDetallePage() {
       setError(null);
 
       try {
-        const res = await getEspaciosApi(getTokken());
-        const espacios = res.data.data;
+        // const res = await getEspaciosApi(getTokken());
+        // const espacios = res.data.data;
 
-        if (!espacios) return <p>Cargando detalle...</p>;
+        // if (!espacios) return <p>Cargando detalle...</p>;
 
-        const espacioId = espacios.find(
-          (espacio) => String(espacio.id) === String(id),
-        );
-        setEspacio(espacioId);
+        // const espacioId = espacios.find(
+        //   (espacio) => String(espacio.id) === String(id),
+        // );
+        // setEspacio(espacioId);
+        const res = await getEspaciosApiId(getTokken(), id)
+        console.log(res)
       } catch (err) {
         setError(err.message);
       } finally {
