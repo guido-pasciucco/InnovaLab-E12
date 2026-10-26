@@ -16,10 +16,15 @@ class ActividadRequest extends FormRequest
         return [
             'nombre' => 'required|string|max:255',
             'tipo' => 'required|string|max:100',
-            'descripcion' => 'nullable|string',
-            'cantidad_alumnos' => 'required|integer|min:1',
+            'responsable_id' => 'sometimes|exists:usuarios,id',
             'docente_id' => 'sometimes|exists:usuarios,id',
-            'estado' => 'sometimes|in:planificada,en_curso,finalizada,cancelada'
+            'fecha' => 'required|date',
+            'hora_inicio' => 'required',
+            'hora_fin' => 'required',
+            'participantes_estimados' => 'sometimes|integer|min:1',
+            'cantidad_alumnos' => 'sometimes|integer|min:1',
+            'descripcion' => 'nullable|string',
+            'estado' => 'sometimes|in:planificada,programada,en_curso,finalizada,cancelada',
         ];
     }
 }
