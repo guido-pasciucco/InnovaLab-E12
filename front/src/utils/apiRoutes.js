@@ -96,6 +96,18 @@ export const postEspaciosApi = async (data, token) => {
   }
 };
 
+export const deleteEspaciosApiId = async (token, id) =>{
+  const res = await api.delete(`${ESPACIOS_ROUTE}/${id}`,{
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  })
+  return res
+
+}
+
+
+
 const DASHBOARD_ROUTE = `${API_BASE}/api/v1/dashboard/resumen`
 export const getDashboardApi = async (token) => {
   try{
