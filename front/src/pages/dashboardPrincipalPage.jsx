@@ -3,6 +3,7 @@ import { getDashboardApi } from '../utils/apiRoutes'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { Row, Col, Card } from 'react-bootstrap'
+import TablaAlarmas from '../components/tablaAlarmas'
 
 export default function DashboardPrincipalPage() {
   const [dataApi, setDataApi] = useState([])
@@ -25,7 +26,7 @@ export default function DashboardPrincipalPage() {
 
       <Row className="g-3">
         {Object.entries(dataApi?.kpis ?? {}).map(([clave, valor]) => (
-          <Col key={clave} md={4} >
+          <Col key={clave} md={4}>
             <Card className="h-100 shadow-sm">
               <Card.Body>
                 <Card.Title>{clave.replaceAll('_', ' ')}</Card.Title>
@@ -34,6 +35,14 @@ export default function DashboardPrincipalPage() {
             </Card>
           </Col>
         ))}
+      </Row>
+
+      <Row className="mt-5">
+        <Col xs={12}>
+          <h4>Alertas recientes</h4>
+
+          <TablaAlarmas alarmas={dataApi?.alertas_recientes ?? []} />
+        </Col>
       </Row>
     </div>
   )
