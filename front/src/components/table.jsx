@@ -32,7 +32,7 @@ function GenericTable({ items }) {
             <td>{item.tipo}</td>
             <td>{item.capacidad}</td>
             <td className={badgesDeEstado[item.estado?.toLowerCase().trim()] || "badge bg-secondary"}
-              style={{ color: 'white' }}
+              style={{ color: 'white', marginTop: "5px"}}
             >
               {item.estado}
             </td>
