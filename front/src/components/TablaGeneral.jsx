@@ -1,13 +1,13 @@
 import { Table } from "react-bootstrap";
 
-function TablaAlarmas({ alarmas = [] }) {
+function TablaGeneral({ datos = [] }) {
   // Evita errores si la API todavía no devolvió datos
-  if (!alarmas.length) {
-    return <p>No hay alarmas para mostrar.</p>;
+  if (!datos.length) {
+    return <p>No hay datos para mostrar.</p>;
   }
 
   // Obtiene las propiedades del primer objeto
-  const columnas = Object.keys(alarmas[0]);
+  const columnas = Object.keys(datos[0]);
 
   return (
     <Table striped bordered hover responsive>
@@ -20,11 +20,11 @@ function TablaAlarmas({ alarmas = [] }) {
       </thead>
 
       <tbody>
-        {alarmas.map((alarma, index) => (
-          <tr key={alarma.id ?? index}>
+        {datos.map((dato, index) => (
+          <tr key={dato.id ?? index}>
             {columnas.map((columna) => (
               <td key={columna}>
-                {String(alarma[columna] ?? "-")}
+                {String(dato[columna] ?? "-")}
               </td>
             ))}
           </tr>
@@ -34,4 +34,4 @@ function TablaAlarmas({ alarmas = [] }) {
   );
 }
 
-export default TablaAlarmas;
+export default TablaGeneral;
