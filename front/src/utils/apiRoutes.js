@@ -120,3 +120,17 @@ export const getEquipamientoApi = async(token) => {
   });
   return res
 }
+
+export const postEquipamientoApi = async (data, token) => {
+  try {
+    const res = await api.post(EQUIPAMIENTO_ROUTE, data, {
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return res;
+  } catch (err) {
+    console.log("error", err.response?.data);
+    throw err;
+  }
+};
