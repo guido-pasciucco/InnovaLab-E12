@@ -20,12 +20,11 @@ class DatabaseSeeder extends Seeder
         $now = Carbon::now();
         $hoy = Carbon::today();
 
-        // 1. Roles
+        // 1. ROLES
         $adminRol = Rol::firstOrCreate(['id' => 1], ['nombre' => 'Administrador']);
         $coordRol = Rol::firstOrCreate(['id' => 2], ['nombre' => 'Gestión/Coordinación']);
 
-        // 2. Usuarios
-        // Admin
+        // 2. USUARIOS (Admin y Coordinadores)
         Usuario::firstOrCreate(
             ['email' => 'admin@innovalab.edu.ar'],
             [
@@ -36,7 +35,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Coordinadores (credenciales para Franco / Frontend)
         $ana = Usuario::firstOrCreate(
             ['email' => 'ana@innovalab.edu.ar'],
             [
@@ -57,165 +55,99 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3. Espacios
+        // 3. LABORATORIOS Y ESPACIOS REALES (Sede 25 de Mayo 444, CABA)
+        $labAutoelevadores = Espacio::firstOrCreate(
+            ['nombre' => 'Laboratorio de Autoelevadores y Logística'],
+            ['tipo' => 'laboratorio', 'capacidad' => 15, 'ubicacion' => 'Piso 1 - Sede CABA (25 de Mayo 444)', 'estado' => 'disponible']
+        );
+
+        $labMaquinaria = Espacio::firstOrCreate(
+            ['nombre' => 'Laboratorio de Maquinaria Pesada y Construcción'],
+            ['tipo' => 'laboratorio', 'capacidad' => 20, 'ubicacion' => 'Piso 1 - Sede CABA (25 de Mayo 444)', 'estado' => 'disponible']
+        );
+
+        $labTransporte = Espacio::firstOrCreate(
+            ['nombre' => 'Laboratorio de Transporte y Seguridad Vial'],
+            ['tipo' => 'laboratorio', 'capacidad' => 25, 'ubicacion' => 'Piso 1 - Sede CABA (25 de Mayo 444)', 'estado' => 'disponible']
+        );
+
+        $labSeguridad = Espacio::firstOrCreate(
+            ['nombre' => 'Laboratorio de Seguridad e Higiene Industrial'],
+            ['tipo' => 'laboratorio', 'capacidad' => 20, 'ubicacion' => 'Piso 2 - Sede CABA (25 de Mayo 444)', 'estado' => 'disponible']
+        );
+
         $salaA = Espacio::firstOrCreate(
             ['nombre' => 'Laboratorio de Simulación A'],
             ['tipo' => 'laboratorio', 'capacidad' => 20, 'ubicacion' => 'Piso 1 - Ala Norte', 'estado' => 'disponible']
         );
 
-        $salaB = Espacio::firstOrCreate(
-            ['nombre' => 'Laboratorio de Simulación B'],
-            ['tipo' => 'laboratorio', 'capacidad' => 15, 'ubicacion' => 'Piso 1 - Ala Norte', 'estado' => 'disponible']
-        );
-
-        $aula101 = Espacio::firstOrCreate(
-            ['nombre' => 'Aula 101'],
-            ['tipo' => 'aula', 'capacidad' => 30, 'ubicacion' => 'Piso 1 - Ala Sur', 'estado' => 'disponible']
-        );
-
-        $taller = Espacio::firstOrCreate(
-            ['nombre' => 'Taller de Práctica'],
-            ['tipo' => 'taller', 'capacidad' => 25, 'ubicacion' => 'Piso 2 - Ala Norte', 'estado' => 'disponible']
-        );
-
         $capacitacion = Espacio::firstOrCreate(
-            ['nombre' => 'Sala de Capacitación'],
+            ['nombre' => 'Sala de Capacitación Virtual'],
             ['tipo' => 'aula', 'capacidad' => 40, 'ubicacion' => 'Piso 2 - Ala Sur', 'estado' => 'mantenimiento']
         );
 
-        // 4. Equipamiento
-        $simHAL = Equipamiento::firstOrCreate(
-            ['nombre' => 'Simulador de Alta Fidelidad HAL S3201'],
-            [
-                'categoria' => 'Simulador Médico',
-                'tipo_movilidad' => 'fijo',
-                'cantidad' => 2,
-                'espacio_habitual_id' => $salaA->id,
-                'espacio_actual_id' => $salaA->id,
-                'estado' => 'disponible',
-            ]
+        // 4. CATÁLOGO REAL DE SIMULADORES Y EQUIPAMIENTO
+        Equipamiento::firstOrCreate(
+            ['nombre' => 'Simulador de Autoelevador Portátil'],
+            ['categoria' => 'Logística e Industria', 'tipo_movilidad' => 'trasladable', 'cantidad' => 3, 'espacio_habitual_id' => $labAutoelevadores->id, 'espacio_actual_id' => $labAutoelevadores->id, 'estado' => 'disponible']
         );
 
-        $simAdulto = Equipamiento::firstOrCreate(
-            ['nombre' => 'Simulador Adulto A'],
-            [
-                'categoria' => 'Simulador Médico',
-                'tipo_movilidad' => 'fijo',
-                'cantidad' => 3,
-                'espacio_habitual_id' => $salaB->id,
-                'espacio_actual_id' => $salaB->id,
-                'estado' => 'disponible',
-            ]
+        Equipamiento::firstOrCreate(
+            ['nombre' => 'Simulador de Autoelevador Motorizado'],
+            ['categoria' => 'Logística e Industria', 'tipo_movilidad' => 'fijo', 'cantidad' => 1, 'espacio_habitual_id' => $labAutoelevadores->id, 'espacio_actual_id' => $labAutoelevadores->id, 'estado' => 'disponible']
         );
 
-        $notebooks = Equipamiento::firstOrCreate(
-            ['nombre' => 'Notebook Dell Latitude'],
-            [
-                'categoria' => 'Informática',
-                'tipo_movilidad' => 'trasladable',
-                'cantidad' => 15,
-                'espacio_habitual_id' => $salaA->id,
-                'espacio_actual_id' => $salaA->id,
-                'estado' => 'disponible',
-            ]
+        Equipamiento::firstOrCreate(
+            ['nombre' => 'Simulador de Retroexcavadora Motorizada'],
+            ['categoria' => 'Maquinaria Pesada', 'tipo_movilidad' => 'fijo', 'cantidad' => 1, 'espacio_habitual_id' => $labMaquinaria->id, 'espacio_actual_id' => $labMaquinaria->id, 'estado' => 'disponible']
         );
 
-        $proyector = Equipamiento::firstOrCreate(
-            ['nombre' => 'Proyector Epson Portátil'],
-            [
-                'categoria' => 'Audiovisual',
-                'tipo_movilidad' => 'trasladable',
-                'cantidad' => 4,
-                'espacio_habitual_id' => $aula101->id,
-                'espacio_actual_id' => $aula101->id,
-                'estado' => 'disponible',
-            ]
+        Equipamiento::firstOrCreate(
+            ['nombre' => 'Simulador de Grúa Torre de Construcción'],
+            ['categoria' => 'Maquinaria Pesada', 'tipo_movilidad' => 'fijo', 'cantidad' => 1, 'espacio_habitual_id' => $labMaquinaria->id, 'espacio_actual_id' => $labMaquinaria->id, 'estado' => 'disponible']
+        );
+
+        Equipamiento::firstOrCreate(
+            ['nombre' => 'Simulador Motorizado de Ómnibus de 2 Pisos'],
+            ['categoria' => 'Transporte y Seguridad Vial', 'tipo_movilidad' => 'fijo', 'cantidad' => 1, 'espacio_habitual_id' => $labTransporte->id, 'espacio_actual_id' => $labTransporte->id, 'estado' => 'disponible']
+        );
+
+        Equipamiento::firstOrCreate(
+            ['nombre' => 'Simulador de Seguridad e Higiene Portátil'],
+            ['categoria' => 'Seguridad e Higiene', 'tipo_movilidad' => 'trasladable', 'cantidad' => 2, 'espacio_habitual_id' => $labSeguridad->id, 'espacio_actual_id' => $labSeguridad->id, 'estado' => 'disponible']
         );
 
         $monitor = Equipamiento::firstOrCreate(
             ['nombre' => 'Monitor de Signos Vitales'],
-            [
-                'categoria' => 'Médico',
-                'tipo_movilidad' => 'fijo',
-                'cantidad' => 2,
-                'espacio_habitual_id' => $salaA->id,
-                'espacio_actual_id' => $salaA->id,
-                'estado' => 'fuera_de_servicio',
-            ]
+            ['categoria' => 'Médico', 'tipo_movilidad' => 'fijo', 'cantidad' => 2, 'espacio_habitual_id' => $salaA->id, 'espacio_actual_id' => $salaA->id, 'estado' => 'fuera_de_servicio']
         );
 
-        // 5. Actividades (poblado para la agenda del día y gráficos de actividades)
+        // 5. ACTIVIDADES ACADÉMICAS Y PRÁCTICAS
         Actividad::firstOrCreate(
-            ['nombre' => 'Taller de RCP Avanzado'],
-            [
-                'tipo' => 'Taller',
-                'responsable_id' => $ana->id,
-                'fecha' => $hoy->toDateString(),
-                'hora_inicio' => '09:00:00',
-                'hora_fin' => '12:00:00',
-                'participantes_estimados' => 15,
-                'estado' => 'programada',
-            ]
+            ['nombre' => 'Capacitación Operativa de Autoelevadores'],
+            ['tipo' => 'practica', 'responsable_id' => $ana->id, 'fecha' => $hoy->toDateString(), 'hora_inicio' => '09:00:00', 'hora_fin' => '12:00:00', 'participantes_estimados' => 12, 'estado' => 'programada']
         );
 
         Actividad::firstOrCreate(
-            ['nombre' => 'Curso de Simulación Obstétrica'],
-            [
-                'tipo' => 'Curso',
-                'responsable_id' => $carlos->id,
-                'fecha' => $hoy->toDateString(),
-                'hora_inicio' => '14:00:00',
-                'hora_fin' => '17:00:00',
-                'participantes_estimados' => 20,
-                'estado' => 'programada',
-            ]
+            ['nombre' => 'Simulación de Manejo de Maquinaria Pesada'],
+            ['tipo' => 'workshop', 'responsable_id' => $carlos->id, 'fecha' => $hoy->toDateString(), 'hora_inicio' => '14:00:00', 'hora_fin' => '17:00:00', 'participantes_estimados' => 15, 'estado' => 'programada']
         );
 
-        Actividad::firstOrCreate(
-            ['nombre' => 'Capacitación en Manejo de Vía Aérea'],
-            [
-                'tipo' => 'Capacitación',
-                'responsable_id' => $ana->id,
-                'fecha' => $hoy->copy()->addDays(1)->toDateString(),
-                'hora_inicio' => '10:00:00',
-                'hora_fin' => '13:00:00',
-                'participantes_estimados' => 12,
-                'estado' => 'programada',
-            ]
-        );
-
-        // 6. Alertas activas para el Dashboard
+        // 6. ALERTAS ACTIVAS PARA DASHBOARD
         Alerta::firstOrCreate(
             ['mensaje' => 'Monitor de Signos Vitales fuera de servicio'],
-            [
-                'tipo' => 'equipamiento_fuera_de_servicio',
-                'referencia_tipo' => 'equipamiento',
-                'referencia_id' => $monitor->id,
-                'fecha' => $now,
-                'estado' => 'activa',
-            ]
+            ['tipo' => 'equipamiento_fuera_de_servicio', 'referencia_tipo' => 'equipamiento', 'referencia_id' => $monitor->id, 'fecha' => $now, 'estado' => 'activa']
         );
 
         Alerta::firstOrCreate(
-            ['mensaje' => 'Sala de Capacitación en mantenimiento'],
-            [
-                'tipo' => 'espacio_no_disponible',
-                'referencia_tipo' => 'espacio',
-                'referencia_id' => $capacitacion->id,
-                'fecha' => $now,
-                'estado' => 'activa',
-            ]
+            ['mensaje' => 'Sala de Capacitación Virtual en mantenimiento'],
+            ['tipo' => 'espacio_no_disponible', 'referencia_tipo' => 'espacio', 'referencia_id' => $capacitacion->id, 'fecha' => $now, 'estado' => 'activa']
         );
 
-        // 7. Registro de Conflicto de prueba
+        // 7. CONFLICTO DE PRUEBA
         Conflicto::firstOrCreate(
-            ['descripcion' => 'Solapamiento en Lab A detectado para actividad de RCP'],
-            [
-                'tipo' => 'superposicion_horario',
-                'espacio_id' => $salaA->id,
-                'fecha_detectado' => $now,
-                'resuelto' => false,
-            ]
+            ['descripcion' => 'Solapamiento en Laboratorio de Autoelevadores detectado'],
+            ['tipo' => 'superposicion_horario', 'espacio_id' => $labAutoelevadores->id, 'fecha_detectado' => $now, 'resuelto' => false]
         );
     }
 }
