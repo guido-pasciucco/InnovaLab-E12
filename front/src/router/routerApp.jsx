@@ -18,6 +18,7 @@ import ResolverConflictoPage from '../pages/conflictos/resolverConflictoPage'
 import EditarEspacioPage from '../pages/espacios/editarEspacioPage'
 import NuevaReservaPage from '../pages/reservas/nuevaReservaPage'
 import CalendarioReservasPage from '../pages/calendario/calendarioReservasPage'
+import AlertasPage from "../pages/alertas/AlertasPage";
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
@@ -133,6 +134,16 @@ export default function RouterApp() {
                 </ProtectedRoute>
               }
             />
+
+            <Route 
+              path="alertas"
+              element={
+                <ProtectedRoute protectedRoles = {["Admin InnovaLab", "coordinador"]}>
+                  <AlertasPage />
+                </ProtectedRoute>
+              }
+            />
+
           </Route>
 
           {/* agarrar todas */}
