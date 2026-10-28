@@ -1,139 +1,123 @@
 import { Link } from "react-router-dom";
-import Navbar from "../components/topbar";
+import { getDashboardApi } from "../utils/apiRoutes";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Row, Col, Card, ProgressBar, Container } from "react-bootstrap";
+import TablaGeneral from "../components/TablaGeneral";
 
 export default function DashboardPrincipalPage() {
-  const actividades = [
-    {
-      hora: "11:00",
-      actividad: "Taller de suturas",
-      espacio: "Sala Sim 2",
-      estado: "Reservado",
-    },
-    {
-      hora: "12:30",
-      actividad: "Simulación clínica",
-      espacio: "Auditorio",
-      estado: "Reservado",
-    },
-    {
-      hora: "14:00",
-      actividad: "Reunión docente",
-      espacio: "Sala Sim 1",
-      estado: "Pendiente",
-    },
-  ];
-  const espacios = [
-    { nombre: "Sim 1", porcentaje: 80 },
-    { nombre: "Sim 2", porcentaje: 55 },
-    { nombre: "Debrief", porcentaje: 35 },
-    { nombre: "Auditorio", porcentaje: 90 },
-    { nombre: "Taller", porcentaje: 65 },
-  ];
+  const [dataApi, setDataApi] = useState([]);
+  const { getTokken } = useContext(AuthContext);
+
+  const getData = async () => {
+    console.log("Ejecutando getData con tokken", getTokken());
+    const data = await getDashboardApi(getTokken());
+    console.log("data en dashboard cargada: ", data.data);
+    setDataApi(data.data);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
-    <div className="container-fluid p-4">
-      {/* Título */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h2 className="h1 mb-0">Hoy en el centro (SIMULADO/ SIN DB)</h2>
-          <small className="text-muted">Viernes 2 de octubre</small>
-        </div>
+    <Container fluid className="px-3">
+      {/* KPI */}
+      <Row className="g-3">
+        <Col xs={12}>
+          <Card className="h-100 shadow-sm">
+            <Card.Body>
+              <h4>KPIs</h4>
 
-        {/* <button className="btn btn-primary">Nueva reserva</button> */}
-        <Link to="/dashboard/nueva-reserva" className="btn btn-primary">
-          Nueva reserva
-        </Link>
-      </div>
-      {/* Gráfico + alertas */}
-      <div className="row g-3 mb-3">
-        <div className="col-md-8">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">
-                Ocupación por espacio · esta semana
-              </h5>
+              <Row className="g-3">
+                {Object.entries(dataApi?.kpis ?? {}).map(([clave, valor]) => (
+                  <Col key={clave} xs={12} md={6} lg={4}>
+                    <Card className="h-100 shadow-sm">
+                      <Card.Body>
+                        <Card.Title>{clave.replaceAll("_", " ")}</Card.Title>
 
-              <div
-                className="d-flex align-items-end justify-content-around"
-                style={{ height: "150px" }}
-              >
-                {espacios.map((espacio) => (
-                  <div
-                    key={espacio.nombre}
-                    className="d-flex flex-column align-items-center"
-                  >
-                    <small>{espacio.porcentaje}%</small>
-
-                    <div
-                      className="bg-primary rounded-top"
-                      style={{
-                        width: "40px",
-                        height: `${espacio.porcentaje}px`,
-                      }}
-                    />
-
-                    <small>{espacio.nombre}</small>
-                  </div>
+                        <Card.Text className="fs-3 fw-bold">{valor}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Col>
                 ))}
-              </div>
-            </div>
-          </div>
-        </div>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      {/* Recursos y ocupación */}
+      <Row className="mt-4 g-3">
+        <Col xs={12} lg={7}>
+          <Card className="h-100 shadow-sm">
+            <Card.Body>
+              <h5>Recursos con mayor demanda</h5>
 
-        {/* Alertas */}
-        <div className="col-md-4">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Alertas</h5>
+              <Row className="g-3 mt-1">
+                {(dataApi?.recursos_mayor_demanda ?? []).map((recurso) => (
+                  <Col key={recurso.nombre} xs={12} sm={6}>
+                    <div className="border rounded p-3 h-100">
+                      <div className="fw-semibold">{recurso.nombre}</div>
 
-              <span className="badge text-bg-danger">▲ Conflicto</span>
+                      <div className="fs-4 fw-bold text-primary">
+                        {recurso.total_reservas}
+                      </div>
 
-              <p className="small text-muted">
-                2 conflictos · Sala Sim 1, mié 11:00
-              </p>
+                      <small className="text-muted">
+                        {recurso.total_reservas === 1 ? "reserva" : "reservas"}
+                      </small>
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
 
-              <span className="badge text-bg-warning">En mantenimiento</span>
+        <Col xs={12} lg={5}>
+          <Card className="h-100 shadow-sm">
+            <Card.Body>
+              <h5>Ocupación por espacio</h5>
 
-              <p className="small text-muted">
-                Sala Debriefing, hasta el viernes
-              </p>
+              {(dataApi?.ocupacion_por_espacio ?? []).map((espacio) => (
+                <div key={espacio.id} className="mt-3 mb-4">
+                  <div className="d-flex justify-content-between gap-2 mb-2">
+                    <span>{espacio.nombre}</span>
+                    <strong>{espacio.porcentaje}%</strong>
+                  </div>
 
-              <span className="badge text-bg-secondary">Pendiente</span>
-
-              <p className="small text-muted">5 reservas por aprobar</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="card">
-        <div className="card-body">
-          <h5 className="card-title">Próximas actividades</h5>
-
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Hora</th>
-                <th>Actividad</th>
-                <th>Espacio</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {actividades.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.hora}</td>
-                  <td>{item.actividad}</td>
-                  <td>{item.espacio}</td>
-                  <td>
-                    <span className="badge text-bg-primary">{item.estado}</span>
-                  </td>
-                </tr>
+                  <ProgressBar now={espacio.porcentaje} />
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Alertas recientes */}
+      <Row className="mt-4 g-3">
+        <Col xs={12}>
+          <Card className="shadow-sm">
+            <Card.Body>
+              <h5>Alarmas recientes</h5>
+
+              <TablaGeneral datos={dataApi?.alertas ?? []} />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Actividades_hoy */}
+      <Row className="mt-4 g-3">
+        <Col xs={12}>
+          <Card className="shadow-sm">
+            <Card.Body>
+              <h5>Actividades hoy</h5>
+              <TablaGeneral datos={dataApi?.actividades_hoy ?? []} />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }

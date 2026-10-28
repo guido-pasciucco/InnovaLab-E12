@@ -30,10 +30,12 @@
 .loginCard {
     /* display: flex;
     flex-direction: column; */
-    padding: 1rem;
+    padding: 3rem;
     flex-shrink: 0;
-    width: 24rem;
+    width: 26rem;
     align-items: start;
+    border: 3px solid #1D3343;
+    border-radius: 10px;
 }
 
 .loginCardTitleArea {

@@ -15,10 +15,12 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libpq-dev \
     sqlite3 \
     libsqlite3-dev
 
-RUN docker-php-ext-install pdo pdo_sqlite mbstring zip exif pcntl
+# Instalamos pdo_pgsql para PostgreSQL y pdo_sqlite
+RUN docker-php-ext-install pdo pdo_pgsql pdo_sqlite mbstring zip exif pcntl
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

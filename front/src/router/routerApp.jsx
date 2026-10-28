@@ -14,6 +14,10 @@ import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
 import ListadoEquipamientoPage from "../pages/listadoEquipamientoPage"
 import EspacioDetallePage from "../pages/EspacioDetallePage";
 import ListadoReservasPage from "../pages/ListadoReservasPage";
+import ResolverConflictoPage from "../pages/resolverConflictoPage";
+import EditarEspacioPage from "../pages/editarEspacioPage";
+import NuevaReservaPage from "../pages/nuevaReservaPage";
+// import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
   return (
@@ -88,12 +92,26 @@ export default function RouterApp() {
                 <ProtectedRoute
                   protectedRoles={["Admin InnovaLab", "coordinador"]}
                 >
-                  <ListadoReservasPage />
+                  <NuevaReservaPage />
                 </ProtectedRoute>
               }
             />
-
-
+            <Route
+              path="resolver-conflicto"
+              element={
+                <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
+                  <ResolverConflictoPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="espacios/:id/editar-espacio"
+              element={
+                <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
+                  <EditarEspacioPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* agarrar todas */}

@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // 🛡️ Alias para restringir endpoints exclusivamente a Administradores
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\SoloAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

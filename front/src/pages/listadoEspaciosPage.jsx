@@ -16,15 +16,15 @@ export default function ListadoEspaciosPage() {
   const [datosAPI, setDatosAPI] = useState([]); // Estado para almacenar los datos obtenidos de la API
   const [cargando, setCargando] = useState(true);
 
-  const { getTypeAndToken } = useContext(AuthContext);
-  const { token_type, access_token } = getTypeAndToken();
+  const { getTokken } = useContext(AuthContext);
+  
 
   const resultadosFiltrados = datosAPI.filter((item) =>
     item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()),
   );
 
   const getData = async () => {
-    const res = await getEspaciosApi();
+    const res = await getEspaciosApi(getTokken());
     console.log(res.data.data);
     setDatosAPI(res.data.data);
     setShowSpinner(false);
@@ -34,6 +34,8 @@ export default function ListadoEspaciosPage() {
     getData();
   }, []);
 
+
+  // post eequipamiento
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "Taller de RCP y Reanimación Avanzada",
@@ -60,7 +62,10 @@ export default function ListadoEspaciosPage() {
     console.log("Datos enviados:", formData);
     // acá podrías hacer un fetch/axios POST a tu
     try {
-      postEspaciosApi(formData);
+      await postEspaciosApi(formData,getTokken());
+      console.log("Datos cargados correctamente")
+      setShowSpinner(true)
+      getData()
     } catch (err) {
       console.log("Error:");
       console.log(err.response?.data);
@@ -72,7 +77,7 @@ export default function ListadoEspaciosPage() {
   return (
     <>
       <div>
-        <h1 className="text-start">Espacios y equipamiento</h1>
+        <h1 className="text-start h1">Espacios y equipamiento</h1>
       </div>
       <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
         <div
@@ -102,8 +107,7 @@ export default function ListadoEspaciosPage() {
         </div>
         <button
           className="btn btn-primary text-nowrap"
-          data-bs-toggle="modal"
-          data-bs-target="#miModal"
+         
           onClick={handleShow}
         >
           Agregar espacio
@@ -164,7 +168,7 @@ export default function ListadoEspaciosPage() {
               <Form.Label>Capacidad</Form.Label>
               <Form.Control
                 type="number"
-                name="cantidad"
+                name="capacidad"
                 value={formData.capacidad}
                 onChange={handleChange}
               />

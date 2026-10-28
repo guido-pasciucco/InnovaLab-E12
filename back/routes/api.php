@@ -52,6 +52,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/consultas-ia', [ConsultaIaController::class, 'index']);
         Route::post('/consultas-ia', [ConsultaIaController::class, 'store']);
 
+        // Rutas protegidas solo para Administradores
+        Route::middleware(['auth:sanctum', \App\Http\Middleware\SoloAdmin::class])->group(function () {
+        Route::apiResource('usuarios', App\Http\Controllers\Api\UsuarioController::class);
+});
+
     });
 
 });
