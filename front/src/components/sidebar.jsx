@@ -1,7 +1,6 @@
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
-import { Image } from 'react-bootstrap'
 import { Row, Col } from 'react-bootstrap'
 
 export default function Sidebar() {
@@ -9,7 +8,7 @@ export default function Sidebar() {
 
   return (
     <div
-      className="text-white p-3 d-flex flex-column background-primary"
+      className="text-white p-3 d-flex flex-column background-primary overflow-y-auto"
       style={{
         width: '220px',
         height: '100vh',
@@ -25,8 +24,8 @@ export default function Sidebar() {
         </Col>
       </Row>
 
-      <h4 className="mb-4">Centro de simulacion</h4>
-      <p>Rol: {getRol()}</p>
+      <h5 className="mb-4">Centro de simulacion</h5>
+      <h6 className='small text-secondary'>Rol: {getRol()}</h6>
 
       <ul className="nav flex-column mt-5">
         <li className="nav-item">
