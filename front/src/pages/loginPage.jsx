@@ -49,7 +49,7 @@ export default function LoginPage() {
     // <div className="d-flex justify-content-center align-items-center vh-100">
     <div className={styles.homeMainContainer}>
       <div className={styles.imgHomeContainer}>
-        <img src="/Home.png" alt="Logo" className="img-fluid vh-100" />
+        <img src="/login02.png" alt="Logo" className="img-fluid vh-100" />
       </div>
       {/* <div className="card shadow" style={{ width: '24rem' }}> */}
       <div className={styles.loginContainer}>
