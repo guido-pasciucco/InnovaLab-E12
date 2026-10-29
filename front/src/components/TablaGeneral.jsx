@@ -1,4 +1,5 @@
 import { Table } from "react-bootstrap";
+import SelectedBadge from "./SelectedBadge";
 
 function TablaGeneral({ datos = [] }) {
   // Evita errores si la API todavía no devolvió datos
@@ -10,7 +11,7 @@ function TablaGeneral({ datos = [] }) {
   const columnas = Object.keys(datos[0]);
 
   return (
-    <Table striped bordered hover responsive>
+    <Table responsive hover className="table shadow-sm">
       <thead>
         <tr>
           {columnas.map((columna) => (
@@ -24,7 +25,11 @@ function TablaGeneral({ datos = [] }) {
           <tr key={dato.id ?? index}>
             {columnas.map((columna) => (
               <td key={columna}>
-                {String(dato[columna] ?? "-")}
+                {columna === "estado" ? (
+                  <SelectedBadge label={dato[columna]} />
+                ) : (
+                  String(dato[columna] ?? "-")
+                )}
               </td>
             ))}
           </tr>

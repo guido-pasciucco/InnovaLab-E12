@@ -167,7 +167,7 @@
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
@@ -183,11 +183,16 @@
   }
 }
 
-.background-primary{
-  background-color: #1D3343;
-  color: #FFFFFF;
+/* estilos propios */
+.background-primary {
+  background-color: #1d3343;
+  color: #ffffff;
 }
 
+.background-secondary {
+  background-color: white;
+  color: 1D3343;
+}
 
 .nav-item {
   display: block;
@@ -210,17 +215,20 @@
   color: #212529;
 }
 
-.btn:hover{
-  background-color: #ffc107;
-  color: #212529;
+.btn:hover,
+.btn:active {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
 }
 
-.btn.active{
-  background-color: #ffc107;
-  color: #212529;
+.btn-primary {
+  background-color: #1d3343;
+  color: #ffffff;
+  
 }
 
-.btn{
-  background-color: #1D3343;
-  color: #FFFFFF;
+.btn-secondary {
+  background-color: white;
+  color: #1d3343;
+  border: 1px solid #1d3343;
 }
