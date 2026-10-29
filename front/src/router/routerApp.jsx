@@ -17,6 +17,7 @@ import ListadoReservasPage from "../pages/ListadoReservasPage";
 import ResolverConflictoPage from "../pages/resolverConflictoPage";
 import EditarEspacioPage from "../pages/editarEspacioPage";
 import NuevaReservaPage from "../pages/nuevaReservaPage";
+import CalendarioReservasPage from "../pages/calendarioReservasPage";
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
@@ -109,6 +110,14 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
                   <EditarEspacioPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="calendario"
+              element={
+                <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
+                  <CalendarioReservasPage />
                 </ProtectedRoute>
               }
             />
