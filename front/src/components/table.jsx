@@ -10,9 +10,11 @@ const badgesDeEstado = {
   mantenimiento: "badge bg-warning",
 }
 
+// borderless hover responsive
+
 function GenericTable({ items }) {
   return (
-    <Table striped bordered hover>
+    <Table  responsive hover className='table shadow-sm'>
       <thead>
         <tr>
           {/* <th>#</th> */}

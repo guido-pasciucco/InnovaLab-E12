@@ -7,7 +7,7 @@ import { getEspaciosApiId } from "../utils/apiRoutes";
 import { AuthContext } from "../context/AuthContext";
 
 import { Row, Col, Table } from "react-bootstrap";
-import SelectedBadge from "../components/badge";
+import SelectedBadge from "../components/SelectedBadge";
 
 export default function EspacioDetallePage() {
   const { id } = useParams();
@@ -85,7 +85,7 @@ export default function EspacioDetallePage() {
       <Row>
         <Col>
           <h4 className="mt-4">Equipamientos Habituales</h4>
-          <Table striped bordered hover responsive>
+          <Table hover responsive className='table shadow-sm'>
             <thead>
               <tr>
                 <th>Nombre</th>

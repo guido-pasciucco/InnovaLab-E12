@@ -7,6 +7,7 @@ import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi } from "../util
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from 'react-toastify';
 import { Spinner } from "react-bootstrap";
+import SelectedBadge from "../components/SelectedBadge.jsx";
 
 export default function ListadoEquipamientoPage() {
   const [showSpinner, setShowSpinner] = useState(true);
@@ -177,7 +178,7 @@ export default function ListadoEquipamientoPage() {
                   <td
                     style={{ color: sim.estado === "disponible" ? "green" : "red" }}
                   >
-                    {sim.estado}
+                    <SelectedBadge  label={sim.estado}/>
                   </td>
                 </tr>
               ))
