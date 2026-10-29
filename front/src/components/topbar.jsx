@@ -54,7 +54,7 @@ export default function Topbar() {
       {/* modal para confirmar cancelacion */}
       <MyModal
         title="Cerrar sesion"
-        bodyMessage="Desea cerrar sesion?"
+        bodyMessage="Confirme cerrar sesion"
         mostrar={mostrarModal}
         handleConfirm={cerrarSesion}
         handleCancel={handleCancel}
