@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ReservaController;
 use App\Http\Controllers\Api\AlertaController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ConsultaIaController;
+use App\Http\Controllers\Api\UsuarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,11 +52,12 @@ Route::prefix('v1')->group(function () {
         // Asistente IA (Sprint 4)
         Route::get('/consultas-ia', [ConsultaIaController::class, 'index']);
         Route::post('/consultas-ia', [ConsultaIaController::class, 'store']);
+        Route::get('/consultas-ia/{id}', [ConsultaIaController::class, 'show']);
 
         // Rutas protegidas solo para Administradores
-        Route::middleware(['auth:sanctum', \App\Http\Middleware\SoloAdmin::class])->group(function () {
-        Route::apiResource('usuarios', App\Http\Controllers\Api\UsuarioController::class);
-});
+        Route::middleware([\App\Http\Middleware\SoloAdmin::class])->group(function () {
+            Route::apiResource('usuarios', UsuarioController::class);
+        });
 
     });
 
