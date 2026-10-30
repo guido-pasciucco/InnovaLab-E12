@@ -1,14 +1,15 @@
-import Search from "../components/search.jsx";
-import GenericSelect from "../components/select.jsx";
+import Search from "../../components/others/search.jsx";
+import GenericSelect from "../../components/others/select.jsx";
 import { Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi } from "../utils/apiRoutes";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi } from "../../utils/apiRoutes.js";
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from 'react-toastify';
 import { Spinner } from "react-bootstrap";
 import SelectedBadge from "../components/SelectedBadge.jsx";
 import { Link } from "react-router-dom";
+
 
 export default function ListadoEquipamientoPage() {
   const [showSpinner, setShowSpinner] = useState(true);

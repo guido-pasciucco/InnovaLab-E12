@@ -1,12 +1,12 @@
-import GenericTable from "../components/table.jsx";
-import Search from "../components/search.jsx";
-import GenericSelect from "../components/select.jsx";
+import GenericTable from "../../components/tables/table.jsx";
+import Search from "../../components/others/search.jsx";
+import GenericSelect from "../../components/others/select.jsx";
 // import { listaItems } from "../services/items.js";
 import { useState } from "react";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 import { Modal, Button, Form } from "react-bootstrap";
-import { getEspaciosApi, postEspaciosApi } from "../utils/apiRoutes.js";
+import { getEspaciosApi, postEspaciosApi } from "../../utils/apiRoutes.js";
 import { Spinner } from "react-bootstrap";
 
 export default function ListadoEspaciosPage() {
