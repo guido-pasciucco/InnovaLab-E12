@@ -8,6 +8,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from 'react-toastify';
 import { Spinner } from "react-bootstrap";
 import SelectedBadge from "../components/SelectedBadge.jsx";
+import { Link } from "react-router-dom";
 
 export default function ListadoEquipamientoPage() {
   const [showSpinner, setShowSpinner] = useState(true);
@@ -97,12 +98,20 @@ export default function ListadoEquipamientoPage() {
 
   return (
     <>
-      <div className="d-flex flex-column justify-content-center align-items-start mb-2">
-        <h1 className="text-start h1">Equipamiento</h1>
-        <span>{datosAPI.length} Equipos - {fueraDeServicio} Fuera de servicio</span>
+      <div className="d-flex flex-row justify-content-between align-items-center">
+        <div className="d-flex flex-column justify-content-center">
+          <h1 className="text-start h1">Equipamiento</h1>
+          <p>{datosAPI.length} Equipos - {fueraDeServicio} Fuera de servicio</p>
+        </div>
+        <div className="d-flex flex-row gap-2">
+          <button className="btn btn-primary"
+            onClick={handleShow}
+          >
+            Agregar equipo
+          </button>
+        </div>
       </div>
       <div className="bg-light p-4 rounded-3 shadow-sm">
-
         <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
           <div
             className="d-flex align-items-center gap-3 w-100"
@@ -115,7 +124,14 @@ export default function ListadoEquipamientoPage() {
                 setTerminoBusqueda={setTerminoBusqueda}
               />
             </div>
-            <div style={{ minWidth: "100px", width: "100%" }}>
+            <div className="d-flex flex-row gap-3" style={{ minWidth: "100px", width: "40%" }}>
+              <GenericSelect
+                text="Movilidad"
+                opciones={[
+                  "Fijo",
+                  "Trasladable",
+                ]}
+              />
               <GenericSelect
                 text="Estado"
                 opciones={[
@@ -129,13 +145,6 @@ export default function ListadoEquipamientoPage() {
               />
             </div>
           </div>
-          <button
-            className="btn btn-warning text-nowrap"
-
-            onClick={handleShow}
-          >
-            Agregar equipo
-          </button>
         </div>
         <Table hover>
           <thead>
@@ -146,6 +155,7 @@ export default function ListadoEquipamientoPage() {
               <th>Cantidad</th>
               <th>Espacio</th>
               <th>Estado</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -178,7 +188,17 @@ export default function ListadoEquipamientoPage() {
                   <td
                     style={{ color: sim.estado === "disponible" ? "green" : "red" }}
                   >
-                    <SelectedBadge  label={sim.estado}/>
+                    <SelectedBadge label={sim.estado} />
+                  </td>
+                  <td>
+                    <div className="d-flex flex-row gap-1">
+                      <Link to={`${sim.id}`}>
+                        Ver -
+                      </Link>
+                      <Link to={`${sim.id}`}>
+                        Eliminar
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))

@@ -14,10 +14,9 @@ const badgesDeEstado = {
 
 function GenericTable({ items }) {
   return (
-    <Table  responsive hover className='table shadow-sm'>
+    <Table responsive hover className='table shadow-sm'>
       <thead>
         <tr>
-          {/* <th>#</th> */}
           <th>Nombre</th>
           <th>Tipo</th>
           <th>Capacidad</th>
@@ -29,14 +28,18 @@ function GenericTable({ items }) {
       <tbody>
         {items.map((item) => (
           <tr key={item.id}>
-            {/* <td>{item.id}</td> */}
             <td>{item.nombre}</td>
             <td>{item.tipo}</td>
             <td>{item.capacidad}</td>
-            <td className={badgesDeEstado[item.estado?.toLowerCase().trim()] || "badge bg-secondary"}
-              style={{ color: 'white', marginTop: "5px"}}
-            >
-              {item.estado}
+            <td className="text-center align-middle">
+              <span
+                className={
+                  badgesDeEstado[item.estado?.toLowerCase().trim()] ||
+                  "badge bg-secondary"
+                }
+              >
+                {item.estado}
+              </span>
             </td>
             <td>
               <Link to={`${item.id}`}>

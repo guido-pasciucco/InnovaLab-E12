@@ -1,5 +1,6 @@
 import Calendario from "../components/calendar"
 import GenericSelect from "../components/select"
+import { Link } from "react-router-dom"
 
 export default function CalendarioReservasPage() {
 
@@ -7,20 +8,23 @@ export default function CalendarioReservasPage() {
         <>
             <div className="d-flex flex-row justify-content-between align-items-center">
                 <div className="d-flex flex-column justify-content-center">
-                    <h1>Calendario</h1>
+                    <h1 className="text-start h1">Calendario</h1>
                     <p>Semana del 5 al 9 de octubre  * Sala Sim 1</p>
                 </div>
                 <div className="d-flex flex-row gap-2">
                     <button className="btn btn-secondary">
                         Hoy
                     </button>
-                    <button className="btn btn-primary">
+                    <Link to="/dashboard/nueva-reserva" className="btn btn-primary">
                         Nueva actividad
-                    </button>
+                    </Link>
+                    {/* <button className="btn btn-primary">
+                        Nueva actividad
+                    </button> */}
                 </div>
             </div>
             <div className="d-flex flex-column my-3 gap-3">
-                <div className="d-flex flex-row">
+                <div className="d-flex flex-row gap-3">
                     <GenericSelect text="Espacio: "
                         opciones={[
                             "Sala Sim 1",
@@ -49,8 +53,6 @@ export default function CalendarioReservasPage() {
                     <span className="bg-danger p-1 rounded-3 shadow-sm">Conflicto</span>
                 </div>
             </div>
-
-
             <Calendario />
         </>
     )

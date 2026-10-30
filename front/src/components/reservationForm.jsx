@@ -7,7 +7,7 @@ function ReservationForm() {
 
     return (
 
-        <form className="w-60 card p-3 shadow-sm" style={{ width: '75%' }}>
+        <form>
             <div className='d-flex mb-2'>
                 <h3>Datos de la reserva</h3>
             </div>

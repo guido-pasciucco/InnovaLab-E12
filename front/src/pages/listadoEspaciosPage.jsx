@@ -17,7 +17,7 @@ export default function ListadoEspaciosPage() {
   const [cargando, setCargando] = useState(true);
 
   const { getTokken } = useContext(AuthContext);
-  
+
 
   const resultadosFiltrados = datosAPI.filter((item) =>
     item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()),
@@ -62,7 +62,7 @@ export default function ListadoEspaciosPage() {
     console.log("Datos enviados:", formData);
     // acá podrías hacer un fetch/axios POST a tu
     try {
-      await postEspaciosApi(formData,getTokken());
+      await postEspaciosApi(formData, getTokken());
       console.log("Datos cargados correctamente")
       setShowSpinner(true)
       getData()
@@ -76,44 +76,49 @@ export default function ListadoEspaciosPage() {
 
   return (
     <>
-      <div>
-        <h1 className="text-start h1">Espacios y equipamiento</h1>
+      <div className="d-flex flex-row justify-content-between align-items-center">
+        <div className="d-flex flex-column justify-content-center">
+          <h1 className="text-start h1">Espacios</h1>
+        </div>
+        <div className="d-flex flex-row gap-2">
+          <button
+            className="btn btn-primary text-nowrap"
+            onClick={handleShow}
+          >
+            Agregar espacio
+          </button>
+        </div>
       </div>
-      <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
-        <div
-          className="d-flex align-items-center gap-3 w-100"
-          style={{ maxWidth: "75%" }}
-        >
-          <div style={{ minWidth: "250px", width: "100%" }}>
-            <Search
-              text="Buscar espacios o equipos"
-              terminoBusqueda={terminoBusqueda}
-              setTerminoBusqueda={setTerminoBusqueda}
-            />
-          </div>
-          <div style={{ minWidth: "100px", width: "100%" }}>
-            <GenericSelect
-              text="Estado"
-              opciones={[
-                "Disponible",
-                "En uso",
-                "Confirmado",
-                "Borrador",
-                "Fuera de servicio",
-                "En mantenimiento",
-              ]}
-            />
+      <div className="bg-light p-4 rounded-3 shadow-sm">
+        <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
+          <div
+            className="d-flex align-items-center gap-3 w-100"
+            style={{ maxWidth: "75%" }}
+          >
+            <div style={{ minWidth: "250px", width: "100%" }}>
+              <Search
+                text="Buscar espacios"
+                terminoBusqueda={terminoBusqueda}
+                setTerminoBusqueda={setTerminoBusqueda}
+              />
+            </div>
+            <div style={{ minWidth: "100px", width: "20%" }}>
+              <GenericSelect
+                text="Estado"
+                opciones={[
+                  "Disponible",
+                  "En uso",
+                  "Confirmado",
+                  "Borrador",
+                  "Fuera de servicio",
+                  "En mantenimiento",
+                ]}
+              />
+            </div>
           </div>
         </div>
-        <button
-          className="btn btn-primary text-nowrap"
-         
-          onClick={handleShow}
-        >
-          Agregar espacio
-        </button>
+        {showSpinner ? <Spinner /> : <GenericTable items={resultadosFiltrados} />}
       </div>
-      {showSpinner ? <Spinner /> : <GenericTable items={resultadosFiltrados} />}
 
       {/* modal del post */}
       <Modal show={show} onHide={handleClose}>
