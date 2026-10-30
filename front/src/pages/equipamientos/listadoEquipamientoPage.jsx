@@ -7,7 +7,7 @@ import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi } from "../../u
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from 'react-toastify';
 import { Spinner } from "react-bootstrap";
-import SelectedBadge from "../components/SelectedBadge.jsx";
+import SelectedBadge from "../../components/badges/SelectedBadge.jsx";
 import { Link } from "react-router-dom";
 
 

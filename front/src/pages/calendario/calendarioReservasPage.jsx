@@ -1,5 +1,5 @@
-import Calendario from "../components/calendar"
-import GenericSelect from "../components/select"
+import Calendario from "../../components/others/calendar"
+import GenericSelect from "../../components/others/select"
 import { Link } from "react-router-dom"
 
 export default function CalendarioReservasPage() {

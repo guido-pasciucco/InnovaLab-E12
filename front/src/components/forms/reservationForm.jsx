@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import GenericSelect from './select';
+import GenericSelect from '../others/select';
 import styles from './reservationForm.module.css'
 import { Link } from 'react-router-dom';
 
