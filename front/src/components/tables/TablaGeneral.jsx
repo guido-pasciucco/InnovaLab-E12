@@ -1,5 +1,5 @@
 import { Table } from "react-bootstrap";
-import SelectedBadge from "./SelectedBadge";
+import SelectedBadge from "../badges/SelectedBadge";
 
 function TablaGeneral({ datos = [] }) {
   // Evita errores si la API todavía no devolvió datos

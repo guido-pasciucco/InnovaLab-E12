@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { loginPostCredentials } from "../utils/apiRoutes.js";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import { loginPostCredentials } from "../../utils/apiRoutes.js";
 import { Spinner } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
 

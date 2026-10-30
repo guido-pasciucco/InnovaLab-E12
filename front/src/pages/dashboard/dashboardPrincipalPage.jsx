@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { getDashboardApi } from "../utils/apiRoutes";
+import { getDashboardApi } from "../../utils/apiRoutes";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { Row, Col, Card, ProgressBar, Container } from "react-bootstrap";
-import TablaGeneral from "../components/TablaGeneral";
+import TablaGeneral from "../../components/tables/TablaGeneral";
 
 export default function DashboardPrincipalPage() {
   const [dataApi, setDataApi] = useState([]);

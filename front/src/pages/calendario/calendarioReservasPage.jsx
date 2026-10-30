@@ -1,5 +1,5 @@
-import Calendario from "../components/calendar"
-import GenericSelect from "../components/select"
+import Calendario from "../../components/others/calendar"
+import GenericSelect from "../../components/others/select"
 
 export default function CalendarioReservasPage() {
 
