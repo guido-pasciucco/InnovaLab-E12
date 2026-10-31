@@ -15,9 +15,10 @@ export default function MyModal({
       <Modal.Body>{bodyMessage}</Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleCancel}>
+        <Button variant="secondary" className='background-secondary' onClick={handleCancel}>
           Cancelar
         </Button>
+        
 
         <Button variant="primary" onClick={handleConfirm}>
           Confirmar

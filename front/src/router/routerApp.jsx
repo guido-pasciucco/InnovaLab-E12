@@ -6,17 +6,18 @@ import {
 } from "react-router-dom";
 import Layout from "../layout/layout";
 
-import LoginPage from "../pages/loginPage";
-import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
-import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
+import LoginPage from "../pages/login/loginPage";
+import DashboardPrincipalPage from "../pages/dashboard/dashboardPrincipalPage";
+import ListadoEspaciosPage from "../pages/espacios/listadoEspaciosPage";
 import ProtectedRoute from "./ProtectedRoute";
-import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
-import ListadoEquipamientoPage from "../pages/listadoEquipamientoPage"
-import EspacioDetallePage from "../pages/EspacioDetallePage";
-import ListadoReservasPage from "../pages/ListadoReservasPage";
-import ResolverConflictoPage from "../pages/resolverConflictoPage";
-import EditarEspacioPage from "../pages/editarEspacioPage";
-import NuevaReservaPage from "../pages/nuevaReservaPage";
+import UsuariosYrolesPage from "../pages/usuarios/usuariosYrolesPage";
+import ListadoEquipamientoPage from "../pages/equipamientos/listadoEquipamientoPage"
+import EspacioDetallePage from "../pages/espacios/EspacioDetallePage";
+import ListadoReservasPage from "../pages/reservas/ListadoReservasPage";
+import ResolverConflictoPage from "../pages/conflictos/resolverConflictoPage";
+import EditarEspacioPage from "../pages/espacios/editarEspacioPage";
+import NuevaReservaPage from "../pages/reservas/nuevaReservaPage";
+import CalendarioReservasPage from "../pages/calendario/calendarioReservasPage";
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
@@ -109,6 +110,14 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute protectedRoles={["Admin", "Coordinador"]}>
                   <EditarEspacioPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="calendario"
+              element={
+                <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
+                  <CalendarioReservasPage />
                 </ProtectedRoute>
               }
             />

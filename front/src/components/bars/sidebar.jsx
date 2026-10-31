@@ -1,32 +1,37 @@
-import { useContext } from 'react'
-import { NavLink } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
-import { Image } from 'react-bootstrap'
-import { Row, Col } from 'react-bootstrap'
+import { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { Row, Col } from "react-bootstrap";
 
 export default function Sidebar() {
-  const { getRol } = useContext(AuthContext)
+  const { getRol } = useContext(AuthContext);
 
   return (
     <div
-      className="text-white p-3 d-flex flex-column background-primary"
+      className="text-white p-3 d-flex flex-column background-primary overflow-y-auto"
       style={{
-        width: '220px',
-        height: '100vh',
-        position: 'fixed',
+        width: "220px",
+        height: "100vh",
+        position: "fixed",
         top: 0,
         left: 0,
       }}
     >
       <Row>
-        <Col className='m-3'>
-          <img src="/icon_cs.png" alt="" width={34} height={34} className='mx-1' />
+        <Col className="m-3">
+          <img
+            src="/icon_cs.png"
+            alt=""
+            width={34}
+            height={34}
+            className="mx-1"
+          />
           <span>Innova.lab</span>
         </Col>
       </Row>
 
-      <h4 className="mb-4">Centro de simulacion</h4>
-      <p>Rol: {getRol()}</p>
+      <h5 className="mb-4">Centro de simulacion</h5>
+      <h6 className="small text-secondary">Rol: {getRol()}</h6>
 
       <ul className="nav flex-column mt-5">
         <li className="nav-item">
@@ -55,7 +60,7 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+          <NavLink className="nav-link text-white" to="/dashboard/calendario">
             Calendario
           </NavLink>
         </li>
@@ -84,5 +89,5 @@ export default function Sidebar() {
         </li>
       </ul>
     </div>
-  )
+  );
 }

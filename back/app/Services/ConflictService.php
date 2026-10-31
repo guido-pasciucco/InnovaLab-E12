@@ -4,18 +4,13 @@ namespace App\Services;
 
 use App\Models\Reserva;
 use App\Models\Conflicto;
-use App\Services\AlertaService;
 use Carbon\Carbon;
 
 class ConflictService
 {
-    protected AlertaService $alertaService;
-
-    public function __construct(AlertaService $alertaService)
-    {
-        $this->alertaService = $alertaService;
-    }
-
+    /**
+     * Verifica si existen conflictos de horario para un espacio o equipamiento.
+     */
     public function verificarDisponibilidad(
         int $espacioId,
         string $fechaInicio,
@@ -38,38 +33,63 @@ class ConflictService
             ->first();
 
         if ($reservaEspacioConflicto) {
-            $msg = "El espacio '{$reservaEspacioConflicto->espacio->nombre}' ya se encuentra reservado entre " . 
+            $msg = "El espacio '{$reservaEspacioConflicto->espacio->nombre}' ya se encuentra reservado para la actividad '{$reservaEspacioConflicto->actividad->nombre}' entre " . 
                    Carbon::parse($reservaEspacioConflicto->fecha_hora_inicio)->format('d/m/Y H:i') . " y " . 
                    Carbon::parse($reservaEspacioConflicto->fecha_hora_fin)->format('H:i') . ".";
             
             $errores[] = $msg;
 
             $conflictosDetectados[] = [
-                'tipo' => 'espacio',
+                'tipo' => 'superposicion_horario',
                 'espacio_id' => $espacioId,
-                'reserva_existente_id' => $reservaEspacioConflicto->id,
+                'reserva_id' => $reservaEspacioConflicto->id,
                 'descripcion' => $msg
             ];
         }
 
-        // 2. Registrar incidencias en 'conflictos' y disparar 'alertas'
+        // 2. Solapamiento de Equipamiento
+        if (!empty($equipamientoIds)) {
+            $reservasSolapadas = Reserva::whereIn('estado', ['confirmada', 'pendiente'])
+                ->when($reservaIgnoradaId, fn($q) => $q->where('id', '!=', $reservaIgnoradaId))
+                ->where(function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->where('fecha_hora_inicio', '<', $fechaFin)
+                          ->where('fecha_hora_fin', '>', $fechaInicio);
+                })
+                ->whereHas('equipamientos', function ($q) use ($equipamientoIds) {
+                    $q->whereIn('equipamiento_id', $equipamientoIds);
+                })
+                ->with(['equipamientos', 'actividad'])
+                ->get();
+
+            foreach ($reservasSolapadas as $reservaSolapada) {
+                foreach ($reservaSolapada->equipamientos as $equipo) {
+                    if (in_array($equipo->id, $equipamientoIds)) {
+                        $msg = "El equipamiento '{$equipo->nombre}' está asignado a la actividad '{$reservaSolapada->actividad->nombre}' en ese horario.";
+                        $errores[] = $msg;
+
+                        $conflictosDetectados[] = [
+                            'tipo' => 'equipamiento_no_disponible',
+                            'espacio_id' => $espacioId,
+                            'equipamiento_id' => $equipo->id,
+                            'reserva_id' => $reservaSolapada->id,
+                            'descripcion' => $msg
+                        ];
+                    }
+                }
+            }
+        }
+
+        // 3. Registrar incidencias en la tabla 'conflicto' con las columnas exactas de PostgreSQL
         if (!empty($conflictosDetectados)) {
             foreach ($conflictosDetectados as $conflicto) {
-                $nuevoConflicto = Conflicto::create([
-                    'espacio_id' => $espacioId,
+                Conflicto::create([
+                    'tipo' => $conflicto['tipo'],
+                    'espacio_id' => $conflicto['espacio_id'] ?? null,
                     'equipamiento_id' => $conflicto['equipamiento_id'] ?? null,
-                    'reserva_id' => $conflicto['reserva_existente_id'],
-                    'tipo_conflicto' => $conflicto['tipo'],
-                    'descripcion' => $conflicto['descripcion'],
+                    'fecha_detectado' => now(),
                     'resuelto' => false,
-                    'fecha_deteccion' => now()
+                    'descripcion' => $conflicto['descripcion'],
                 ]);
-
-                // 🔔 Genera la alerta automática en la tabla 'alertas'
-                $this->alertaService->registrarAlertaConflicto(
-                    $nuevoConflicto->id,
-                    $conflicto['descripcion']
-                );
             }
         }
 
