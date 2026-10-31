@@ -11,19 +11,22 @@ import styles from './login.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('admin@innovalab.edu.ar')
-  const [password, setPassword] = useState('admin123')
-  const { setAuthData, getConfigApiInterceptor } = useContext(AuthContext)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { setAuthData } = useContext(AuthContext)
   const [showSpinner, setShowSpinner] = useState(true)
 
   const [error, setError] = useState(null)
   // funcion principal del login
+
+
+
   const handleLogin = async () => {
     const credentials = { email: email, password: password }
     try {
       const res = await loginPostCredentials(credentials)
       setAuthData(res.data)
-      console.log('Login exitoso')
+      console.log('Login exitoso: ', res.data)
       navigate('/dashboard')
     } catch (err) {
       console.log('Datos de respuesta:', err.response?.data)
@@ -47,11 +50,17 @@ export default function LoginPage() {
     setShowSpinner(false)
   }
 
- const handleIngresarCordinador = async () => {
-  setEmail("carlos@innovalab.edu.ar")
-  setPassword("admin123")
-  handleLogin()
- }
+  // botones credenciales predefinidas
+
+  const handleIngresarCordinador =  () => {
+    setEmail('carlos@innovalab.edu.ar')
+    setPassword('admin123')
+  }
+
+  const handleIngresarAdmin =  () => {
+    setEmail('admin@innovalab.edu.ar')
+    setPassword('admin123')
+  }
 
   return (
     // <div className="d-flex justify-content-center align-items-center vh-100">
@@ -129,11 +138,13 @@ export default function LoginPage() {
               <Row className="mt-1">
                 <h6>Espacio de prueba</h6>
 
-                <Row className='mt-3'>
-                  <Button onClick={handleIngresarCordinador}>Ingresar con credenciales coordinador</Button>
+                <Row className="mt-3">
+                  <Button onClick={handleIngresarCordinador}>
+                    Ingresar credenciales coordinador
+                  </Button>
                 </Row>
                 <Row className="mt-3">
-                  <Button>Ingresar con credenciales administrador</Button>
+                  <Button onClick={handleIngresarAdmin}>Ingresar credenciales administrador</Button>
                 </Row>
               </Row>
             </form>
