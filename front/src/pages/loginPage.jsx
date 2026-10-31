@@ -1,49 +1,57 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { loginPostCredentials } from "../utils/apiRoutes.js";
-import { Spinner } from "react-bootstrap";
-import { Alert } from "react-bootstrap";
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext.jsx'
+import { loginPostCredentials } from '../utils/apiRoutes.js'
+import { Spinner } from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 
-import styles from "./login.module.css";
+import styles from './login.module.css'
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@innovalab.edu.ar");
-  const [password, setPassword] = useState("admin123");
-  const { setAuthData, getConfigApiInterceptor } = useContext(AuthContext);
-  const [showSpinner, setShowSpinner] = useState(true);
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('admin@innovalab.edu.ar')
+  const [password, setPassword] = useState('admin123')
+  const { setAuthData, getConfigApiInterceptor } = useContext(AuthContext)
+  const [showSpinner, setShowSpinner] = useState(true)
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null)
   // funcion principal del login
   const handleLogin = async () => {
-    const credentials = { email: email, password: password };
+    const credentials = { email: email, password: password }
     try {
-      const res = await loginPostCredentials(credentials);
-      setAuthData(res.data);
-      console.log("Login exitoso");
-      navigate("/dashboard");
+      const res = await loginPostCredentials(credentials)
+      setAuthData(res.data)
+      console.log('Login exitoso')
+      navigate('/dashboard')
     } catch (err) {
-      console.log("Datos de respuesta:", err.response?.data);
-      console.log("Estado:", err.response?.status);
+      console.log('Datos de respuesta:', err.response?.data)
+      console.log('Estado:', err.response?.status)
 
       if (err.response?.status === 401) {
-        setError("Usuario o contraseña incorrectos");
+        setError('Usuario o contraseña incorrectos')
       } else if (err.response?.status === 422) {
-        setError("Los datos ingresados no son válidos");
+        setError('Los datos ingresados no son válidos')
       } else {
-        setError("Error al iniciar sesión. Intentá nuevamente.");
+        setError('Error al iniciar sesión. Intentá nuevamente.')
       }
       setShowSpinner(true)
     }
-  };
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setShowSpinner(true);
-    handleLogin();
-    setShowSpinner(false);
-  };
+    e.preventDefault()
+    setShowSpinner(true)
+    handleLogin()
+    setShowSpinner(false)
+  }
+
+ const handleIngresarCordinador = async () => {
+  setEmail("carlos@innovalab.edu.ar")
+  setPassword("admin123")
+  handleLogin()
+ }
 
   return (
     // <div className="d-flex justify-content-center align-items-center vh-100">
@@ -109,14 +117,29 @@ export default function LoginPage() {
               </div> */}
               {error && <Alert variant="danger">{error}</Alert>}
 
-              <button type="submit" className="btn w-100 mt-4 background-primary">
+              <button
+                type="submit"
+                className="btn w-100 mt-4 background-primary"
+              >
                 {!showSpinner ? <Spinner></Spinner> : <p>Ingresar</p>}
               </button>
               {/* mostrar error */}
+
+              <hr className="mt-5" />
+              <Row className="mt-1">
+                <h6>Espacio de prueba</h6>
+
+                <Row className='mt-3'>
+                  <Button onClick={handleIngresarCordinador}>Ingresar con credenciales coordinador</Button>
+                </Row>
+                <Row className="mt-3">
+                  <Button>Ingresar con credenciales administrador</Button>
+                </Row>
+              </Row>
             </form>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
