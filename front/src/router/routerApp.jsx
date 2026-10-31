@@ -18,6 +18,7 @@ import ResolverConflictoPage from '../pages/conflictos/resolverConflictoPage'
 import EditarEspacioPage from '../pages/espacios/editarEspacioPage'
 import NuevaReservaPage from '../pages/reservas/nuevaReservaPage'
 import CalendarioReservasPage from '../pages/calendario/calendarioReservasPage'
+import AlertasPage from '../pages/alertas/AlertasPage'
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
@@ -123,13 +124,20 @@ export default function RouterApp() {
               path="calendario"
               element={
                 <ProtectedRoute
-                  protectedRoles={[
-                    'Admin',
-                    'Coordinador',
-                    'Coordinadora',
-                  ]}
+                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
                 >
                   <CalendarioReservasPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="alertas"
+              element={
+                <ProtectedRoute
+                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
+                >
+                  <AlertasPage />
                 </ProtectedRoute>
               }
             />

@@ -156,3 +156,17 @@ export const getUsuarios = async (token) =>{
   })
   return res.data
 }
+
+
+//gestion alertas
+
+const GESTION_ALERTAS_ROUTE = `${API_BASE}/api/v1/alertas`
+
+export const getAlertas = async (token) =>{
+  const res = await api.get(GESTION_ALERTAS_ROUTE, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  return res.data
+}
