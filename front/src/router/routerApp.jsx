@@ -124,7 +124,7 @@ export default function RouterApp() {
               element={
                 <ProtectedRoute
                   protectedRoles={[
-                    'Admin InnovaLab',
+                    'Admin',
                     'Coordinador',
                     'Coordinadora',
                   ]}
