@@ -53,7 +53,9 @@ export default function LoginPage() {
   // botones credenciales predefinidas
 
   const handleIngresarCordinador =  () => {
-    setEmail('carlos@innovalab.edu.ar')
+    const usuarios = ["carlos@innovalab.edu.ar", "ana@innovalab.edu.ar"]
+    const valorAleatorio = usuarios[Math.floor(Math.random() * usuarios.length)]
+    setEmail(valorAleatorio)
     setPassword('admin123')
   }
 
