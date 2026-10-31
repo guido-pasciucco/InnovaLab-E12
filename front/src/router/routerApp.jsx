@@ -19,6 +19,7 @@ import EditarEspacioPage from '../pages/espacios/editarEspacioPage'
 import NuevaReservaPage from '../pages/reservas/nuevaReservaPage'
 import CalendarioReservasPage from '../pages/calendario/calendarioReservasPage'
 import AlertasPage from "../pages/alertas/AlertasPage";
+import AlertasPage from "../pages/alertas/AlertasPage";
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {

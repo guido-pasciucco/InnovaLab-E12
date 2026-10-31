@@ -107,20 +107,9 @@ export const postEspaciosApi = async (data, token) => {
     console.log("error", err.response?.data);
     throw err;
   }
-};
-
-// gestion de usuarios 
-const GESTION_USUARIOS_ROUTE = `${API_BASE}/api/v1/usuarios`
-
-export const getUsuarios = async (token) =>{
-  const res = await api.get(GESTION_USUARIOS_ROUTE,{
-    headers:{
-      Authorization:`Bearer ${token}`
-    }
-  })
-  return res.data
 }
-const DASHBOARD_ROUTE = `${API_BASE}/api/v1/dashboard/resumen`;
+
+const DASHBOARD_ROUTE = `${API_BASE}/api/v1/dashboard/resumen`
 export const getDashboardApi = async (token) => {
   try {
     console.log("Servicio api get dashboard...");
