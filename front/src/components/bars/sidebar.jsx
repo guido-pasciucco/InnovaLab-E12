@@ -1,18 +1,19 @@
-import { useContext } from "react";
-import { NavLink } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
-import { Row, Col } from "react-bootstrap";
+import { useContext } from 'react'
+import { NavLink } from 'react-router-dom'
+import { AuthContext } from '../../context/AuthContext'
+import { Row, Col } from 'react-bootstrap'
 
 export default function Sidebar() {
-  const { getRol } = useContext(AuthContext);
+  const { getRol } = useContext(AuthContext)
+  const rol = getRol()
 
   return (
     <div
       className="text-white p-3 d-flex flex-column background-primary overflow-y-auto"
       style={{
-        width: "220px",
-        height: "100vh",
-        position: "fixed",
+        width: '220px',
+        height: '100vh',
+        position: 'fixed',
         top: 0,
         left: 0,
       }}
@@ -74,14 +75,16 @@ export default function Sidebar() {
             Consultas IA
           </NavLink>
         </li>
-        <li className="nav-item">
-          <NavLink
-            className="nav-link text-white"
-            to="/dashboard/usuarios-y-roles"
-          >
-            Usuarios
-          </NavLink>
-        </li>
+        {rol == 'Admin' && (
+          <li className="nav-item">
+            <NavLink
+              className="nav-link text-white"
+              to="/dashboard/usuarios-y-roles"
+            >
+              Usuarios
+            </NavLink>
+          </li>
+        )}
         <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Configuracion
@@ -89,5 +92,5 @@ export default function Sidebar() {
         </li>
       </ul>
     </div>
-  );
+  )
 }
