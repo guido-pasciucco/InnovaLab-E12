@@ -144,3 +144,15 @@ export const postEquipamientoApi = async (data, token) => {
     throw err;
   }
 };
+
+// gestion de usuarios 
+const GESTION_USUARIOS_ROUTE = `${API_BASE}/api/v1/usuarios`
+
+export const getUsuarios = async (token) =>{
+  const res = await api.get(GESTION_USUARIOS_ROUTE,{
+    headers:{
+      Authorization:`Bearer ${token}`
+    }
+  })
+  return res.data
+}

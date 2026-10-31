@@ -25,8 +25,11 @@ function TablaGeneral({ datos = [] }) {
           <tr key={dato.id ?? index}>
             {columnas.map((columna) => (
               <td key={columna}>
-                {columna === "estado" ? (
+                {columna === "estado" || columna === "activo" ? (
                   <SelectedBadge label={dato[columna]} />
+                ) : typeof dato[columna] === "object" &&
+                  dato[columna] !== null ? (
+                  JSON.stringify(dato[columna])
                 ) : (
                   String(dato[columna] ?? "-")
                 )}

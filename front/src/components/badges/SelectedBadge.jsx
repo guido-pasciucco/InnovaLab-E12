@@ -8,6 +8,21 @@ function SelectedBadge({ bg = "success", label }) {
         </Badge>
     );
   } 
+
+  if ((label ==true)){
+    return (
+      <Badge pill bg="success">
+        Activo
+      </Badge>
+    )
+  }
+  if ((label == false)){
+    return(
+      <Badge bg="danger">
+        Inactivo
+      </Badge>
+    )
+  }
   
   if ((label == "fuera_de_servicio")){
     return (

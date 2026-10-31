@@ -1,29 +1,28 @@
+import { useEffect, useState, useContext } from "react";
+
+import { AuthContext } from "../../context/AuthContext";
+import { getUsuarios } from "../../utils/apiRoutes";
+import TablaGeneral from "../../components/tables/TablaGeneral";
+
 export default function UsuariosYRolesPage() {
-  const usuarios = [
-    {
-      id: 1,
-      nombre: "Juan Pérez",
-      rol: "Administrador",
-      estado: "Activo",
-    },
-    {
-      id: 2,
-      nombre: "María Gómez",
-      rol: "Cordinador",
-      estado: "Inactivo",
-    },
-    {
-      id: 3,
-      nombre: "Pedro López",
-      rol: "Cordinador",
-      estado: "Activo",
-    },
-  ];
+  const [data, setData] = useState();
+
+  const { getTokken } = useContext(AuthContext);
+
+  const getUsuariosData = async () =>{
+    const res = await getUsuarios(getTokken())
+    console.log(res.data)
+    setData(res.data)
+    console.log("data cargada ", data)
+  }
+  useEffect(() => {
+    getUsuariosData()
+  }, []);
 
   return (
     <>
       <div className="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h1 className="h1">Usuarios y roles page (SIMULADO)</h1>
+        <h1 className="h1">Usuarios y roles page</h1>
         <button
           className="btn btn-primary"
           data-bs-toggle="modal"
@@ -32,40 +31,8 @@ export default function UsuariosYRolesPage() {
           Agregar usuario
         </button>
       </div>
-      <table className="table table-striped table-hover align-middle">
-        <thead className="table-dark">
-          <tr>
-            <th>Nombre</th>
-            <th>Rol</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {usuarios.map((usuario) => (
-            <tr key={usuario.id}>
-              <td>{usuario.nombre}</td>
-
-              <td>
-                <span className="badge text-bg-primary">{usuario.rol}</span>
-              </td>
-
-              <td>
-                <span
-                  className={
-                    usuario.estado === "Activo"
-                      ? "badge text-bg-success"
-                      : "badge text-bg-danger"
-                  }
-                >
-                  {usuario.estado}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
+      {/* ingresamos tabla */}
+      <TablaGeneral datos={data}/>
       {/* modal al tocar boton */}
       <div
         className="modal fade"
