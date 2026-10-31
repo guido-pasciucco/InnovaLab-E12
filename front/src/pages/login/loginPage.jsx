@@ -135,7 +135,7 @@ export default function LoginPage() {
               {/* mostrar error */}
 
               <hr className="mt-5" />
-              <Row className="mt-1">
+              <Row className="mt-1 justify-content-center">
                 <h6>Espacio de prueba</h6>
 
                 <Row className="mt-3">
