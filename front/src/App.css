@@ -167,7 +167,7 @@
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
@@ -181,4 +181,54 @@
     right: 0;
     border-right-color: var(--border);
   }
+}
+
+/* estilos propios */
+.background-primary {
+  background-color: #1d3343;
+  color: #ffffff;
+}
+
+.background-secondary {
+  background-color: white;
+  color: 1D3343;
+}
+
+.nav-item {
+  display: block;
+  padding: 10px 15px;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+/* Al pasar el mouse */
+.nav-item:hover {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+/* Opción seleccionada */
+.nav-item.active {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn:hover,
+.btn:active {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.btn-primary {
+  background-color: #1d3343;
+  color: #ffffff;
+  
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #1d3343;
+  border: 1px solid #1d3343;
 }

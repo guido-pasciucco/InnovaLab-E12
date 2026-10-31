@@ -1,0 +1,14 @@
+.fieldsTable {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+td {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+}
