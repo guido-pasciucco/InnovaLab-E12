@@ -19,6 +19,7 @@ import EditarEspacioPage from "../pages/espacios/editarEspacioPage";
 import NuevaReservaPage from "../pages/reservas/nuevaReservaPage";
 import CalendarioReservasPage from "../pages/calendario/calendarioReservasPage";
 import ActividadesPage from "../pages/actividades/ActividadesPage";
+import AlertasPage from '../pages/alertas/AlertasPage'
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
@@ -138,6 +139,17 @@ export default function RouterApp() {
                   protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
                 >
                   <ActividadesPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="alertas"
+              element={
+                <ProtectedRoute
+                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
+                >
+                  <AlertasPage />
                 </ProtectedRoute>
               }
             />

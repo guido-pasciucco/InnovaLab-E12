@@ -169,3 +169,17 @@ export const getActividades = async (token) =>{
 
   return res
 }
+
+
+//gestion alertas
+
+const GESTION_ALERTAS_ROUTE = `${API_BASE}/api/v1/alertas`
+
+export const getAlertas = async (token) =>{
+  const res = await api.get(GESTION_ALERTAS_ROUTE, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  return res.data
+}
