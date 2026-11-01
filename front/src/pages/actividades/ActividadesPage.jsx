@@ -17,7 +17,7 @@ export default function ActividadesPage() {
 
   useEffect(() => {
     getDataApi();
-  });
+  },[]);
 
   return <TablaGeneral datos={data} />;
 }

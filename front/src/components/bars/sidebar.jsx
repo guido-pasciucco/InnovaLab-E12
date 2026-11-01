@@ -50,11 +50,13 @@ export default function Sidebar() {
             Equipamiento
           </NavLink>
         </li>
-        <li className="nav-item">
+        {/* mantenimiento en evaluacion */}
+        
+        {/* <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Mantenimiento
           </NavLink>
-        </li>
+        </li> */}
         <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/actividades">
             Actividades
