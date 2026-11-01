@@ -55,7 +55,7 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+          <NavLink className="nav-link text-white" to="/dashboard/actividades">
             Actividades
           </NavLink>
         </li>
@@ -82,11 +82,13 @@ export default function Sidebar() {
             Usuarios
           </NavLink>
         </li>
-        <li className="nav-item">
+        {/* nav opcion en consideracion */}
+
+        {/* <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Configuracion
           </NavLink>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

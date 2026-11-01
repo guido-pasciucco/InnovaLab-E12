@@ -155,4 +155,17 @@ export const getUsuarios = async (token) =>{
     }
   })
   return res.data
+} 
+
+// gestion de actividades
+const GESTION_DE_ACTIVIDADES = `${API_BASE}/api/v1/actividades`
+
+export const getActividades = async (token) =>{
+  const res = await api.get(GESTION_DE_ACTIVIDADES,{
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return res
 }
