@@ -9,15 +9,18 @@ export default function ActividadesPage() {
   const { getTokken } = useContext(AuthContext);
   const token = getTokken();
 
+  const [showSpinner, setShowSpinner] = useState(true)
+
   const getDataApi = async () => {
     const res = await getActividades(token);
     console.log("res actividades: ", res)
     setData(res.data.data);
+    setShowSpinner(false)
   };
 
   useEffect(() => {
     getDataApi();
   },[]);
 
-  return <TablaGeneral datos={data} />;
+  return <TablaGeneral datos={data} showSpinner={showSpinner}/>;
 }

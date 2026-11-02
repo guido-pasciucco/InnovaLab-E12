@@ -9,11 +9,15 @@ export default function DashboardPrincipalPage() {
   const [dataApi, setDataApi] = useState([]);
   const { getTokken } = useContext(AuthContext);
 
+  const [showSpinner, setShowSpinner] = useState(true)
+
+
   const getData = async () => {
     console.log("Ejecutando getData con tokken", getTokken());
     const data = await getDashboardApi(getTokken());
     console.log("data en dashboard cargada: ", data.data);
     setDataApi(data.data);
+    setShowSpinner(false)
   };
 
   useEffect(() => {
@@ -101,7 +105,7 @@ export default function DashboardPrincipalPage() {
             <Card.Body>
               <h5>Alarmas recientes</h5>
 
-              <TablaGeneral datos={dataApi?.alertas ?? []} />
+              <TablaGeneral datos={dataApi?.alertas ?? []} showSpinner = {showSpinner}/>
             </Card.Body>
           </Card>
         </Col>
@@ -113,7 +117,7 @@ export default function DashboardPrincipalPage() {
           <Card className="shadow-sm">
             <Card.Body>
               <h5>Actividades hoy</h5>
-              <TablaGeneral datos={dataApi?.actividades_hoy ?? []} />
+              <TablaGeneral datos={dataApi?.actividades_hoy ?? []} showSpinner = {showSpinner} />
             </Card.Body>
           </Card>
         </Col>

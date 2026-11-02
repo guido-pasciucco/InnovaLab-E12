@@ -9,14 +9,17 @@ export default function UsuariosYRolesPage() {
 
   const { getTokken } = useContext(AuthContext);
 
-  const getUsuariosData = async () =>{
-    const res = await getUsuarios(getTokken())
-    console.log(res.data)
-    setData(res.data)
-    console.log("data cargada ", data)
-  }
+  const [showSpinner, setShowSpinner] = useState(true);
+
+  const getUsuariosData = async () => {
+    const res = await getUsuarios(getTokken());
+    console.log(res.data);
+    setData(res.data);
+    console.log("data cargada ", data);
+    setShowSpinner(false)
+  };
   useEffect(() => {
-    getUsuariosData()
+    getUsuariosData();
   }, []);
 
   return (
@@ -32,7 +35,7 @@ export default function UsuariosYRolesPage() {
         </button>
       </div>
       {/* ingresamos tabla */}
-      <TablaGeneral datos={data}/>
+      <TablaGeneral datos={data} showSpinner={showSpinner} />
       {/* modal al tocar boton */}
       <div
         className="modal fade"

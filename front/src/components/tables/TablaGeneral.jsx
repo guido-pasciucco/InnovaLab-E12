@@ -1,10 +1,19 @@
 import { Table } from "react-bootstrap";
 import SelectedBadge from "../badges/SelectedBadge";
+import { Spinner } from "react-bootstrap";
 
-function TablaGeneral({ datos = [] }) {
+function TablaGeneral({ datos = [], showSpinner = false }) {
   // Evita errores si la API todavía no devolvió datos
+  if (showSpinner) {
+    return (
+      <div className="d-flex justify-content-center p-4">
+        <Spinner animation="border" />
+      </div>
+    );
+  }
+
   if (!datos.length) {
-    return <p>No hay datos para mostrar.</p>;
+    return <p className="text-muted text-center">No hay registros.</p>;
   }
 
   // Obtiene las propiedades del primer objeto
