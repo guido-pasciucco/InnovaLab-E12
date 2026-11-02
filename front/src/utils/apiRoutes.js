@@ -183,3 +183,19 @@ export const getAlertas = async (token) =>{
   })
   return res.data
 }
+
+
+// modulo IA
+
+const CHAT_IA_ROUTE = `${API_BASE}/api/v1/consultas-ia`
+
+export const postChatIa = async (token, pregunta) =>{
+
+  const res = await api.post(CHAT_IA_ROUTE, {pregunta} ,{
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return res.data
+}

@@ -1,11 +1,14 @@
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import {
   Card,
   Form,
   Button,
   Spinner,
 } from 'react-bootstrap'
+import { postChatIa } from '../../utils/apiRoutes'
+import { AuthContext } from '../../context/AuthContext'
+
 
 export default function ChatIaPage() {
   const [mensaje, setMensaje] = useState('')
@@ -18,6 +21,9 @@ export default function ChatIaPage() {
     }
   ])
 
+  const {getTokken} = useContext(AuthContext)
+  const token = getTokken()
+
   const mensajesEndRef = useRef(null)
 
   useEffect(() => {
@@ -25,6 +31,13 @@ export default function ChatIaPage() {
       behavior: 'smooth'
     })
   }, [mensajes])
+
+  const recibirMensajeApi = async ()=>{
+    console.log("Haciendo consulta mensaje: ", mensaje)
+    const res = await postChatIa(token,mensaje)
+    console.log("Respuesta api chat ia: ", res)
+    return res.data?.respuesta
+  }
 
   const enviarMensaje = async (e) => {
     e.preventDefault()
@@ -41,18 +54,26 @@ export default function ChatIaPage() {
     setMensaje('')
     setCargando(true)
 
-    // Simulación de respuesta de IA
-    setTimeout(() => {
-      setMensajes(prev => [
-        ...prev,
-        {
-          tipo: 'ia',
-          texto: 'Esta es una respuesta simulada de la inteligencia artificial.'
-        }
-      ])
+    const mensajeIa = recibirMensajeApi()
 
-      setCargando(false)
-    }, 1500)
+    setMensajes(prev => [
+      ...prev,
+      {tipo:'ia', texto: mensajeIa}
+    ])
+
+    setCargando(false)
+    // Simulación de respuesta de IA
+    // setTimeout(() => {
+    //   setMensajes(prev => [
+    //     ...prev,
+    //     {
+    //       tipo: 'ia',
+    //       texto: 'Esta es una respuesta simulada de la inteligencia artificial.'
+    //     }
+    //   ])
+
+    //   setCargando(false)
+    // }, 1500)
   }
 
   return (
