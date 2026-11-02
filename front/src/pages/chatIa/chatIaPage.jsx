@@ -54,7 +54,7 @@ export default function ChatIaPage() {
     setMensaje('')
     setCargando(true)
 
-    const mensajeIa = recibirMensajeApi()
+    const mensajeIa = await recibirMensajeApi()
 
     setMensajes(prev => [
       ...prev,
