@@ -20,6 +20,7 @@ import NuevaReservaPage from "../pages/reservas/nuevaReservaPage";
 import CalendarioReservasPage from "../pages/calendario/calendarioReservasPage";
 import ActividadesPage from "../pages/actividades/ActividadesPage";
 import AlertasPage from '../pages/alertas/AlertasPage'
+import ChatIaPage from "../pages/chatIa/chatIaPage";
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
@@ -150,6 +151,17 @@ export default function RouterApp() {
                   protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
                 >
                   <AlertasPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="chatia"
+              element={
+                <ProtectedRoute
+                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
+                >
+                  <ChatIaPage />
                 </ProtectedRoute>
               }
             />
