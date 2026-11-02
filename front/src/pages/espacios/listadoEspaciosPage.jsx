@@ -1,78 +1,88 @@
-import GenericTable from "../../components/tables/table.jsx";
-import Search from "../../components/others/search.jsx";
-import GenericSelect from "../../components/others/select.jsx";
+import GenericTable from '../../components/tables/table.jsx'
+import Search from '../../components/others/search.jsx'
+import GenericSelect from '../../components/others/select.jsx'
 // import { listaItems } from "../services/items.js";
-import { useState } from "react";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import { Modal, Button, Form } from "react-bootstrap";
-import { getEspaciosApi, postEspaciosApi } from "../../utils/apiRoutes.js";
-import { Spinner } from "react-bootstrap";
+import { useState } from 'react'
+import { useContext, useEffect } from 'react'
+import { AuthContext } from '../../context/AuthContext.jsx'
+import { Modal, Button, Form } from 'react-bootstrap'
+import { getEspaciosApi, postEspaciosApi } from '../../utils/apiRoutes.js'
+import { Spinner } from 'react-bootstrap'
 
 export default function ListadoEspaciosPage() {
-  const [showSpinner, setShowSpinner] = useState(true);
-  const [terminoBusqueda, setTerminoBusqueda] = useState("");
+  const [showSpinner, setShowSpinner] = useState(true)
+  const [terminoBusqueda, setTerminoBusqueda] = useState('')
+  const [terminoBusquedaEstado, setTerminoBusquedaEstado] = useState('')
 
-  const [datosAPI, setDatosAPI] = useState([]); // Estado para almacenar los datos obtenidos de la API
-  const [cargando, setCargando] = useState(true);
+  const [datosAPI, setDatosAPI] = useState([]) // Estado para almacenar los datos obtenidos de la API
+  const [cargando, setCargando] = useState(true)
 
-  const { getTokken } = useContext(AuthContext);
+  const { getTokken } = useContext(AuthContext)
 
+  const resultadosFiltrados = datosAPI.filter((item) => {
+    const coincideNombre = item.nombre
+      .toLowerCase()
+      .includes(terminoBusqueda.toLowerCase())
 
-  const resultadosFiltrados = datosAPI.filter((item) =>
-    item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()),
-  );
+    console.log(item)
+    console.log(terminoBusquedaEstado)
+    const coincideEstado = item.estado
+      .toLowerCase()
+      .includes(terminoBusquedaEstado.toLowerCase())
+
+    console.log(coincideEstado)
+    return coincideEstado && coincideNombre
+  })
 
   const getData = async () => {
-    const res = await getEspaciosApi(getTokken());
-    console.log(res.data.data);
-    setDatosAPI(res.data.data);
-    setShowSpinner(false);
-  };
+    const res = await getEspaciosApi(getTokken())
+    console.log(res.data.data)
+    setDatosAPI(res.data.data)
+    setShowSpinner(false)
+  }
 
   useEffect(() => {
-    getData();
-  }, []);
-
+    getData()
+  }, [])
 
   // post eequipamiento
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
   const [formData, setFormData] = useState({
-    nombre: "Taller de RCP y Reanimación Avanzada",
-    descripcion: "Práctica intensiva con simuladores de alta fidelidad",
-    tipo: "Taller",
+    nombre: 'Taller de RCP y Reanimación Avanzada',
+    descripcion: 'Práctica intensiva con simuladores de alta fidelidad',
+    tipo: 'Taller',
     capacidad: 25,
-    estado: "planificada",
-    ubicacion: "Planta baja",
+    estado: 'planificada',
+    ubicacion: 'Planta baja',
     docente_id: 1,
-  });
+  })
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Datos enviados:", formData);
+    e.preventDefault()
+    console.log('Datos enviados:', formData)
     // acá podrías hacer un fetch/axios POST a tu
     try {
-      await postEspaciosApi(formData, getTokken());
-      console.log("Datos cargados correctamente")
+      await postEspaciosApi(formData, getTokken())
+      console.log('Datos cargados correctamente')
       setShowSpinner(true)
       getData()
     } catch (err) {
-      console.log("Error:");
-      console.log(err.response?.data);
+      console.log('Error:')
+      console.log(err.response?.data)
     }
 
-    handleClose();
-  };
+    handleClose()
+  }
 
   return (
     <>
@@ -81,10 +91,7 @@ export default function ListadoEspaciosPage() {
           <h1 className="text-start h1">Espacios</h1>
         </div>
         <div className="d-flex flex-row gap-2">
-          <button
-            className="btn btn-primary text-nowrap"
-            onClick={handleShow}
-          >
+          <button className="btn btn-primary text-nowrap" onClick={handleShow}>
             Agregar espacio
           </button>
         </div>
@@ -93,31 +100,36 @@ export default function ListadoEspaciosPage() {
         <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
           <div
             className="d-flex align-items-center gap-3 w-100"
-            style={{ maxWidth: "75%" }}
+            style={{ maxWidth: '75%' }}
           >
-            <div style={{ minWidth: "250px", width: "100%" }}>
+            <div style={{ minWidth: '250px', width: '100%' }}>
               <Search
                 text="Buscar espacios"
                 terminoBusqueda={terminoBusqueda}
                 setTerminoBusqueda={setTerminoBusqueda}
               />
             </div>
-            <div style={{ minWidth: "100px", width: "20%" }}>
+            <div style={{ minWidth: '100px', width: '20%' }}>
               <GenericSelect
-                text="Estado"
+                text=""
                 opciones={[
-                  "Disponible",
-                  "En uso",
-                  "Confirmado",
-                  "Borrador",
-                  "Fuera de servicio",
-                  "En mantenimiento",
+                  'Disponible',
+                  'En uso',
+                  'Confirmado',
+                  'Borrador',
+                  'Fuera de servicio',
+                  'mantenimiento',
                 ]}
+                onChange={(e) => setTerminoBusquedaEstado(e.target.value)}
               />
             </div>
           </div>
         </div>
-        {showSpinner ? <Spinner /> : <GenericTable items={resultadosFiltrados} />}
+        {showSpinner ? (
+          <Spinner />
+        ) : (
+          <GenericTable items={resultadosFiltrados} />
+        )}
       </div>
 
       {/* modal del post */}
@@ -207,5 +219,5 @@ export default function ListadoEspaciosPage() {
         </Modal.Body>
       </Modal>
     </>
-  );
+  )
 }
