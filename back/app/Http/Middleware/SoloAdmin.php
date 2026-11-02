@@ -8,16 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SoloAdmin
 {
-    /**
-     * Permite el acceso únicamente si el usuario tiene rol Administrador (rol_id == 1).
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        $usuario = $request->user();
 
-        if (!$user || ($user->rol_id !== 1 && strtolower($user->rol?->nombre ?? '') !== 'administrador')) {
+        if (!$usuario || ($usuario->rol_id !== 1 && !$usuario->es_admin)) {
             return response()->json([
-                'message' => 'Acceso denegado. Se requieren permisos de Administrador para gestionar usuarios.'
+                'message' => 'Acceso no autorizado. Se requieren permisos de Administrador.'
             ], 403);
         }
 
