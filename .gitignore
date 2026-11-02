@@ -1,0 +1,10 @@
+
+# Scripts de pruebas locales
+*.sh
+probando-api.sh
+prueba-api.sh
+
+# Scripts de pruebas locales con credenciales
+*.sh
+probando-api.sh
+prueba-api.sh
