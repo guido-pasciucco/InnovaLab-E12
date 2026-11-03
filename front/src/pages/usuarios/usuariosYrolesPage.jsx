@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 
 import { AuthContext } from "../../context/AuthContext";
-import { getUsuarios } from "../../utils/apiRoutes";
+import { getUsuarios, postUsuarios } from "../../utils/apiRoutes";
 import TablaGeneral from "../../components/tables/TablaGeneral";
 import PostModal from "../../components/modals/PostModal";
 
@@ -31,8 +31,11 @@ export default function UsuariosYRolesPage() {
     setShow(false)
   }
 
-  const onSubmit = () =>{
-
+  const onSubmit =async (formData) =>{
+    console.log(formData)
+    const res = await postUsuarios(getTokken(), formData)
+    console.log("post usuarios satisfactorio: ", res)
+    setShow(false)
   }
 
 
@@ -45,24 +48,24 @@ export default function UsuariosYRolesPage() {
     required: true
   },
   {
-    name: "capacidad",
-    label: "Capacidad",
-    type: "number",
+    name: "email",
+    label: "Email",
+    type: "email",
     required: true
   },
   {
-    name: "tipo",
-    label: "Tipo",
+    name: "rol_id",
+    label: "Rol Id",
     type: "select",
     options: [
-      { value: "Laboratorio", label: "Laboratorio" },
-      { value: "Aula", label: "Aula" }
+      { value: "1", label: "Administrador" },
+      { value: "2", label: "Coordinador" }
     ]
   },
   {
-    name: "descripcion",
-    label: "Descripción",
-    type: "textarea"
+    name: "password",
+    label: "Password",
+    type: "password"
   }
 ];
 

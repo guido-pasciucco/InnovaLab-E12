@@ -157,6 +157,16 @@ export const getUsuarios = async (token) =>{
   return res.data
 } 
 
+export const postUsuarios = async (token, data) => {
+  const res = await api.post(GESTION_USUARIOS_ROUTE, data, {
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
+
+
+
 // gestion de actividades
 const GESTION_DE_ACTIVIDADES = `${API_BASE}/api/v1/actividades`
 
