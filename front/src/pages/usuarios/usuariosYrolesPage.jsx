@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { getUsuarios } from "../../utils/apiRoutes";
 import TablaGeneral from "../../components/tables/TablaGeneral";
+import PostModal from "../../components/modals/PostModal";
 
 export default function UsuariosYRolesPage() {
   const [data, setData] = useState();
@@ -22,14 +23,60 @@ export default function UsuariosYRolesPage() {
     getUsuariosData();
   }, []);
 
+  const [show, setShow] = useState(false)
+  const handleShow = () =>{
+    setShow(true)
+  }
+  const onHide = ()=>{
+    setShow(false)
+  }
+
+  const onSubmit = () =>{
+
+  }
+
+
+  // ejemplo de columnas
+  const columnas = [
+  {
+    name: "nombre",
+    label: "Nombre",
+    type: "text",
+    required: true
+  },
+  {
+    name: "capacidad",
+    label: "Capacidad",
+    type: "number",
+    required: true
+  },
+  {
+    name: "tipo",
+    label: "Tipo",
+    type: "select",
+    options: [
+      { value: "Laboratorio", label: "Laboratorio" },
+      { value: "Aula", label: "Aula" }
+    ]
+  },
+  {
+    name: "descripcion",
+    label: "Descripción",
+    type: "textarea"
+  }
+];
+
+// para usar datos seleccionados objeto name con su valor
+
+
+
   return (
     <>
       <div className="d-flex justify-content-between align-items-center mb-3 mt-5">
         <h1 className="h1">Usuarios y roles page</h1>
         <button
           className="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#miModal"
+          onClick={handleShow}
         >
           Agregar usuario
         </button>
@@ -37,47 +84,14 @@ export default function UsuariosYRolesPage() {
       {/* ingresamos tabla */}
       <TablaGeneral datos={data} showSpinner={showSpinner} />
       {/* modal al tocar boton */}
-      <div
-        className="modal fade"
-        id="miModal"
-        tabIndex="-1"
-        aria-labelledby="miModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            {/* Encabezado */}
-            <div className="modal-header">
-              <h5 className="modal-title" id="miModalLabel">
-                Título del Modal
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Cerrar"
-              ></button>
-            </div>
-
-            {/* Cuerpo */}
-            <div className="modal-body">Contenido del modal...</div>
-
-            {/* Pie */}
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cerrar
-              </button>
-              <button type="button" className="btn btn-primary">
-                Guardar cambios
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PostModal
+      show={show}
+      onHide={onHide}
+      onSubmit={onSubmit}
+      titulo=""
+      columnas={columnas}
+      datosIniciales={null}
+      />
     </>
   );
 }
