@@ -1,35 +1,35 @@
-import { useContext, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
-import MyModal from './MyModal'
-import { useNavigate } from 'react-router-dom'
-import { logoutPost } from '../utils/apiRoutes'
+import { useContext, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import MyModal from "../modals/MyModal";
+import { useNavigate } from "react-router-dom";
+import { logoutPost } from "../../utils/apiRoutes";
 
 export default function Topbar() {
-  const { getRol, limpiarUsuario, getTokken } = useContext(AuthContext)
-  const [mostrarModal, setMostrarModal] = useState(false)
-  const navigate = useNavigate()
+  const { getRol, limpiarUsuario, getTokken } = useContext(AuthContext);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const navigate = useNavigate();
 
-  const location = useLocation()
+  const location = useLocation();
 
-  const path = location.pathname
+  const path = location.pathname;
 
-  const pagina = path.split('/').pop()
+  const pagina = path.split("/").pop();
 
   const cerrarSesion = async () => {
-    await logoutPost(getTokken())
-    limpiarUsuario()
-    await navigate('/login')
-    console.log('Sesion cerrada, se limpian credenciales de usuario')
-  }
+    await logoutPost(getTokken());
+    limpiarUsuario();
+    await navigate("/login");
+    console.log("Sesion cerrada, se limpian credenciales de usuario");
+  };
 
   const handleCancel = () => {
-    setMostrarModal(false)
-  }
+    setMostrarModal(false);
+  };
 
   const handleLogOut = () => {
-    setMostrarModal(true)
-  }
+    setMostrarModal(true);
+  };
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary mb-5">
@@ -60,5 +60,5 @@ export default function Topbar() {
         handleCancel={handleCancel}
       />
     </nav>
-  )
+  );
 }

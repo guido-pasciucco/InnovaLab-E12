@@ -6,18 +6,21 @@ import {
 } from "react-router-dom";
 import Layout from "../layout/layout";
 
-import LoginPage from "../pages/loginPage";
-import DashboardPrincipalPage from "../pages/dashboardPrincipalPage";
-import ListadoEspaciosPage from "../pages/listadoEspaciosPage";
+import LoginPage from "../pages/login/loginPage";
+import DashboardPrincipalPage from "../pages/dashboard/dashboardPrincipalPage";
+import ListadoEspaciosPage from "../pages/espacios/listadoEspaciosPage";
 import ProtectedRoute from "./ProtectedRoute";
-import UsuariosYrolesPage from "../pages/usuariosYrolesPage";
-import ListadoEquipamientoPage from "../pages/listadoEquipamientoPage"
-import EspacioDetallePage from "../pages/EspacioDetallePage";
-import ListadoReservasPage from "../pages/ListadoReservasPage";
-import ResolverConflictoPage from "../pages/resolverConflictoPage";
-import EditarEspacioPage from "../pages/editarEspacioPage";
-import NuevaReservaPage from "../pages/nuevaReservaPage";
-import CalendarioReservasPage from "../pages/calendarioReservasPage";
+import UsuariosYrolesPage from "../pages/usuarios/usuariosYrolesPage";
+import ListadoEquipamientoPage from "../pages/equipamientos/listadoEquipamientoPage";
+import EspacioDetallePage from "../pages/espacios/EspacioDetallePage";
+import ListadoReservasPage from "../pages/reservas/ListadoReservasPage";
+import ResolverConflictoPage from "../pages/conflictos/resolverConflictoPage";
+import EditarEspacioPage from "../pages/espacios/editarEspacioPage";
+import NuevaReservaPage from "../pages/reservas/nuevaReservaPage";
+import CalendarioReservasPage from "../pages/calendario/calendarioReservasPage";
+import ActividadesPage from "../pages/actividades/ActividadesPage";
+import AlertasPage from '../pages/alertas/AlertasPage'
+import ChatIaPage from "../pages/chatIa/chatIaPage";
 // import {listaEspacios} from "../services/espacios";
 
 export default function RouterApp() {
@@ -34,7 +37,7 @@ export default function RouterApp() {
               index
               element={
                 <ProtectedRoute
-                  protectedRoles={["Admin InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
                 >
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
@@ -45,7 +48,7 @@ export default function RouterApp() {
               path="desarrollo"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Admin InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
                 >
                   <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
@@ -54,7 +57,7 @@ export default function RouterApp() {
             <Route
               path="usuarios-y-roles"
               element={
-                <ProtectedRoute protectedRoles={["Admin InnovaLab"]}>
+                <ProtectedRoute protectedRoles={["Admin"]}>
                   <UsuariosYrolesPage />
                 </ProtectedRoute>
               }
@@ -63,7 +66,7 @@ export default function RouterApp() {
               path="espacios"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Admin InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
                 >
                   <ListadoEspaciosPage />
                 </ProtectedRoute>
@@ -72,7 +75,9 @@ export default function RouterApp() {
             <Route
               path="espacios/:id"
               element={
-                <ProtectedRoute protectedRoles={["Admin InnovaLab", "Coordinador"]}>
+                <ProtectedRoute
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
+                >
                   <EspacioDetallePage />
                 </ProtectedRoute>
               }
@@ -81,7 +86,7 @@ export default function RouterApp() {
               path="equipamiento"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Admin InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
                 >
                   <ListadoEquipamientoPage />
                 </ProtectedRoute>
@@ -91,7 +96,7 @@ export default function RouterApp() {
               path="nueva-reserva"
               element={
                 <ProtectedRoute
-                  protectedRoles={["Admin InnovaLab", "coordinador"]}
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
                 >
                   <NuevaReservaPage />
                 </ProtectedRoute>
@@ -100,7 +105,9 @@ export default function RouterApp() {
             <Route
               path="resolver-conflicto"
               element={
-                <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
+                <ProtectedRoute
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
+                >
                   <ResolverConflictoPage />
                 </ProtectedRoute>
               }
@@ -108,7 +115,9 @@ export default function RouterApp() {
             <Route
               path="espacios/:id/editar-espacio"
               element={
-                <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
+                <ProtectedRoute
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
+                >
                   <EditarEspacioPage />
                 </ProtectedRoute>
               }
@@ -116,8 +125,43 @@ export default function RouterApp() {
             <Route
               path="calendario"
               element={
-                <ProtectedRoute protectedRoles={["Admin InnovaLab", "coordinador"]}>
+                <ProtectedRoute
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
+                >
                   <CalendarioReservasPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="actividades"
+              element={
+                <ProtectedRoute
+                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
+                >
+                  <ActividadesPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="alertas"
+              element={
+                <ProtectedRoute
+                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
+                >
+                  <AlertasPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="chatia"
+              element={
+                <ProtectedRoute
+                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
+                >
+                  <ChatIaPage />
                 </ProtectedRoute>
               }
             />

@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   // Al iniciar, leemos el rol guardado
 
   const getRol = () => {
-    return authData.user?.nombre || ""; 
+    return authData.user?.nombre.split(" ")[0] || ""; 
   };
 
   const getTypeAndToken = () => {

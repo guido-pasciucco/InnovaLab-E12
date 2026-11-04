@@ -1,10 +1,11 @@
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
+import { AuthContext } from '../../context/AuthContext'
 import { Row, Col } from 'react-bootstrap'
 
 export default function Sidebar() {
   const { getRol } = useContext(AuthContext)
+  const rol = getRol()
 
   return (
     <div
@@ -18,14 +19,20 @@ export default function Sidebar() {
       }}
     >
       <Row>
-        <Col className='m-3'>
-          <img src="/icon_cs.png" alt="" width={34} height={34} className='mx-1' />
+        <Col className="m-3">
+          <img
+            src="/icon_cs.png"
+            alt=""
+            width={34}
+            height={34}
+            className="mx-1"
+          />
           <span>Innova.lab</span>
         </Col>
       </Row>
 
       <h5 className="mb-4">Centro de simulacion</h5>
-      <h6 className='small text-secondary'>Rol: {getRol()}</h6>
+      <h6 className="small text-secondary">Rol: {getRol()}</h6>
 
       <ul className="nav flex-column mt-5">
         <li className="nav-item">
@@ -43,13 +50,15 @@ export default function Sidebar() {
             Equipamiento
           </NavLink>
         </li>
-        <li className="nav-item">
+        {/* mantenimiento en evaluacion */}
+        
+        {/* <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Mantenimiento
           </NavLink>
-        </li>
+        </li> */}
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+          <NavLink className="nav-link text-white" to="/dashboard/actividades">
             Actividades
           </NavLink>
         </li>
@@ -59,28 +68,32 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+          <NavLink className="nav-link text-white" to="/dashboard/alertas">
             Alertas
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
+          <NavLink className="nav-link text-white" to="/dashboard/chatia">
             Consultas IA
           </NavLink>
         </li>
-        <li className="nav-item">
-          <NavLink
-            className="nav-link text-white"
-            to="/dashboard/usuarios-y-roles"
-          >
-            Usuarios
-          </NavLink>
-        </li>
-        <li className="nav-item">
+        {rol == 'Admin' && (
+          <li className="nav-item">
+            <NavLink
+              className="nav-link text-white"
+              to="/dashboard/usuarios-y-roles"
+            >
+              Usuarios
+            </NavLink>
+          </li>
+        )}
+        {/* nav opcion en consideracion */}
+
+        {/* <li className="nav-item">
           <NavLink className="nav-link text-white" to="/dashboard/desarrollo">
             Configuracion
           </NavLink>
-        </li>
+        </li> */}
       </ul>
     </div>
   )

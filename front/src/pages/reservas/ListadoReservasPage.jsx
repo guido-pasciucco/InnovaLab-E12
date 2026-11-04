@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 
 export default function ListadoReservasPage() {
 

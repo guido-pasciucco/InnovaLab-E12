@@ -144,3 +144,58 @@ export const postEquipamientoApi = async (data, token) => {
     throw err;
   }
 };
+
+// gestion de usuarios 
+const GESTION_USUARIOS_ROUTE = `${API_BASE}/api/v1/usuarios`
+
+export const getUsuarios = async (token) =>{
+  const res = await api.get(GESTION_USUARIOS_ROUTE,{
+    headers:{
+      Authorization:`Bearer ${token}`
+    }
+  })
+  return res.data
+} 
+
+// gestion de actividades
+const GESTION_DE_ACTIVIDADES = `${API_BASE}/api/v1/actividades`
+
+export const getActividades = async (token) =>{
+  const res = await api.get(GESTION_DE_ACTIVIDADES,{
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return res
+}
+
+
+//gestion alertas
+
+const GESTION_ALERTAS_ROUTE = `${API_BASE}/api/v1/alertas`
+
+export const getAlertas = async (token) =>{
+  const res = await api.get(GESTION_ALERTAS_ROUTE, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  return res.data
+}
+
+
+// modulo IA
+
+const CHAT_IA_ROUTE = `${API_BASE}/api/v1/consultas-ia`
+
+export const postChatIa = async (token, pregunta) =>{
+
+  const res = await api.post(CHAT_IA_ROUTE, {pregunta} ,{
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return res.data
+}
