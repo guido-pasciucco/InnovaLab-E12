@@ -1,12 +1,5 @@
-
 import { useState, useEffect } from "react";
-import {
-  Modal,
-  Button,
-  Form,
-  Row,
-  Col
-} from "react-bootstrap";
+import { Modal, Button, Form, Row, Col, Spinner } from "react-bootstrap";
 
 export default function PostModal({
   show,
@@ -14,10 +7,11 @@ export default function PostModal({
   columnas = [],
   onSubmit,
   titulo = "Formulario",
-  datosIniciales = {}
+  datosIniciales = {},
+  showSpinner,
+  setShowSpinner
 }) {
   const [formData, setFormData] = useState({});
-
   // Inicializa los datos del formulario
   useEffect(() => {
     setFormData(datosIniciales ?? {});
@@ -29,34 +23,30 @@ export default function PostModal({
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   // Envía los datos al padre
   const handleSubmit = (e) => {
     e.preventDefault();
+    setShowSpinner(true);
     onSubmit(formData);
   };
 
   return (
     <Modal show={show} onHide={onHide} centered>
       <Form onSubmit={handleSubmit}>
-
         <Modal.Header closeButton>
           <Modal.Title>{titulo}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <Row className="g-3">
-
             {columnas.map((columna) => (
               <Col xs={12} key={columna.name}>
-
                 <Form.Group>
-                  <Form.Label>
-                    {columna.label ?? columna.name}
-                  </Form.Label>
+                  <Form.Label>{columna.label ?? columna.name}</Form.Label>
 
                   {columna.type === "select" ? (
                     <Form.Select
@@ -91,25 +81,26 @@ export default function PostModal({
                       required={columna.required ?? false}
                     />
                   )}
-
                 </Form.Group>
-
               </Col>
             ))}
-
           </Row>
         </Modal.Body>
-
         <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
-            Cancelar
-          </Button>
+          {showSpinner ? (
+            <Spinner />
+          ) : (
+            <>
+              <Button variant="secondary" onClick={onHide}>
+                Cancelar
+              </Button>
 
-          <Button variant="primary" type="submit">
-            Guardar
-          </Button>
+              <Button variant="primary" type="submit">
+                Guardar
+              </Button>
+            </>
+          )}
         </Modal.Footer>
-
       </Form>
     </Modal>
   );
