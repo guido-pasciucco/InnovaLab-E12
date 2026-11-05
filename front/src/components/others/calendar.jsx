@@ -2,36 +2,54 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
+import { getActividades } from '../../utils/apiRoutes';
+import { useEffect, useState, useContext } from 'react';
+import { AuthContext } from "../../context/AuthContext.jsx";
 
-export default function Calendario() {
-  const eventos = [
-    {
-      id: '1',
-      title: 'Taller de suturas',
-      start: '2026-10-29T09:00:00',
-      end: '2026-10-29T11:00:00',
-      backgroundColor: '#dcfce7',
-      borderColor: '#86c99a',
-      textColor: '#166534',
-    },
-    {
-      id: '2',
-      title: 'Práctica RCP',
-      start: '2026-10-29T11:00:00',
-      end: '2026-10-29T13:00:00',
-      backgroundColor: '#fee2e2',
-      borderColor: '#dc2626',
-      textColor: '#991b1b',
-    },
-  ];
+
+export default function Calendario({ eventos }) {
+  const [actividades, setActividades] = useState([]);
+  const { getTokken } = useContext(AuthContext);
+
+  const data = async () => {
+    const res = await getActividades(getTokken());
+    setActividades(res.data.data)
+  };
+
+  useEffect(() => {
+    data();
+  }, []);
+
+  console.log("Reservas en Calendario:", eventos);
+  const nombresDeEventos = eventos.map(ev => {
+    const actividad = actividades.find(act => act.id === ev.actividad_id);
+    return actividad ? actividad.nombre : 'Evento sin nombre';
+  });
+  const nombresDeSalas = eventos.map(ev => {
+    const sala = ev.espacio.nombre;
+    return sala ? sala : 'Sala sin nombre';
+  });
+
+  console.log("nombresDeEventos", nombresDeEventos);
+  console.log("nombresDeSalas", nombresDeSalas);
+
+  const eventosFormatados = eventos.map(ev => ({
+    id: ev.id,
+    title: nombresDeEventos[eventos.indexOf(ev)] + ' - ' + nombresDeSalas[eventos.indexOf(ev)],
+    start: ev.fecha_hora_inicio,
+    end: ev.fecha_hora_fin,
+  }));
 
   return (
     <div className="container-fluid p-3">
-
+      {/* 
+        La clave 'key={eventos.length}' es clave aquí: 
+        Cuando 'eventos' pasa de 0 a 5, React recrea el FullCalendar con los datos ya listos.
+      */}
       <FullCalendar
+        key={eventos.length}
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
-        initialDate="2026-10-29"
         locale={esLocale}
         firstDay={1}
         allDaySlot={false}
@@ -39,7 +57,7 @@ export default function Calendario() {
         slotMaxTime="19:00:00"
         slotDuration="00:30:00"
         height="auto"
-        events={eventos}
+        events={eventosFormatados}
         selectable={true}
         dateClick={(info) => {
           console.log('Fecha seleccionada:', info.dateStr);

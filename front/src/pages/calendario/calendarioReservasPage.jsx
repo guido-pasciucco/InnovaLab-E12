@@ -1,9 +1,36 @@
 import Calendario from "../../components/others/calendar"
 import GenericSelect from "../../components/others/select"
 import { Link } from "react-router-dom"
+import { useEffect, useState, useContext } from "react"
+import { getReservas } from "../../utils/apiRoutes"
+import { AuthContext } from "../../context/AuthContext.jsx";
+import { Spinner } from "react-bootstrap";
+
 
 export default function CalendarioReservasPage() {
 
+    const [reservas, setReservas] = useState([])
+    const [showSpinner, setShowSpinner] = useState(false)
+    const { getTokken } = useContext(AuthContext);
+
+    const getData = async () => {
+
+        try {
+            setShowSpinner(true);
+            const res = await getReservas(getTokken());
+            setReservas(res.data.data)
+        } catch (err) {
+            console.log("Error al cargar datos:", err);
+        } finally {
+            setShowSpinner(false);
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    console.log("reservas", reservas);
     return (
         <>
             <div className="d-flex flex-row justify-content-between align-items-center">
@@ -16,7 +43,7 @@ export default function CalendarioReservasPage() {
                         Hoy
                     </button>
                     <Link to="/dashboard/nueva-reserva" className="btn btn-primary">
-                        Nueva actividad
+                        Nueva reserva
                     </Link>
                     {/* <button className="btn btn-primary">
                         Nueva actividad
@@ -53,7 +80,11 @@ export default function CalendarioReservasPage() {
                     <span className="bg-danger p-1 rounded-3 shadow-sm">Conflicto</span>
                 </div>
             </div>
-            <Calendario />
+            {showSpinner ? (
+                <Spinner />
+            ) : (
+                <Calendario eventos={reservas} />
+            )}
         </>
     )
 }
