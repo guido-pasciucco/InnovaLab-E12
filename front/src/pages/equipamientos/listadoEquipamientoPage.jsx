@@ -30,9 +30,9 @@ export default function ListadoEquipamientoPage() {
     try {
       setShowSpinner(true);
       const res = await getEquipamientoApi(getTokken());
-      const res2 = await getEspaciosApi(getTokken())
+      const res2 = await getEspaciosApi(getTokken());
       setDatosAPI(res.data.data);
-      setEspaciosApi(res2.data.data)
+      setEspaciosApi(res2.data.data);
     } catch (err) {
       console.log("Error al cargar datos:", err);
     } finally {

@@ -224,7 +224,7 @@ export const getReservas = async (token) => {
   return res
 }
 
-export const postReservas = async (data, token) => {
+export const postReserva = async (data, token) => {
   try {
     const res = await api.post(RESERVAS_ROUTE, data, {
       headers:{
@@ -237,3 +237,5 @@ export const postReservas = async (data, token) => {
     throw err;
   }
 };
+
+
