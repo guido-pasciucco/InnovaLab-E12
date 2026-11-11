@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col, Spinner } from "react-bootstrap";
 
-export default function PostModal({
+export default function PostPutModal({
   show,
   onHide,
   columnas = [],
@@ -10,7 +10,6 @@ export default function PostModal({
   datosIniciales = {},
   showSpinner,
   setShowSpinner,
-  onSuccess
 }) {
   const [formData, setFormData] = useState({});
   // Inicializa los datos del formulario

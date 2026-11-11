@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { getUsuarios, postUsuarios, editUsuario } from '../../utils/apiRoutes'
 import TablaGeneral from '../../components/tables/TablaGeneral'
-import PostModal from '../../components/modals/PostModal'
+import PostModal from '../../components/modals/PostPutModal'
 import GenericAlertModal from '../../components/modals/GenericAlertModal'
 import DeleteConfirmModal from '../../components/modals/DeleteConfirmModal'
 

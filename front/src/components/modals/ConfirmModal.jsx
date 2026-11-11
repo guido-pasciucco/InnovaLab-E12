@@ -1,6 +1,6 @@
 import { Modal, Button } from 'react-bootstrap'
 
-export default function MyModal({
+export default function ConfirmModal({
   mostrar,
   title,
   bodyMessage,
