@@ -1,9 +1,14 @@
-import { Table } from "react-bootstrap";
-import SelectedBadge from "../badges/SelectedBadge";
-import { Spinner } from "react-bootstrap";
 
-function TablaGeneral({ datos = [], showSpinner = false }) {
-  // Evita errores si la API todavía no devolvió datos
+import { Table, Button, Spinner } from "react-bootstrap";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import SelectedBadge from "../badges/SelectedBadge";
+
+function TablaGeneral({
+  datos = [],
+  showSpinner = false,
+  onEditar,
+  onEliminar,
+}) {
   if (showSpinner) {
     return (
       <div className="d-flex justify-content-center p-4">
@@ -16,8 +21,8 @@ function TablaGeneral({ datos = [], showSpinner = false }) {
     return <p className="text-muted text-center">No hay registros.</p>;
   }
 
-  // Obtiene las propiedades del primer objeto
   const columnas = Object.keys(datos[0]);
+  const mostrarAcciones = onEditar || onEliminar;
 
   return (
     <Table responsive hover className="table shadow-sm">
@@ -26,6 +31,8 @@ function TablaGeneral({ datos = [], showSpinner = false }) {
           {columnas.map((columna) => (
             <th key={columna}>{columna}</th>
           ))}
+
+          {mostrarAcciones && <th className="text-center">Acciones</th>}
         </tr>
       </thead>
 
@@ -44,6 +51,34 @@ function TablaGeneral({ datos = [], showSpinner = false }) {
                 )}
               </td>
             ))}
+
+            {mostrarAcciones && (
+              <td className="text-center">
+                <div className="d-flex justify-content-center gap-2">
+                  {onEditar && (
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      title="Modificar"
+                      onClick={() => onEditar(dato)}
+                    >
+                      <FaEdit />
+                    </Button>
+                  )}
+
+                  {onEliminar && (
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      title="Eliminar"
+                      onClick={() => onEliminar(dato)}
+                    >
+                      <FaTrash />
+                    </Button>
+                  )}
+                </div>
+              </td>
+            )}
           </tr>
         ))}
       </tbody>

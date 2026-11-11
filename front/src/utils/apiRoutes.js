@@ -104,7 +104,6 @@ export const postEspaciosApi = async (data, token) => {
   }
 }
 
-
 const DASHBOARD_ROUTE = `${API_BASE}/api/v1/dashboard/resumen`
 export const getDashboardApi = async (token) => {
   try {
@@ -119,7 +118,6 @@ export const getDashboardApi = async (token) => {
     throw err
   }
 }
-
 
 //gestión de equipamiento
 const EQUIPAMIENTO_ROUTE = `/api/v1/equipamiento`
@@ -136,81 +134,94 @@ export const getEquipamientoApi = async (token) => {
 export const postEquipamientoApi = async (data, token) => {
   try {
     const res = await api.post(EQUIPAMIENTO_ROUTE, data, {
-      headers:{
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return res;
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return res
   } catch (err) {
-    console.log("error", err.response?.data);
-    throw err;
+    console.log('error', err.response?.data)
+    throw err
   }
-};
+}
 
-
-// gestion de usuarios 
+// gestion de usuarios
 const GESTION_USUARIOS_ROUTE = `${API_BASE}/api/v1/usuarios`
 
-export const getUsuarios = async (token) =>{
-  const res = await api.get(GESTION_USUARIOS_ROUTE,{
-    headers:{
-      Authorization:`Bearer ${token}`
-    }
+export const getUsuarios = async (token) => {
+  const res = await api.get(GESTION_USUARIOS_ROUTE, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   return res.data
-} 
+}
 
 export const postUsuarios = async (token, data) => {
   const res = await api.post(GESTION_USUARIOS_ROUTE, data, {
-    headers:{
-      Authorization: `Bearer ${token}`
-    }
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
 }
 
+export const deleteUsuario = async (token, id) => {
+  await api.delete(`${GESTION_USUARIOS_ROUTE}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
 
+export const editUsuario = async (token, id, data) => {
+  await api.put(`${GESTION_USUARIOS_ROUTE}/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
 
 // gestion de actividades
 const GESTION_DE_ACTIVIDADES = `${API_BASE}/api/v1/actividades`
 
-export const getActividades = async (token) =>{
-  const res = await api.get(GESTION_DE_ACTIVIDADES,{
-    headers:{
-      Authorization: `Bearer ${token}`
-    }
+export const getActividades = async (token) => {
+  const res = await api.get(GESTION_DE_ACTIVIDADES, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
 
   return res
 }
 
-
 //gestion alertas
 const GESTION_ALERTAS_ROUTE = `${API_BASE}/api/v1/alertas`
 
-export const getAlertas = async (token) =>{
+export const getAlertas = async (token) => {
   const res = await api.get(GESTION_ALERTAS_ROUTE, {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   })
   return res.data
 }
-
 
 // modulo IA
 const CHAT_IA_ROUTE = `${API_BASE}/api/v1/consultas-ia`
 
-export const postChatIa = async (token, pregunta) =>{
-
-  const res = await api.post(CHAT_IA_ROUTE, {pregunta} ,{
-    headers:{
-      Authorization: `Bearer ${token}`
-    }
-  })
+export const postChatIa = async (token, pregunta) => {
+  const res = await api.post(
+    CHAT_IA_ROUTE,
+    { pregunta },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
 
   return res.data
 }
-
 
 //gestión de reservas
 const RESERVAS_ROUTE = `/api/v1/reservas`
@@ -227,15 +238,13 @@ export const getReservas = async (token) => {
 export const postReserva = async (data, token) => {
   try {
     const res = await api.post(RESERVAS_ROUTE, data, {
-      headers:{
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return res;
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return res
   } catch (err) {
-    console.log("error", err.response?.data);
-    throw err;
+    console.log('error', err.response?.data)
+    throw err
   }
-};
-
-
+}

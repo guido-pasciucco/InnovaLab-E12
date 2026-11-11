@@ -9,7 +9,8 @@ export default function PostModal({
   titulo = "Formulario",
   datosIniciales = {},
   showSpinner,
-  setShowSpinner
+  setShowSpinner,
+  onSuccess
 }) {
   const [formData, setFormData] = useState({});
   // Inicializa los datos del formulario
