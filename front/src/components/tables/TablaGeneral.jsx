@@ -65,7 +65,11 @@ function TablaGeneral({
                   <SelectedBadge label={dato[columna]} />
                 ) : typeof dato[columna] === 'object' &&
                   dato[columna] !== null ? (
-                  JSON.stringify(dato[columna])
+                  Array.isArray(dato[columna]) ? (
+                    dato[columna].join(' - ')
+                  ) : (
+                    Object.values(dato[columna]).join(' - ')
+                  )
                 ) : columnasFecha.includes(columna) && dato[columna] ? (
                   formatearFecha(dato[columna])
                 ) : (
