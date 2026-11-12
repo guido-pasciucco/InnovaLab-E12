@@ -3,7 +3,7 @@ import GenericSelect from "../../components/others/select.jsx";
 import { Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi, deleteEquipamientoApi } from "../../utils/apiRoutes.js";
+import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi, deleteEquipamientoApi } from "../../services/apiRoutes.js";
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from 'react-toastify';
 import { Spinner } from "react-bootstrap";

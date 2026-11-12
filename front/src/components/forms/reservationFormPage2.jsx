@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEspaciosApi, getReservas } from "../../utils/apiRoutes.js";
+import { getEspaciosApi, getReservas } from "../../services/apiRoutes.js";
 import { Spinner } from "react-bootstrap";
 import { Form } from 'react-bootstrap';
 
