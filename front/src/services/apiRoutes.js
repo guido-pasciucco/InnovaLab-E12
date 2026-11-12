@@ -194,6 +194,14 @@ export const getActividades = async (token) => {
   return res
 }
 
+export const postActividades = async (token, data) => {
+  return await api.post(GESTION_DE_ACTIVIDADES, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
 //gestion alertas
 const GESTION_ALERTAS_ROUTE = `${API_BASE}/api/v1/alertas`
 
