@@ -1,13 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './reservationForm.module.css';
-import GenericSelect from '../others/select.jsx';
-import { Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEquipamientoApi, getEspaciosApi, getActividades, getReservas, postEquipamientoApi, postReserva } from "../../utils/apiRoutes.js";
-import { toast } from 'react-toastify';
+import { getEspaciosApi, getReservas } from "../../utils/apiRoutes.js";
 import { Spinner } from "react-bootstrap";
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
     const [showSpinner, setShowSpinner] = useState(false);
@@ -25,8 +21,12 @@ function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
 
         try {
             setShowSpinner(true);
-            const res = await getEspaciosApi(getTokken());
-            setEspaciosApi(res.data.data);
+            const [espaciosRes, reservasRes] = await Promise.all([
+                getEspaciosApi(getTokken()),
+                getReservas(getTokken()),
+            ]);
+            setEspaciosApi(espaciosRes.data.data);
+            setReservas(reservasRes.data.data);
             console.log("Datos de espacios obtenidos:", espaciosApi);
         }
         catch (error) {
@@ -35,6 +35,9 @@ function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
             setShowSpinner(false);
         }
     };
+
+    const capacidadRequerida = formData.participantes_estimados;
+    console.log('Capacidad requerida: ', capacidadRequerida);
 
     useEffect(() => {
         getData();
@@ -56,7 +59,15 @@ function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
                             label={
                                 <div className="d-flex flex-column align-items-start">
                                     <span>{opcion.nombre}</span>
-                                    <small className="ms-2">Capacidad: {opcion.capacidad}</small>
+                                    <small className={`ms-2 ${opcion.capacidad < capacidadRequerida ?
+                                        'text-danger' :
+                                        'text-black'
+                                        }`}
+                                    >
+                                        {opcion.capacidad >= capacidadRequerida
+                                            ? `Capacidad: ${opcion.capacidad}`
+                                            : 'Capacidad superada para este espacio'}
+                                    </small>
                                 </div>
                             }
                             name="espacio"

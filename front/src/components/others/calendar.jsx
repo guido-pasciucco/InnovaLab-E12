@@ -11,13 +11,13 @@ export default function Calendario({ eventos }) {
   const [actividades, setActividades] = useState([]);
   const { getTokken } = useContext(AuthContext);
 
-  const data = async () => {
+  const getData = async () => {
     const res = await getActividades(getTokken());
     setActividades(res.data.data)
   };
 
   useEffect(() => {
-    data();
+    getData();
   }, []);
 
   console.log("Reservas en Calendario:", eventos);
@@ -53,8 +53,8 @@ export default function Calendario({ eventos }) {
         locale={esLocale}
         firstDay={1}
         allDaySlot={false}
-        slotMinTime="08:00:00"
-        slotMaxTime="19:00:00"
+        slotMinTime="09:00:00"
+        slotMaxTime="21:00:00"
         slotDuration="00:30:00"
         height="auto"
         events={eventosFormatados}

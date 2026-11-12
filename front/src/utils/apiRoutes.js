@@ -147,6 +147,20 @@ export const postEquipamientoApi = async (data, token) => {
   }
 };
 
+export const deleteEquipamientoApi = async (id, token) => {
+  try {
+    const res = await api.delete(`${EQUIPAMIENTO_ROUTE}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return res;
+  } catch (err) {
+    console.log("error", err.response?.data);
+    throw err;
+  }
+};
+
 
 // gestion de usuarios 
 const GESTION_USUARIOS_ROUTE = `${API_BASE}/api/v1/usuarios`

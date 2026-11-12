@@ -100,7 +100,7 @@ export default function ListadoEspaciosPage() {
         <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
           <div
             className="d-flex align-items-center gap-3 w-100"
-            style={{ maxWidth: '75%' }}
+            style={{ maxWidth: '100%' }}
           >
             <div style={{ minWidth: '250px', width: '100%' }}>
               <Search
@@ -111,7 +111,7 @@ export default function ListadoEspaciosPage() {
             </div>
             <div style={{ minWidth: '100px', width: '20%' }}>
               <GenericSelect
-                text=""
+                text="Estado"
                 opciones={[
                   'Disponible',
                   'En uso',
@@ -127,6 +127,13 @@ export default function ListadoEspaciosPage() {
         </div>
         {showSpinner ? (
           <Spinner />
+        ) : resultadosFiltrados.length === 0 ? (
+          /* Opcional: Si ya cargó pero la búsqueda no arrojó resultados */
+          <div>
+            <p colSpan="8" className="text-center text-muted py-4">
+              No se encontraron equipos que coincidan con la búsqueda.
+            </p>
+          </div>
         ) : (
           <GenericTable items={resultadosFiltrados} />
         )}

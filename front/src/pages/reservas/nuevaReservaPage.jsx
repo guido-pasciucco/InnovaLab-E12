@@ -8,8 +8,11 @@ import ReservationForm2 from '../../components/forms/reservationFormPage2';
 import ReservationForm3 from '../../components/forms/reservationFormPage3';
 import { getEquipamientoApi, getEspaciosApi, getActividades, getReservas, postEquipamientoApi, postReserva } from "../../utils/apiRoutes.js";
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import ReservaConfirmadaModal from '../../components/modals/reservationOkModal.jsx';
 
 export default function NuevaReservaPage() {
+    const navigate = useNavigate();
     const [equipamientoApi, setEquipamientoApi] = useState([]);
     const [espaciosApi, setEspaciosApi] = useState([]);
     const [reservas, setReservas] = useState([]);
@@ -34,16 +37,19 @@ export default function NuevaReservaPage() {
 
         try {
             setShowSpinner(true);
-            const res = await getEquipamientoApi(getTokken());
-            const res2 = await getEspaciosApi(getTokken())
-            const res3 = await getReservas(getTokken());
-            const res4 = await getActividades(getTokken());
-            setEquipamientoApi(res.data.data);
-            setEspaciosApi(res2.data.data)
-            setReservas(res3.data.data)
-            setActividades(res4.data.data)
+            const token = getTokken();
+            const [equipRes, espaciosRes, reservasRes, actRes] = await Promise.all([
+                getEquipamientoApi(token),
+                getEspaciosApi(token),
+                getReservas(token),
+                getActividades(token)
+            ]);
+            setEquipamientoApi(equipRes.data.data);
+            setEspaciosApi(espaciosRes.data.data)
+            setReservas(reservasRes.data.data)
+            setActividades(actRes.data.data)
         } catch (err) {
-            console.log("Error al cargar datos:", err);
+            console.error("Error al cargar datos:", err);
         } finally {
             setShowSpinner(false);
         }
@@ -98,13 +104,13 @@ export default function NuevaReservaPage() {
     };
 
     const handleFinalSubmit = async () => {
-    
+
         const completeData = formData;
 
         // 1. Mapeo de la actividad (buscando por nombre o tipo)
-        const actividadEncontrada = actividades.find(act => 
-            String(act.id) === String(completeData.actividad_id) || 
-            act.nombre === completeData.nombre || 
+        const actividadEncontrada = actividades.find(act =>
+            String(act.id) === String(completeData.actividad_id) ||
+            act.nombre === completeData.nombre ||
             act.nombre === completeData.tipo
         );
         const actividadId = actividadEncontrada ? actividadEncontrada.id : (actividades[0]?.id || 1);
@@ -139,19 +145,19 @@ export default function NuevaReservaPage() {
             fecha_hora_inicio: fechaInicioCompleta,
             fecha_hora_fin: fechaFinCompleta
         };
-            
+
         try {
             await postReserva(datosParaEnviar, getTokken());
-            
+
             setActiveStep(steps.length);
             toast.success("¡Reserva guardada con éxito!");
         } catch (err) {
             console.error("Error detallado del servidor:", err);
-            
+
             if (err.response && err.response.data) {
                 console.error("Mensaje de validación del backend:", err.response.data);
             }
-            
+
             toast.error("Hubo un error al guardar la reserva. Revisa los datos.");
         }
     };
@@ -207,14 +213,18 @@ export default function NuevaReservaPage() {
             {/* 2. Contenedor de la sección actual del formulario */}
             <Box className="bg-light p-3 rounded-3 gap-3">
                 {activeStep === steps.length ? (
-                    <Box>
-                        <Typography variant="h6" sx={{ mb: 2 }}>¡Reserva completada con éxito!</Typography>
-                        <button className="btn btn-primary" onClick={handleReset}>Hacer otra reserva</button>
-                    </Box>
+                    <ReservaConfirmadaModal
+                        show={true} // 👈 Forzamos en true porque este bloque solo se renderiza si activeStep === steps.length
+                        onHide={handleReset}
+                        reservaData={formData}
+                        onCrearOtra={handleReset}
+                        onVerCalendario={() => {
+                            navigate('/dashboard/calendario');
+                        }}
+                    />
                 ) : (
                     renderStepContent(activeStep)
                 )}
-
             </Box>
         </Box>
     );
