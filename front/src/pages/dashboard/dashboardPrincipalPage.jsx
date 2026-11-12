@@ -3,20 +3,20 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Row, Col, Card, ProgressBar, Container } from "react-bootstrap";
 import TablaGeneral from "../../components/tables/TablaGeneral";
+import { Spinner } from "react-bootstrap";
 
 export default function DashboardPrincipalPage() {
   const [dataApi, setDataApi] = useState([]);
   const { getTokken } = useContext(AuthContext);
 
-  const [showSpinner, setShowSpinner] = useState(true)
-
+  const [showSpinner, setShowSpinner] = useState(true);
 
   const getData = async () => {
     console.log("Ejecutando getData con tokken", getTokken());
     const data = await getDashboardApi(getTokken());
     console.log("data en dashboard cargada: ", data.data);
     setDataApi(data.data);
-    setShowSpinner(false)
+    setShowSpinner(false);
   };
 
   useEffect(() => {
@@ -33,17 +33,25 @@ export default function DashboardPrincipalPage() {
               <h4>KPIs</h4>
 
               <Row className="g-3">
-                {Object.entries(dataApi?.kpis ?? {}).map(([clave, valor]) => (
-                  <Col key={clave} xs={12} md={6} lg={4}>
-                    <Card className="h-100 shadow-sm">
-                      <Card.Body>
-                        <Card.Title>{clave.replaceAll("_", " ")}</Card.Title>
+                {dataApi.length === 0 ? (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  Object.entries(dataApi?.kpis ?? {}).map(([clave, valor]) => (
+                    <Col key={clave} xs={12} md={6} lg={4}>
+                      <Card className="h-100 shadow-sm">
+                        <Card.Body>
+                          <Card.Title>{clave.replaceAll("_", " ")}</Card.Title>
 
-                        <Card.Text className="fs-3 fw-bold">{valor}</Card.Text>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
+                          <Card.Text className="fs-3 fw-bold">
+                            {valor}
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))
+                )}
               </Row>
             </Card.Body>
           </Card>
@@ -57,21 +65,29 @@ export default function DashboardPrincipalPage() {
               <h5>Recursos con mayor demanda</h5>
 
               <Row className="g-3 mt-1">
-                {(dataApi?.recursos_mayor_demanda ?? []).map((recurso) => (
-                  <Col key={recurso.nombre} xs={12} sm={6}>
-                    <div className="border rounded p-3 h-100">
-                      <div className="fw-semibold">{recurso.nombre}</div>
+                {dataApi.length === 0 ? (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  (dataApi?.recursos_mayor_demanda ?? []).map((recurso) => (
+                    <Col key={recurso.nombre} xs={12} sm={6}>
+                      <div className="border rounded p-3 h-100">
+                        <div className="fw-semibold">{recurso.nombre}</div>
 
-                      <div className="fs-4 fw-bold text-primary">
-                        {recurso.total_reservas}
+                        <div className="fs-4 fw-bold text-primary">
+                          {recurso.total_reservas}
+                        </div>
+
+                        <small className="text-muted">
+                          {recurso.total_reservas === 1
+                            ? "reserva"
+                            : "reservas"}
+                        </small>
                       </div>
-
-                      <small className="text-muted">
-                        {recurso.total_reservas === 1 ? "reserva" : "reservas"}
-                      </small>
-                    </div>
-                  </Col>
-                ))}
+                    </Col>
+                  ))
+                )}
               </Row>
             </Card.Body>
           </Card>
@@ -82,16 +98,22 @@ export default function DashboardPrincipalPage() {
             <Card.Body>
               <h5>Ocupación por espacio</h5>
 
-              {(dataApi?.ocupacion_por_espacio ?? []).map((espacio) => (
-                <div key={espacio.id} className="mt-3 mb-4">
-                  <div className="d-flex justify-content-between gap-2 mb-2">
-                    <span>{espacio.nombre}</span>
-                    <strong>{espacio.porcentaje}%</strong>
-                  </div>
-
-                  <ProgressBar now={espacio.porcentaje} />
+              {dataApi.length === 0 ? (
+                <div className="d-flex justify-content-center align-items-center">
+                  <Spinner />
                 </div>
-              ))}
+              ) : (
+                (dataApi?.ocupacion_por_espacio ?? []).map((espacio) => (
+                  <div key={espacio.id} className="mt-3 mb-4">
+                    <div className="d-flex justify-content-between gap-2 mb-2">
+                      <span>{espacio.nombre}</span>
+                      <strong>{espacio.porcentaje}%</strong>
+                    </div>
+
+                    <ProgressBar now={espacio.porcentaje} />
+                  </div>
+                ))
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -104,7 +126,10 @@ export default function DashboardPrincipalPage() {
             <Card.Body>
               <h5>Alarmas recientes</h5>
 
-              <TablaGeneral datos={dataApi?.alertas ?? []} showSpinner = {showSpinner}/>
+              <TablaGeneral
+                datos={dataApi?.alertas ?? []}
+                showSpinner={showSpinner}
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -116,7 +141,10 @@ export default function DashboardPrincipalPage() {
           <Card className="shadow-sm">
             <Card.Body>
               <h5>Actividades hoy</h5>
-              <TablaGeneral datos={dataApi?.actividades_hoy ?? []} showSpinner = {showSpinner} />
+              <TablaGeneral
+                datos={dataApi?.actividades_hoy ?? []}
+                showSpinner={showSpinner}
+              />
             </Card.Body>
           </Card>
         </Col>
