@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { getEspaciosApiId } from "../../services/apiRoutes";
 import { AuthContext } from "../../context/AuthContext";
 
-import { Row, Col, Table } from "react-bootstrap";
+import { Row, Col, Table, Spinner } from "react-bootstrap";
 import SelectedBadge from "../../components/badges/SelectedBadge";
 
 export default function EspacioDetallePage() {
@@ -37,7 +37,12 @@ export default function EspacioDetallePage() {
   }, [id]);
 
   if (loading) {
-    return <p>Cargando espacio desde la API...</p>;
+    return (
+      <>
+        <Spinner />
+        <p>Cargando espacio desde la API...</p>
+      </>
+    );
   }
 
   if (error) {
