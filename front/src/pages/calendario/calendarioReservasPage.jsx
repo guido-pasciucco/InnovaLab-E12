@@ -2,7 +2,7 @@ import Calendario from "../../components/others/calendar"
 import GenericSelect from "../../components/others/select"
 import { Link } from "react-router-dom"
 import { useEffect, useState, useContext } from "react"
-import { getReservas } from "../../utils/apiRoutes"
+import { getReservas } from "../../services/apiRoutes"
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { Spinner } from "react-bootstrap";
 

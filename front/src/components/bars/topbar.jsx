@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import MyModal from "../modals/MyModal";
+import ConfirmModal from "../modals/ConfirmModal";
 import { useNavigate } from "react-router-dom";
-import { logoutPost } from "../../utils/apiRoutes";
+import { logoutPost } from "../../services/apiRoutes";
 
 export default function Topbar() {
   const { getRol, limpiarUsuario, getTokken } = useContext(AuthContext);
@@ -52,7 +52,7 @@ export default function Topbar() {
       </div>
 
       {/* modal para confirmar cancelacion */}
-      <MyModal
+      <ConfirmModal
         title="Cerrar sesion"
         bodyMessage="Confirme cerrar sesion"
         mostrar={mostrarModal}

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useContext, useEffect } from 'react'
 import { AuthContext } from '../../context/AuthContext.jsx'
 import { Modal, Button, Form } from 'react-bootstrap'
-import { getEspaciosApi, postEspaciosApi } from '../../utils/apiRoutes.js'
+import { getEspaciosApi, postEspaciosApi } from '../../services/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
 
 export default function ListadoEspaciosPage() {

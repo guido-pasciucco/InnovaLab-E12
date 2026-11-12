@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import ReservationForm from '../../components/forms/reservationForm';
 import ReservationForm2 from '../../components/forms/reservationFormPage2';
 import ReservationForm3 from '../../components/forms/reservationFormPage3';
-import { getEquipamientoApi, getEspaciosApi, getActividades, getReservas, postEquipamientoApi, postReserva } from "../../utils/apiRoutes.js";
+import { getEquipamientoApi, getEspaciosApi, getActividades, getReservas, postEquipamientoApi, postReserva } from "../../services/apiRoutes.js";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import ReservaConfirmadaModal from '../../components/modals/reservationOkModal.jsx';

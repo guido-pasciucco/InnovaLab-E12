@@ -1,95 +1,127 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from 'react'
 
-import { AuthContext } from "../../context/AuthContext";
-import { getUsuarios, postUsuarios } from "../../utils/apiRoutes";
-import TablaGeneral from "../../components/tables/TablaGeneral";
-import PostModal from "../../components/modals/PostModal";
-import GenericAlertModal from "../../components/modals/GenericAlertModal";
+import { AuthContext } from '../../context/AuthContext'
+import { getUsuarios, postUsuarios, editUsuario } from '../../services/apiRoutes'
+import TablaGeneral from '../../components/tables/TablaGeneral'
+import PostPutModal from '../../components/modals/PostPutModal'
+import GenericAlertModal from '../../components/modals/GenericAlertModal'
+import DeleteConfirmModal from '../../components/modals/DeleteConfirmModal'
 
 export default function UsuariosYRolesPage() {
-  const [data, setData] = useState();
-  const [modalData, setModalData] = useState({});
+  const [data, setData] = useState()
+  const [modalData, setModalData] = useState({})
 
-  const { getTokken } = useContext(AuthContext);
+  const { getTokken } = useContext(AuthContext)
 
-  const [showSpinner, setShowSpinner] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(true)
+  const [showModal, setShowModal] = useState(false)
+
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false)
+  const [dataEliminar, setDataEliminar] = useState(null)
+
+  const [refresh, setRefresh] = useState(false)
+
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [usuarioEditar, setUsuarioEditar] = useState(null)
 
   const getUsuariosData = async () => {
-    const res = await getUsuarios(getTokken());
-    console.log(res.data);
-    setData(res.data);
-    console.log("data cargada ", data);
-    setShowSpinner(false);
-  };
-  
-  useEffect(() => {
-    getUsuariosData();
-  }, []);
+    const res = await getUsuarios(getTokken())
+    console.log(res.data)
+    setData(res.data)
+    console.log('data cargada ', data)
+    setShowSpinner(false)
+  }
 
-  const [show, setShow] = useState(false);
+  useEffect(() => {
+    getUsuariosData()
+  }, [refresh])
+
+  const [show, setShow] = useState(false)
   const handleShow = () => {
-    setShow(true);
-  };
+    setShow(true)
+  }
   const onHide = () => {
-    setShow(false);
-  };
+    setShow(false)
+  }
 
   const onSubmit = async (formData) => {
-    console.log(formData);
+    console.log(formData)
     try {
-      const res = await postUsuarios(getTokken(), formData);
-      console.log("post usuarios satisfactorio: ", res);
+      const res = await postUsuarios(getTokken(), formData)
+      console.log('post usuarios satisfactorio: ', res)
       setModalData({
-        title: "Operacion exitosa",
-        tipo: "success",
-        mensaje: "El usuario se cargo correctamente",
-      });
+        title: 'Operacion exitosa',
+        tipo: 'success',
+        mensaje: 'El usuario se cargo correctamente',
+      })
+      setRefresh((prev) => !prev)
     } catch (err) {
-      console.log("Err: ", err);
+      console.log('Err: ', err)
       setModalData({
-        title: "Error al agregar usuario",
-        tipo: "error",
-        mensaje: err.message || "Error inesperado",
-      });
+        title: 'Error al agregar usuario',
+        tipo: 'error',
+        mensaje: err.message || 'Error inesperado',
+      })
     } finally {
-      setShow(false);
-      setShowModal(true);
-      setShowSpinner(false);
+      setShow(false)
+      setShowModal(true)
+      setShowSpinner(false)
     }
-  };
+  }
 
-  // ejemplo de columnas
+  const onSubmitEdit = async (formData) => {
+    console.log(formData)
+    try {
+      await editUsuario(getTokken(), formData.id, formData)
+      setModalData({
+        title: 'Operacion exitosa',
+        tipo: 'success',
+        mensaje: 'El usuario se edito correctamente',
+      })
+      setRefresh((prev) => !prev)
+    } catch (err) {
+      setModalData({
+        title: 'Error al agregar usuario',
+        tipo: 'error',
+        mensaje: err.message || 'Error inesperado',
+      })
+    } finally {
+      setShow(false)
+      setShowModal(true)
+      setShowSpinner(false)
+    }
+  }
+
   const columnas = [
     {
-      name: "nombre",
-      label: "Nombre",
-      type: "text",
+      name: 'nombre',
+      label: 'Nombre',
+      type: 'text',
       required: true,
     },
     {
-      name: "email",
-      label: "Email",
-      type: "email",
+      name: 'email',
+      label: 'Email',
+      type: 'email',
       required: true,
     },
     {
-      name: "rol_id",
-      label: "Rol Id",
-      type: "select",
+      name: 'rol_id',
+      label: 'Rol Id',
+      type: 'select',
       options: [
-        { value: "1", label: "Administrador" },
-        { value: "2", label: "Coordinador" },
+        { value: '1', label: 'Administrador' },
+        { value: '2', label: 'Coordinador' },
       ],
       required: true,
     },
     {
-      name: "password",
-      label: "Password",
-      type: "password",
+      name: 'password',
+      label: 'Password',
+      type: 'password',
       required: true,
     },
-  ];
+  ]
 
   // para usar datos seleccionados objeto name con su valor
 
@@ -102,19 +134,37 @@ export default function UsuariosYRolesPage() {
         </button>
       </div>
       {/* ingresamos tabla */}
-      <TablaGeneral datos={data} showSpinner={showSpinner} />
+      <TablaGeneral
+        datos={data}
+        showSpinner={showSpinner}
+        onEditar={(data) => {
+          setUsuarioEditar(data)
+          setShowEditModal(true)
+        }}
+        onEliminar={(dato) => {
+          setShowDeleteConfirmModal(true)
+          setDataEliminar(dato)
+          console.log(dato.id)
+        }}
+      />{' '}
       {/* modal al tocar boton */}
-      <PostModal
+      <PostPutModal
         show={show}
         onHide={onHide}
         onSubmit={onSubmit}
         titulo="Agregar Usuario"
         columnas={columnas}
         datosIniciales={null}
-        showSpinner={showSpinner}
-        setShowSpinner={setShowSpinner}
       />
-
+      {/* modal edicion */}
+      <PostPutModal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        titulo="Modificar usuario"
+        columnas={columnas}
+        datosIniciales={usuarioEditar}
+        onSubmit={onSubmitEdit}
+      />
       {showModal && (
         <GenericAlertModal
           show={showModal}
@@ -124,6 +174,12 @@ export default function UsuariosYRolesPage() {
           mensaje={modalData.mensaje}
         />
       )}
+      <DeleteConfirmModal
+        show={showDeleteConfirmModal}
+        onHide={() => setShowDeleteConfirmModal(false)}
+        id={dataEliminar?.id}
+        onSuccess={() => setRefresh((prev) => !prev)}
+      />
     </>
-  );
+  )
 }

@@ -2,7 +2,7 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
-import { getActividades } from '../../utils/apiRoutes';
+import { getActividades } from '../../services/apiRoutes';
 import { useEffect, useState, useContext } from 'react';
 import { AuthContext } from "../../context/AuthContext.jsx";
 

@@ -1,38 +1,40 @@
-import { useState, useEffect } from "react";
-import { Modal, Button, Form, Row, Col, Spinner } from "react-bootstrap";
+import { useState, useEffect } from 'react'
+import { Modal, Button, Form, Row, Col, Spinner } from 'react-bootstrap'
 
-export default function PostModal({
+export default function PostPutModal({
   show,
   onHide,
   columnas = [],
   onSubmit,
-  titulo = "Formulario",
+  titulo = 'Formulario',
   datosIniciales = {},
-  showSpinner,
-  setShowSpinner
 }) {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({})
+  const [showSpinner, setShowSpinner] = useState(false)
+
   // Inicializa los datos del formulario
   useEffect(() => {
-    setFormData(datosIniciales ?? {});
-  }, [datosIniciales, show]);
+    setFormData(datosIniciales ?? {})
+  }, [show])
 
   // Maneja los cambios de los inputs
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   // Envía los datos al padre
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setShowSpinner(true);
-    onSubmit(formData);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setShowSpinner(true)
+    await onSubmit(formData)
+    setShowSpinner(false)
+    onHide()
+  }
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -48,10 +50,10 @@ export default function PostModal({
                 <Form.Group>
                   <Form.Label>{columna.label ?? columna.name}</Form.Label>
 
-                  {columna.type === "select" ? (
+                  {columna.type === 'select' ? (
                     <Form.Select
                       name={columna.name}
-                      value={formData[columna.name] ?? ""}
+                      value={formData[columna.name] ?? ''}
                       onChange={handleChange}
                       required={columna.required ?? false}
                     >
@@ -63,20 +65,20 @@ export default function PostModal({
                         </option>
                       ))}
                     </Form.Select>
-                  ) : columna.type === "textarea" ? (
+                  ) : columna.type === 'textarea' ? (
                     <Form.Control
                       as="textarea"
                       rows={3}
                       name={columna.name}
-                      value={formData[columna.name] ?? ""}
+                      value={formData[columna.name] ?? ''}
                       onChange={handleChange}
                       required={columna.required ?? false}
                     />
                   ) : (
                     <Form.Control
-                      type={columna.type ?? "text"}
+                      type={columna.type ?? 'text'}
                       name={columna.name}
-                      value={formData[columna.name] ?? ""}
+                      value={formData[columna.name] ?? ''}
                       onChange={handleChange}
                       required={columna.required ?? false}
                     />
@@ -103,5 +105,5 @@ export default function PostModal({
         </Modal.Footer>
       </Form>
     </Modal>
-  );
+  )
 }

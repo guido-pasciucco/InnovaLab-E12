@@ -1,9 +1,7 @@
 // EspacioDetallePage.jsx
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import styles from "./detalleEspacio.module.css";
-import ReservationTable from "../../components/tables/reservationTable";
-import { getEspaciosApiId } from "../../utils/apiRoutes";
+import { getEspaciosApiId } from "../../services/apiRoutes";
 import { AuthContext } from "../../context/AuthContext";
 
 import { Row, Col, Table } from "react-bootstrap";
