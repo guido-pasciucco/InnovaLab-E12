@@ -3,11 +3,12 @@ import GenericSelect from "../../components/others/select.jsx";
 import { Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi } from "../../services/apiRoutes.js";
+import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi, deleteEquipamientoApi } from "../../services/apiRoutes.js";
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from 'react-toastify';
 import { Spinner } from "react-bootstrap";
 import SelectedBadge from "../../components/badges/SelectedBadge.jsx";
+import MyModal from "../../components/modals/MyModal.jsx";
 import { Link } from "react-router-dom";
 
 
@@ -15,15 +16,34 @@ export default function ListadoEquipamientoPage() {
   const [showSpinner, setShowSpinner] = useState(true);
   const [cargando, setCargando] = useState(true);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
+  const [terminoBusquedaEstado, setTerminoBusquedaEstado] = useState('')
+  const [terminoBusquedaMovilidad, setTerminoBusquedaMovilidad] = useState('')
   const [show, setShow] = useState(false);
   const [datosAPI, setDatosAPI] = useState([]);
   const [espaciosApi, setEspaciosApi] = useState([]);
   const { getTokken } = useContext(AuthContext);
+  const [showModal, setShowModal] = useState(false);
+  const [idParaEliminar, setIdParaEliminar] = useState(null);
 
-  const resultadosFiltrados = datosAPI.filter((item) =>
-    item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()),
-  );
+  const resultadosFiltrados = datosAPI.filter((item) => {
+    console.log("Item estado:", JSON.stringify(item.estado), " | Seleccionado:", JSON.stringify(terminoBusquedaEstado));
+    const coincideNombre = item.nombre
+      ? item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase())
+      : false;
 
+    /* Formateo de data para adaptar al formato de la bd*/
+    const estadoFormateadoSelect = terminoBusquedaEstado.toLowerCase().trim().replace(/ /g, "_");
+
+    const coincideEstado = terminoBusquedaEstado === "" 
+    ? true 
+    : item.estado?.toLowerCase().trim() === estadoFormateadoSelect;
+
+    const coincideMovilidad = terminoBusquedaMovilidad === ""
+      ? true
+      : item.tipo_movilidad?.toLowerCase().trim() === terminoBusquedaMovilidad.toLowerCase().trim();
+
+    return coincideNombre && coincideEstado && coincideMovilidad;
+  });
 
   const getData = async () => {
 
@@ -51,6 +71,12 @@ export default function ListadoEquipamientoPage() {
   const handleShow = () => setShow(true);
   const fueraDeServicio = datosAPI.filter(data => data.estado === "fuera_de_servicio").length;
 
+  const confirmarEliminacion = (id) => {
+    console.log('Id:', id);
+    setIdParaEliminar(id);
+    setShowModal(true);
+  };
+
   const estadoInicial = {
     nombre: "",
     categoria: "",
@@ -62,12 +88,9 @@ export default function ListadoEquipamientoPage() {
   }
   const [formData, setFormData] = useState(estadoInicial);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos enviados:", formData);
 
-    // acá podrías hacer un fetch/axios POST a tu
     try {
       await postEquipamientoApi(formData, getTokken());
 
@@ -97,6 +120,20 @@ export default function ListadoEquipamientoPage() {
     });
   };
 
+  const handleEliminar = async (id) => {
+    try {
+      await deleteEquipamientoApi(idParaEliminar, (getTokken()));
+      setDatosAPI(prev => prev.filter(item => item.id !== idParaEliminar));
+      setShowModal(false);
+      setIdParaEliminar(null);
+      toast.success("¡Equipo eliminado correctamente!");
+
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      alert("No se pudo eliminar el elemento.");
+    }
+  };
+
   return (
     <>
       <div className="d-flex flex-row justify-content-between align-items-center">
@@ -116,22 +153,23 @@ export default function ListadoEquipamientoPage() {
         <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
           <div
             className="d-flex align-items-center gap-3 w-100"
-            style={{ maxWidth: "75%" }}
+            style={{ maxWidth: "100%" }}
           >
-            <div style={{ minWidth: "250px", width: "100%" }}>
+            <div style={{ minWidth: "250px", width: "70%" }}>
               <Search
                 text="Buscar equipos"
                 terminoBusqueda={terminoBusqueda}
                 setTerminoBusqueda={setTerminoBusqueda}
               />
             </div>
-            <div className="d-flex flex-row gap-3" style={{ minWidth: "100px", width: "40%" }}>
+            <div className="d-flex flex-row gap-3" style={{ minWidth: "150px", width: "30%" }}>
               <GenericSelect
                 text="Movilidad"
                 opciones={[
                   "Fijo",
                   "Trasladable",
                 ]}
+                onChange={(e) => setTerminoBusquedaMovilidad(e.target.value)}
               />
               <GenericSelect
                 text="Estado"
@@ -143,6 +181,7 @@ export default function ListadoEquipamientoPage() {
                   "Fuera de servicio",
                   "En mantenimiento",
                 ]}
+                onChange={(e) => setTerminoBusquedaEstado(e.target.value)}
               />
             </div>
           </div>
@@ -173,7 +212,7 @@ export default function ListadoEquipamientoPage() {
             ) : resultadosFiltrados.length === 0 ? (
               /* Opcional: Si ya cargó pero la búsqueda no arrojó resultados */
               <tr>
-                <td colSpan="6" className="text-center text-muted py-4">
+                <td colSpan="8" className="text-center text-muted py-4">
                   No se encontraron equipos que coincidan con la búsqueda.
                 </td>
               </tr>
@@ -192,13 +231,17 @@ export default function ListadoEquipamientoPage() {
                     <SelectedBadge label={sim.estado} />
                   </td>
                   <td>
-                    <div className="d-flex flex-row gap-1">
+                    <div className="d-flex flex-row gap-1 align-items-center">
                       <Link to={`${sim.id}`}>
                         Ver -
                       </Link>
-                      <Link to={`${sim.id}`}>
+                      <Button
+                        variant="link"
+                        className="text-danger text-decoration-none"
+                        onClick={() => confirmarEliminacion(sim.id)}
+                      >
                         Eliminar
-                      </Link>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -313,6 +356,14 @@ export default function ListadoEquipamientoPage() {
           </Form>
         </Modal.Body>
       </Modal>
+      {/* Modal delete equipos */}
+      <MyModal
+        mostrar={showModal}
+        title="¿Eliminar este equipamiento?"
+        bodyMessage="Esta acción no se puede deshacer. Las reservas futuras del equipo quedaran sin efecto."
+        handleConfirm={handleEliminar}
+        handleCancel={() => setShowModal(false)}
+      />
     </>
   );
 }

@@ -1,6 +1,6 @@
-import { Table, Button, Spinner } from 'react-bootstrap'
-import { FaEdit, FaTrash } from 'react-icons/fa'
-import SelectedBadge from '../badges/SelectedBadge'
+import { Table, Button, Spinner } from 'react-bootstrap';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import SelectedBadge from '../badges/SelectedBadge';
 
 function TablaGeneral({
   datos = [],
