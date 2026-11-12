@@ -4,7 +4,7 @@ import GenericSelect from '../others/select';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEspaciosApi, getActividades } from "../../utils/apiRoutes.js";
+import { getEspaciosApi, getActividades } from "../../services/apiRoutes.js";
 
 function ReservationForm( { onSubmitForm, formData, handleChange } ) {
     const [actividades, setActividades] = useState([]);

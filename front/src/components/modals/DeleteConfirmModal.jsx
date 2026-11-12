@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { Modal, Button, Spinner, Alert } from 'react-bootstrap'
-import { deleteUsuario } from '../../utils/apiRoutes'
+import { deleteUsuario } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 import GenericAlertModal from './GenericAlertModal'
 

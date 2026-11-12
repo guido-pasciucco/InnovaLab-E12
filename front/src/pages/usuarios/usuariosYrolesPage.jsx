@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 
 import { AuthContext } from '../../context/AuthContext'
-import { getUsuarios, postUsuarios, editUsuario } from '../../utils/apiRoutes'
+import { getUsuarios, postUsuarios, editUsuario } from '../../services/apiRoutes'
 import TablaGeneral from '../../components/tables/TablaGeneral'
 import PostPutModal from '../../components/modals/PostPutModal'
 import GenericAlertModal from '../../components/modals/GenericAlertModal'

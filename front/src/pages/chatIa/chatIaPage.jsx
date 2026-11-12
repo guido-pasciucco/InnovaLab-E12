@@ -6,7 +6,7 @@ import {
   Button,
   Spinner,
 } from 'react-bootstrap'
-import { postChatIa } from '../../utils/apiRoutes'
+import { postChatIa } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 
 

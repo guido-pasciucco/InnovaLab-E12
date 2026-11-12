@@ -4,7 +4,7 @@ import GenericSelect from '../others/select.jsx';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEquipamientoApi, getEspaciosApi, getActividades, getReservas, postEquipamientoApi, postReserva } from "../../utils/apiRoutes.js";
+import { getEquipamientoApi, getEspaciosApi, getActividades, getReservas, postEquipamientoApi, postReserva } from "../../services/apiRoutes.js";
 import { toast } from 'react-toastify';
 import { Spinner } from "react-bootstrap";
 import { Form, Button } from 'react-bootstrap';

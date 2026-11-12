@@ -1,8 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import EditarEspacioForm from "../../components/forms/editarEspacioForm";
-import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
-import { getEspaciosApi } from "../../utils/apiRoutes";
+import { getEspaciosApi } from "../../services/apiRoutes";
 import SelectorEstado from "../../components/others/selectorDeEstados";
 
 export default function EditarEspacioPage() {

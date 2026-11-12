@@ -1,7 +1,7 @@
 import { Container } from 'react-bootstrap'
 import TablaGeneral from '../../components/tables/TablaGeneral'
 import { useState, useEffect, useContext } from 'react'
-import { getAlertas } from '../../utils/apiRoutes'
+import { getAlertas } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 
 export default function AlertasPage() {

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { getActividades } from "../../utils/apiRoutes";
+import { getActividades } from "../../services/apiRoutes";
 import TablaGeneral from "../../components/tables/TablaGeneral";
 
 export default function ActividadesPage() {

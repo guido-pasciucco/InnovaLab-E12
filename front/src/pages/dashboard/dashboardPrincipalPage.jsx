@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { getDashboardApi } from "../../utils/apiRoutes";
+import { getDashboardApi } from "../../services/apiRoutes";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Row, Col, Card, ProgressBar, Container } from "react-bootstrap";
