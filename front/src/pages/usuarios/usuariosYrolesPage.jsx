@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { getUsuarios, postUsuarios, editUsuario } from '../../utils/apiRoutes'
 import TablaGeneral from '../../components/tables/TablaGeneral'
-import PostModal from '../../components/modals/PostPutModal'
+import PostPutModal from '../../components/modals/PostPutModal'
 import GenericAlertModal from '../../components/modals/GenericAlertModal'
 import DeleteConfirmModal from '../../components/modals/DeleteConfirmModal'
 
@@ -148,25 +148,21 @@ export default function UsuariosYRolesPage() {
         }}
       />{' '}
       {/* modal al tocar boton */}
-      <PostModal
+      <PostPutModal
         show={show}
         onHide={onHide}
         onSubmit={onSubmit}
         titulo="Agregar Usuario"
         columnas={columnas}
         datosIniciales={null}
-        showSpinner={showSpinner}
-        setShowSpinner={setShowSpinner}
       />
       {/* modal edicion */}
-      <PostModal
+      <PostPutModal
         show={showEditModal}
         onHide={() => setShowEditModal(false)}
         titulo="Modificar usuario"
         columnas={columnas}
         datosIniciales={usuarioEditar}
-        showSpinner={showSpinner}
-        setShowSpinner={setShowSpinner}
         onSubmit={onSubmitEdit}
       />
       {showModal && (

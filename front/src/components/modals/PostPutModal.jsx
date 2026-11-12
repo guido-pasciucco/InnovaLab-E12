@@ -7,11 +7,11 @@ export default function PostPutModal({
   columnas = [],
   onSubmit,
   titulo = "Formulario",
-  datosIniciales = {},
-  showSpinner,
-  setShowSpinner,
+  datosIniciales = {}
 }) {
   const [formData, setFormData] = useState({});
+  const [showSpinner, setShowSpinner] = useState(false)
+
   // Inicializa los datos del formulario
   useEffect(() => {
     setFormData(datosIniciales ?? {});
@@ -28,10 +28,12 @@ export default function PostPutModal({
   };
 
   // Envía los datos al padre
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setShowSpinner(true);
-    onSubmit(formData);
+    await onSubmit(formData);
+    setShowSpinner(false)
+    onHide()
   };
 
   return (
