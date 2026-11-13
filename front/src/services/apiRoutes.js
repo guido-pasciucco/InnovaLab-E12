@@ -131,6 +131,15 @@ export const getEquipamientoApi = async (token) => {
   return res
 }
 
+export const getEquipamientoApiId = async (token, id) => {
+  const res = await api.get(`${EQUIPAMIENTO_ROUTE}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  return res
+}
+
 export const postEquipamientoApi = async (data, token) => {
   try {
     const res = await api.post(EQUIPAMIENTO_ROUTE, data, {
@@ -149,18 +158,17 @@ export const deleteEquipamientoApi = async (id, token) => {
   try {
     const res = await api.delete(`${EQUIPAMIENTO_ROUTE}/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return res;
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return res
   } catch (err) {
-    console.log("error", err.response?.data);
-    throw err;
+    console.log('error', err.response?.data)
+    throw err
   }
-};
+}
 
-
-// gestion de usuarios 
+// gestion de usuarios
 const GESTION_USUARIOS_ROUTE = `${API_BASE}/api/v1/usuarios`
 
 export const getUsuarios = async (token) => {

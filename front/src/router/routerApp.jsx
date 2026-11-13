@@ -22,6 +22,7 @@ import ActividadesPage from "../pages/actividades/ActividadesPage";
 import AlertasPage from '../pages/alertas/AlertasPage'
 import ChatIaPage from "../pages/chatIa/chatIaPage";
 // import {listaEspacios} from "../services/espacios";
+import EquipamientoDetallePage from "../pages/equipamientos/EquipamientoDetallePage";
 
 export default function RouterApp() {
   return (
@@ -91,6 +92,17 @@ export default function RouterApp() {
                   <ListadoEquipamientoPage />
                 </ProtectedRoute>
               }
+            />
+
+            <Route 
+            path="equipamiento/:id"
+            element={
+              <ProtectedRoute
+              protectedRoles={["Admin", "Coordinador", "Coordinador"]}
+              >
+                <EquipamientoDetallePage />
+              </ProtectedRoute>
+            }
             />
             <Route
               path="nueva-reserva"

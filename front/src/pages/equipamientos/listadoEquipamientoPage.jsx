@@ -233,7 +233,7 @@ export default function ListadoEquipamientoPage() {
                   <td>
                     <div className="d-flex flex-row gap-1 align-items-center">
                       <Link to={`${sim.id}`}>
-                        Ver -
+                        Ver 
                       </Link>
                       <Button
                         variant="link"
