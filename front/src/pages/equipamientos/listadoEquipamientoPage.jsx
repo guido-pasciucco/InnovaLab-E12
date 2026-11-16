@@ -34,9 +34,9 @@ export default function ListadoEquipamientoPage() {
     /* Formateo de data para adaptar al formato de la bd*/
     const estadoFormateadoSelect = terminoBusquedaEstado.toLowerCase().trim().replace(/ /g, "_");
 
-    const coincideEstado = terminoBusquedaEstado === "" 
-    ? true 
-    : item.estado?.toLowerCase().trim() === estadoFormateadoSelect;
+    const coincideEstado = terminoBusquedaEstado === ""
+      ? true
+      : item.estado?.toLowerCase().trim() === estadoFormateadoSelect;
 
     const coincideMovilidad = terminoBusquedaMovilidad === ""
       ? true
@@ -186,69 +186,69 @@ export default function ListadoEquipamientoPage() {
             </div>
           </div>
         </div>
-        <Table hover>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Categoría</th>
-              <th>Movilidad</th>
-              <th>Cantidad</th>
-              <th>Espacio</th>
-              <th>Estado</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* 1. Evaluamos si está cargando o si hay datos */}
-            {showSpinner ? (
-              /* Si showSpinner es true, mostramos una fila que ocupe todo el ancho con el Spinner */
+        {showSpinner ? (
+          /* 1. Si está cargando, mostramos SOLO el Spinner centrado (sin la tabla ni su cabecera) */
+          <div className="d-flex justify-content-center align-items-center py-5">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </Spinner>
+          </div>
+        ) : (
+          /* 2. Una vez finalizada la carga, se renderiza la tabla completa */
+          <Table hover>
+            <thead>
               <tr>
-                <td colSpan="6" className="text-center py-4">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                  </Spinner>
-                </td>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Movilidad</th>
+                <th>Cantidad</th>
+                <th>Espacio</th>
+                <th>Estado</th>
+                <th></th>
               </tr>
-            ) : resultadosFiltrados.length === 0 ? (
-              /* Opcional: Si ya cargó pero la búsqueda no arrojó resultados */
-              <tr>
-                <td colSpan="8" className="text-center text-muted py-4">
-                  No se encontraron equipos que coincidan con la búsqueda.
-                </td>
-              </tr>
-            ) : (
-              /* 2. Si ya cargó y hay resultados, hacemos el .map() usando resultadosFiltrados */
-              resultadosFiltrados.map((sim, i) => (
-                <tr key={sim.id || i}>
-                  <td>{sim.nombre}</td>
-                  <td>{sim.categoria}</td>
-                  <td>{sim.tipo_movilidad}</td>
-                  <td>{sim.cantidad}</td>
-                  <td>{sim.espacio_habitual_id}</td>
-                  <td
-                    style={{ color: sim.estado === "disponible" ? "green" : "red" }}
-                  >
-                    <SelectedBadge label={sim.estado} />
-                  </td>
-                  <td>
-                    <div className="d-flex flex-row gap-1 align-items-center">
-                      <Link to={`${sim.id}`}>
-                        Ver 
-                      </Link>
-                      <Button
-                        variant="link"
-                        className="text-danger text-decoration-none"
-                        onClick={() => confirmarEliminacion(sim.id)}
-                      >
-                        Eliminar
-                      </Button>
-                    </div>
+            </thead>
+            <tbody>
+              {resultadosFiltrados.length === 0 ? (
+                /* Si ya cargó pero la búsqueda no arrojó resultados */
+                <tr>
+                  <td colSpan="7" className="text-center text-muted py-4">
+                    No se encontraron equipos que coincidan con la búsqueda.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </Table>
+              ) : (
+                /* Si ya cargó y hay resultados, hacemos el .map() */
+                resultadosFiltrados.map((sim, i) => (
+                  <tr key={sim.id || i}>
+                    <td>{sim.nombre}</td>
+                    <td>{sim.categoria}</td>
+                    <td>{sim.tipo_movilidad}</td>
+                    <td>{sim.cantidad}</td>
+                    <td>{sim.espacio_habitual_id}</td>
+                    <td
+                      style={{ color: sim.estado === "disponible" ? "green" : "red" }}
+                    >
+                      <SelectedBadge label={sim.estado} />
+                    </td>
+                    <td>
+                      <div className="d-flex flex-row gap-1 align-items-center">
+                        <Link className="text-decoration-none" to={`${sim.id}`}>
+                          Ver
+                        </Link>
+                        <Button
+                          variant="link"
+                          className="text-danger text-decoration-none"
+                          onClick={() => confirmarEliminacion(sim.id)}
+                        >
+                          Eliminar
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </Table>
+        )}
         <p className="text-start mt-4">
           Fijo: Permanece en su espacio.
           Trasladable: Se reserva con la actividad y puede usarse en otros espacios

@@ -5,20 +5,38 @@ import { useEffect, useState, useContext } from "react"
 import { getReservas } from "../../services/apiRoutes"
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { Spinner } from "react-bootstrap";
+import { getEspaciosApi, getActividades } from "../../services/apiRoutes"
 
 
 export default function CalendarioReservasPage() {
-
+    const [actividades, setActividades] = useState([]);
+    const [espaciosApi, setEspaciosApi] = useState([]);
     const [reservas, setReservas] = useState([])
     const [showSpinner, setShowSpinner] = useState(false)
     const { getTokken } = useContext(AuthContext);
+    const hoy = new Date();
+    const diffLunes = (hoy.getDay() + 6) % 7;
+    const lunes = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - diffLunes);
+    const domingo = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - diffLunes + 6);
+    // Extraemos los números de día y el nombre del mes
+    const diaInicial = lunes.getDate();
+    const diaFinal = domingo.getDate();
+    const nombreDelMes = lunes.toLocaleDateString('es-ES', { month: 'long' }); // Ej: "noviembre"
+    // Resultado armado dinámicamente:
+    const textoSemana = `Semana del ${diaInicial} al ${diaFinal} de ${nombreDelMes}`;
 
     const getData = async () => {
 
         try {
             setShowSpinner(true);
-            const res = await getReservas(getTokken());
-            setReservas(res.data.data)
+            const [espaciosRes, reservasRes, actividadesRes] = await Promise.all([
+                getEspaciosApi(getTokken()),
+                getReservas(getTokken()),
+                getActividades(getTokken()),
+            ]);
+            setReservas(reservasRes.data.data)
+            setEspaciosApi(espaciosRes.data.data);
+            setActividades(actividadesRes.data.data);
         } catch (err) {
             console.log("Error al cargar datos:", err);
         } finally {
@@ -36,7 +54,7 @@ export default function CalendarioReservasPage() {
             <div className="d-flex flex-row justify-content-between align-items-center">
                 <div className="d-flex flex-column justify-content-center">
                     <h1 className="text-start h1">Calendario</h1>
-                    <p>Semana del 5 al 9 de octubre  * Sala Sim 1</p>
+                    <p>{textoSemana} * Sala Sim 1</p>
                 </div>
                 <div className="d-flex flex-row gap-2">
                     <button className="btn btn-secondary">
@@ -45,29 +63,18 @@ export default function CalendarioReservasPage() {
                     <Link to="/dashboard/nueva-reserva" className="btn btn-primary">
                         Nueva reserva
                     </Link>
-                    {/* <button className="btn btn-primary">
-                        Nueva actividad
-                    </button> */}
                 </div>
             </div>
             <div className="d-flex flex-column my-3 gap-3">
                 <div className="d-flex flex-row gap-3">
                     <GenericSelect text="Espacio: "
-                        opciones={[
-                            "Sala Sim 1",
-                            "Sala medica",
-                            "Laboratorio de Simulación A",
-                            "Sala de Capacitación",
-                        ]} />
+                        opciones={espaciosApi.map((item) => item.nombre)} />
                     <GenericSelect text="Recurso: "
                         opciones={[
                             "Todos",
                         ]} />
                     <GenericSelect text="Actividad"
-                        opciones={[
-                            'Práctica RCP',
-                            "Taller de suturas",
-                        ]} />
+                        opciones={actividades.map((item) => item.nombre)} />
                 </div>
                 <div className="bg-danger p-3 rounded-3 shadow-sm">
                     Alerta de superposición

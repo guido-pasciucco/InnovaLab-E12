@@ -42,7 +42,7 @@ function TablaGeneral2({ items }) {
               </span>
             </td>
             <td>
-              <Link to={`${item.id}`}>
+              <Link className='text-decoration-none' to={`${item.id}`}>
                 Ver
               </Link>
             </td>
