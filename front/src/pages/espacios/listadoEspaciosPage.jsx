@@ -10,6 +10,7 @@ import { getEspaciosApi, postEspaciosApi } from '../../services/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
 import { Plus, PlusCircle } from 'react-bootstrap-icons'
 import { BsSave2 } from 'react-icons/bs'
+import PageHelmet from '../../helmet/PageHelmet.jsx'
 
 export default function ListadoEspaciosPage() {
   const [showSpinner, setShowSpinner] = useState(true)
@@ -88,6 +89,11 @@ export default function ListadoEspaciosPage() {
 
   return (
     <>
+      <PageHelmet
+        title="Espacios"
+        description="Pagina con el listado de espacios definidos"
+      />
+
       <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-column justify-content-center">
           <h1 className="text-start h1">Espacios</h1>
@@ -228,7 +234,7 @@ export default function ListadoEspaciosPage() {
               </Button>
 
               <Button variant="primary" type="submit">
-                <BsSave2 className='me-1' />
+                <BsSave2 className="me-1" />
                 Guardar
               </Button>
             </div>

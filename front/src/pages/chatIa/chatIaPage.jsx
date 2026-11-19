@@ -1,15 +1,9 @@
-
 import { useState, useEffect, useRef, useContext } from 'react'
-import {
-  Card,
-  Form,
-  Button,
-  Spinner,
-} from 'react-bootstrap'
+import { Card, Form, Button, Spinner } from 'react-bootstrap'
 import { postChatIa } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 import { BsSendFill } from 'react-icons/bs'
-
+import PageHelmet from '../../helmet/PageHelmet'
 
 export default function ChatIaPage() {
   const [mensaje, setMensaje] = useState('')
@@ -18,25 +12,25 @@ export default function ChatIaPage() {
   const [mensajes, setMensajes] = useState([
     {
       tipo: 'ia',
-      texto: '¡Hola! ¿En qué puedo ayudarte?'
-    }
+      texto: '¡Hola! ¿En qué puedo ayudarte?',
+    },
   ])
 
-  const {getTokken} = useContext(AuthContext)
+  const { getTokken } = useContext(AuthContext)
   const token = getTokken()
 
   const mensajesEndRef = useRef(null)
 
   useEffect(() => {
     mensajesEndRef.current?.scrollIntoView({
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
   }, [mensajes])
 
-  const recibirMensajeApi = async ()=>{
-    console.log("Haciendo consulta mensaje: ", mensaje)
-    const res = await postChatIa(token,mensaje)
-    console.log("Respuesta api chat ia: ", res)
+  const recibirMensajeApi = async () => {
+    console.log('Haciendo consulta mensaje: ', mensaje)
+    const res = await postChatIa(token, mensaje)
+    console.log('Respuesta api chat ia: ', res)
     return res.data?.respuesta
   }
 
@@ -47,20 +41,14 @@ export default function ChatIaPage() {
 
     const nuevoMensaje = mensaje
 
-    setMensajes(prev => [
-      ...prev,
-      { tipo: 'usuario', texto: nuevoMensaje }
-    ])
+    setMensajes((prev) => [...prev, { tipo: 'usuario', texto: nuevoMensaje }])
 
     setMensaje('')
     setCargando(true)
 
     const mensajeIa = await recibirMensajeApi()
 
-    setMensajes(prev => [
-      ...prev,
-      {tipo:'ia', texto: mensajeIa}
-    ])
+    setMensajes((prev) => [...prev, { tipo: 'ia', texto: mensajeIa }])
 
     setCargando(false)
     // Simulación de respuesta de IA
@@ -78,71 +66,74 @@ export default function ChatIaPage() {
   }
 
   return (
-    <Card className="shadow-sm h-100">
-      <Card.Header className="background-primary text-white">
-        <strong>Asistente IA</strong>
-        <div className="small">Asistente virtual</div>
-      </Card.Header>
+    <>
+      <PageHelmet
+        title="Chat IA"
+        description="chat ia para consultar sobre la aplicacion"
+      />
+      <Card className="shadow-sm h-100">
+        <Card.Header className="background-primary text-white">
+          <strong>Asistente IA</strong>
+          <div className="small">Asistente virtual</div>
+        </Card.Header>
 
-      <Card.Body
-        className="d-flex flex-column"
-        style={{ height: '500px', overflowY: 'auto' }}
-      >
-        <div className="d-flex flex-column gap-3">
-          {mensajes.map((item, index) => (
-            <div
-              key={index}
-              className={`d-flex ${
-                item.tipo === 'usuario'
-                  ? 'justify-content-end'
-                  : 'justify-content-start'
-              }`}
-            >
+        <Card.Body
+          className="d-flex flex-column"
+          style={{ height: '500px', overflowY: 'auto' }}
+        >
+          <div className="d-flex flex-column gap-3">
+            {mensajes.map((item, index) => (
               <div
-                className={`p-3 rounded-3 ${
+                key={index}
+                className={`d-flex ${
                   item.tipo === 'usuario'
-                    ? 'background-primary text-white'
-                    : 'bg-light text-dark'
+                    ? 'justify-content-end'
+                    : 'justify-content-start'
                 }`}
-                style={{ maxWidth: '80%' }}
               >
-                {item.texto}
+                <div
+                  className={`p-3 rounded-3 ${
+                    item.tipo === 'usuario'
+                      ? 'background-primary text-white'
+                      : 'bg-light text-dark'
+                  }`}
+                  style={{ maxWidth: '80%' }}
+                >
+                  {item.texto}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          {cargando && (
-            <div className="text-muted small">
-              <Spinner size="sm" animation="border" className="me-2" />
-              La IA está escribiendo...
-            </div>
-          )}
+            {cargando && (
+              <div className="text-muted small">
+                <Spinner size="sm" animation="border" className="me-2" />
+                La IA está escribiendo...
+              </div>
+            )}
 
-          <div ref={mensajesEndRef} />
-        </div>
-      </Card.Body>
-
-      <Card.Footer>
-        <Form onSubmit={enviarMensaje}>
-          <div className="d-flex gap-2">
-            <Form.Control
-              type="text"
-              placeholder="Escribí tu mensaje..."
-              value={mensaje}
-              onChange={(e) => setMensaje(e.target.value)}
-              disabled={cargando}
-            />
-
-            <Button
-              type="submit"
-              className='btn-primary'
-            >
-              <BsSendFill />
-              Enviar
-            </Button>
+            <div ref={mensajesEndRef} />
           </div>
-        </Form>
-      </Card.Footer>
-    </Card>
+        </Card.Body>
+
+        <Card.Footer>
+          <Form onSubmit={enviarMensaje}>
+            <div className="d-flex gap-2">
+              <Form.Control
+                type="text"
+                placeholder="Escribí tu mensaje..."
+                value={mensaje}
+                onChange={(e) => setMensaje(e.target.value)}
+                disabled={cargando}
+              />
+
+              <Button type="submit" className="btn-primary">
+                <BsSendFill />
+                Enviar
+              </Button>
+            </div>
+          </Form>
+        </Card.Footer>
+      </Card>
+    </>
   )
 }

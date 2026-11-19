@@ -6,6 +6,8 @@ import { Container } from 'react-bootstrap'
 import AgregarItemButton from '../../components/butons/AgregarItemButton'
 import { postActividades } from '../../services/apiRoutes'
 
+import  Helmet  from '../../helmet/PageHelmet'
+
 export default function ActividadesPage() {
   const [data, setData] = useState()
 
@@ -73,6 +75,8 @@ export default function ActividadesPage() {
   ]
   return (
     <Container>
+      <Helmet title='Actividades' description= "Lista de actividades" />
+
       <h1 className="h1 mb-4">Actividades</h1>
 
       <TablaGeneral datos={data} showSpinner={showSpinner} />

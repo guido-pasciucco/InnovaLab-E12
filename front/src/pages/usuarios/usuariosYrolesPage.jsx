@@ -1,12 +1,17 @@
 import { useEffect, useState, useContext } from 'react'
 
 import { AuthContext } from '../../context/AuthContext'
-import { getUsuarios, postUsuarios, editUsuario } from '../../services/apiRoutes'
+import {
+  getUsuarios,
+  postUsuarios,
+  editUsuario,
+} from '../../services/apiRoutes'
 import TablaGeneral from '../../components/tables/TablaGeneral'
 import PostPutModal from '../../components/modals/PostPutModal'
 import GenericAlertModal from '../../components/modals/GenericAlertModal'
 import DeleteConfirmModal from '../../components/modals/DeleteConfirmModal'
 import { PlusCircle } from 'react-bootstrap-icons'
+import PageHelmet from '../../helmet/PageHelmet'
 
 export default function UsuariosYRolesPage() {
   const [data, setData] = useState()
@@ -128,10 +133,14 @@ export default function UsuariosYRolesPage() {
 
   return (
     <>
+      <PageHelmet
+        title={'Usuarios'}
+        description={'pagina de administracion de usuarios y roles'}
+      />
       <div className="d-flex justify-content-between align-items-center mb-3 mt-5">
         <h1 className="h1">Usuarios y roles page</h1>
         <button className="btn btn-primary" onClick={handleShow}>
-          <PlusCircle className='mb-1 me-1'/>
+          <PlusCircle className="mb-1 me-1" />
           Agregar usuario
         </button>
       </div>

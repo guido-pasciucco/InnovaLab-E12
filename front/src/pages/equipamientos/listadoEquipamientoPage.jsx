@@ -17,6 +17,7 @@ import MyModal from '../../components/modals/MyModal.jsx'
 import { Link } from 'react-router-dom'
 import { PlusCircle } from 'react-bootstrap-icons'
 import { BsSave, BsTrash, BsEye } from 'react-icons/bs'
+import PageHelmet from '../../helmet/PageHelmet.jsx'
 
 export default function ListadoEquipamientoPage() {
   const [showSpinner, setShowSpinner] = useState(true)
@@ -151,6 +152,11 @@ export default function ListadoEquipamientoPage() {
 
   return (
     <>
+      <PageHelmet
+        title="Equipamiento"
+        description="pagina del listado de equipamiento"
+      />
+
       <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-column justify-content-center">
           <h1 className="text-start h1">Equipamiento</h1>
