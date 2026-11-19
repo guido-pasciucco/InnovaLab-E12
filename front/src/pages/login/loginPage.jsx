@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext.jsx'
 import { loginPostCredentials } from '../../services/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
 import { Alert } from 'react-bootstrap'
-import { Row} from 'react-bootstrap'
+import { Row } from 'react-bootstrap'
 import { Button } from 'react-bootstrap'
 
 import styles from './login.module.css'
@@ -18,8 +18,6 @@ export default function LoginPage() {
 
   const [error, setError] = useState(null)
   // funcion principal del login
-
-
 
   const handleLogin = async () => {
     const credentials = { email: email, password: password }
@@ -52,14 +50,14 @@ export default function LoginPage() {
 
   // botones credenciales predefinidas
 
-  const handleIngresarCordinador =  () => {
-    const usuarios = ["carlos@innovalab.edu.ar", "ana@innovalab.edu.ar"]
+  const handleIngresarCordinador = () => {
+    const usuarios = ['carlos@innovalab.edu.ar', 'ana@innovalab.edu.ar']
     const valorAleatorio = usuarios[Math.floor(Math.random() * usuarios.length)]
     setEmail(valorAleatorio)
     setPassword('admin123')
   }
 
-  const handleIngresarAdmin =  () => {
+  const handleIngresarAdmin = () => {
     setEmail('admin@innovalab.edu.ar')
     setPassword('admin123')
   }
@@ -88,11 +86,12 @@ export default function LoginPage() {
                 <input
                   type="email"
                   className="form-control"
-                  id="exampleInputEmail1"
+                  id="ingresar"
                   aria-describedby="emailHelp"
                   placeholder="usuario@innovalab.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  data-testid="ingresar"
                 />
               </div>
 
@@ -107,6 +106,7 @@ export default function LoginPage() {
                   placeholder="******"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  data-testid="contrasena"
                 />
               </div>
 
@@ -131,6 +131,8 @@ export default function LoginPage() {
               <button
                 type="submit"
                 className="btn w-100 mt-4 background-primary"
+                name="Ingresar"
+                data-testid="btn-login"
               >
                 {!showSpinner ? <Spinner></Spinner> : <p>Ingresar</p>}
               </button>
@@ -141,12 +143,20 @@ export default function LoginPage() {
                 <h6>Espacio de prueba</h6>
 
                 <Row className="mt-3">
-                  <Button onClick={handleIngresarCordinador}>
+                  <Button
+                    onClick={handleIngresarCordinador}
+                    data-testid="btn-credencial-coordinador"
+                  >
                     Ingresar credenciales coordinador
                   </Button>
                 </Row>
                 <Row className="mt-3">
-                  <Button onClick={handleIngresarAdmin}>Ingresar credenciales administrador</Button>
+                  <Button
+                    onClick={handleIngresarAdmin}
+                    data-testid="btn-credencial-administrador"
+                  >
+                    Ingresar credenciales administrador
+                  </Button>
                 </Row>
               </Row>
             </form>
