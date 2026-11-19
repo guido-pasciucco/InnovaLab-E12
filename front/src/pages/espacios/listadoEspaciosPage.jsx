@@ -9,6 +9,7 @@ import { Modal, Button, Form } from 'react-bootstrap'
 import { getEspaciosApi, postEspaciosApi } from '../../services/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
 import { Plus, PlusCircle } from 'react-bootstrap-icons'
+import { BsSave2 } from 'react-icons/bs'
 
 export default function ListadoEspaciosPage() {
   const [showSpinner, setShowSpinner] = useState(true)
@@ -93,7 +94,7 @@ export default function ListadoEspaciosPage() {
         </div>
         <div className="d-flex flex-row gap-2">
           <button className="btn btn-primary text-nowrap" onClick={handleShow}>
-            <PlusCircle className='me-1 mb-1' />
+            <PlusCircle className="me-1 mb-1" />
             Agregar espacio
           </button>
         </div>
@@ -221,9 +222,16 @@ export default function ListadoEspaciosPage() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
-              Guardar
-            </Button>
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="secondary" onClick={handleClose}>
+                Cancelar
+              </Button>
+
+              <Button variant="primary" type="submit">
+                <BsSave2 className='me-1' />
+                Guardar
+              </Button>
+            </div>
           </Form>
         </Modal.Body>
       </Modal>

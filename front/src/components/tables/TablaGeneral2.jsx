@@ -1,6 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import { BsEye } from 'react-icons/bs';
 
 const badgesDeEstado = {
   disponible: "badge bg-success",
@@ -43,6 +44,7 @@ function TablaGeneral2({ items }) {
             </td>
             <td>
               <Link className='text-decoration-none' to={`${item.id}`}>
+              <BsEye />
                 Ver
               </Link>
             </td>

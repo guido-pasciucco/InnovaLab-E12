@@ -1,6 +1,7 @@
 import { Modal, Button } from 'react-bootstrap'
 import { Spinner } from 'react-bootstrap'
 import { useState } from 'react'
+import { BsCheckLg } from 'react-icons/bs'
 
 export default function ConfirmModal({
   mostrar,
@@ -38,6 +39,7 @@ export default function ConfirmModal({
                 setLoading(false)
               }}
             >
+              <BsCheckLg />
               Confirmar
             </Button>
           </>

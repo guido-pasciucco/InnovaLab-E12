@@ -3,6 +3,7 @@ import { Modal, Button, Spinner, Alert } from 'react-bootstrap'
 import { deleteUsuario } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 import GenericAlertModal from './GenericAlertModal'
+import { BsTrash } from 'react-icons/bs'
 
 export default function DeleteConfirmModal({
   show,
@@ -22,10 +23,10 @@ export default function DeleteConfirmModal({
     try {
       setLoading(true)
       setError('')
-      console.log("id a eliminar: ", id)
+      console.log('id a eliminar: ', id)
       await deleteUsuario(getTokken(), id)
       setTipoModal('success')
-      
+
       onSuccess?.()
       onHide()
     } catch (err) {
@@ -59,7 +60,10 @@ export default function DeleteConfirmModal({
                 Eliminando...
               </>
             ) : (
-              'Eliminar'
+              <>
+                <BsTrash />
+                Eliminar
+              </>
             )}
           </Button>
         </Modal.Footer>
