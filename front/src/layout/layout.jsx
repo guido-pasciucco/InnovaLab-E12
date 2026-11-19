@@ -6,7 +6,7 @@ export default function Layout() {
   return (
     <div>
       <Sidebar />
-      <main style={{ marginLeft: '220px', padding: '30px' }}>
+      <main style={{ marginLeft: '240px', padding: '30px' }}>
         <Topbar />
         <Outlet />
       </main>
