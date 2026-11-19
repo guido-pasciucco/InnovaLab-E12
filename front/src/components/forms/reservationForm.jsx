@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './reservationForm.module.css';
 import GenericSelect from '../others/select';
 import { Link } from 'react-router-dom';
+import { Spinner } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { getEspaciosApi, getActividades, getReservas } from "../../services/apiRoutes.js";
@@ -41,9 +42,9 @@ function ReservationForm({ onSubmitForm, formData, handleChange }) {
 
         <div className='d-flex flex-row gap-3'>
             <form onSubmit={onSubmitForm} style={{ width: '80%' }}>
-                <div className='d-flex mb-2'>
+                {/* <div className='d-flex mb-2'>
                     <h3>Datos de la reserva</h3>
-                </div>
+                </div> */}
                 <div className="d-flex flex-column mb-5">
                     <div className="d-flex flex-column align-items-start mb-2 w-100">
                         <label htmlFor="nombre" className="form-label">Actividad</label>
@@ -139,14 +140,9 @@ function ReservationForm({ onSubmitForm, formData, handleChange }) {
                         </p>
                     </div>
                     <div className="d-flex justify-content-end mb-2 gap-3">
-                        <button
-                            type="button"
-                            className="btn btn-secondary text-nowrap"
-                            data-bs-toggle="modal"
-                            data-bs-target="#miModal"
-                        >
+                        <Link to="/dashboard/calendario" className="btn btn-secondary">
                             Cancelar
-                        </button>
+                        </Link>
                         <button type="submit" className="btn btn-primary text-nowrap">
                             Continuar
                         </button>
@@ -158,37 +154,62 @@ function ReservationForm({ onSubmitForm, formData, handleChange }) {
                     <div>
                         {/* Muestra el día de la semana formateado */}
                         <p className="text-capitalize fw-bold">
-                            Ocupación {new Date(`${formData.fecha}T00:00:00`).toLocaleDateString('es-ES', { weekday: 'long' }).substring(0,3)}
+                            Ocupación {new Date(`${formData.fecha}T00:00:00`).toLocaleDateString('es-ES', { weekday: 'long' }).substring(0, 3)}
                             {' '}{formData.fecha}
                         </p>
 
-                        {/* Aquí muestras la info que viene del backend para esa fecha */}
+                        {(() => {
+                            // 1. Si está cargando desde el backend, mostramos el Spinner
+                            if (showSpinner) {
+                                return (
+                                    <div className="d-flex justify-content-center align-items-center py-3">
+                                        <Spinner animation="border" size="sm" role="status">
+                                            <span className="visually-hidden">Cargando...</span>
+                                        </Spinner>
+                                    </div>
+                                );
+                            }
 
-                        {/* Ejemplo: si guardas la disponibilidad en un estado o la buscas */}
-                        {reservas && reservas
-                            .filter(r => {
+                            // 2. Filtramos las reservas de la fecha seleccionada una sola vez
+                            const reservasFiltradas = (reservas || []).filter((r) => {
                                 const fechaReserva = r?.fecha_hora_inicio ? r.fecha_hora_inicio.substring(0, 10) : '';
                                 return fechaReserva === formData.fecha;
-                            })
-                            .map((reserva, index) => {
-                                const horaInicio = reserva?.fecha_hora_inicio ?
-                                    new Date(reserva.fecha_hora_inicio).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
-                                const horaFin = reserva?.fecha_hora_fin ?
-                                    new Date(reserva.fecha_hora_fin).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+                            });
+
+                            // 3. Si no hay coincidencias, mostramos el <p>
+                            if (reservasFiltradas.length === 0) {
+                                return <p className="text-muted">Sin reservas...</p>;
+                            }
+
+                            // 4. Si hay coincidencias, las renderizamos como ya lo hacías
+                            return reservasFiltradas.map((reserva, index) => {
+                                const horaInicio = reserva?.fecha_hora_inicio
+                                    ? new Date(reserva.fecha_hora_inicio).toLocaleTimeString('es-ES', {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false,
+                                    })
+                                    : '';
+                                const horaFin = reserva?.fecha_hora_fin
+                                    ? new Date(reserva.fecha_hora_fin).toLocaleTimeString('es-ES', {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false,
+                                    })
+                                    : '';
 
                                 return (
-                                    <div key={index}>
+                                    <div key={reserva.id || index}>
                                         <p>
-                                            {reserva.espacio.nombre} - Cap: {reserva.espacio.capacidad} 
+                                            - {reserva.espacio.nombre} Cap: {reserva.espacio.capacidad}
                                         </p>
                                         <p>
-                                            Ocupada: {horaInicio} - {horaFin}
+                                            - Ocupada: {horaInicio} - {horaFin}
                                         </p>
                                     </div>
                                 );
-                            })
-                        }
-
+                            });
+                        })()}
                     </div>
                 ) : (
                     <p className="text-muted">Selecciona una fecha para ver la disponibilidad.</p>

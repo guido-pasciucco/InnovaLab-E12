@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEspaciosApi, getReservas } from "../../services/apiRoutes.js";
+import { getEspaciosApi, getReservas, getEquipamientoApi } from "../../services/apiRoutes.js";
 import { Spinner } from "react-bootstrap";
 import { Form } from 'react-bootstrap';
 
@@ -9,6 +9,7 @@ function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
     const [showSpinner, setShowSpinner] = useState(false);
     const [espaciosApi, setEspaciosApi] = useState([]);
     const [reservas, setReservas] = useState([]);
+    const [equipamientoApi, setEquipamientoApi] = useState([]);
     const { getTokken } = useContext(AuthContext);
     const espaciosDisponibles = espaciosApi.filter(espacio => {
         const reservasParaEspacio = reservas.filter(
@@ -21,12 +22,14 @@ function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
 
         try {
             setShowSpinner(true);
-            const [espaciosRes, reservasRes] = await Promise.all([
+            const [espaciosRes, reservasRes, equipamientoRes] = await Promise.all([
                 getEspaciosApi(getTokken()),
                 getReservas(getTokken()),
+                getEquipamientoApi(getTokken()),
             ]);
             setEspaciosApi(espaciosRes.data.data);
             setReservas(reservasRes.data.data);
+            setEquipamientoApi(equipamientoRes.data.data);
             console.log("Datos de espacios obtenidos:", espaciosApi);
         }
         catch (error) {
@@ -46,6 +49,7 @@ function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
     return (
         <Form onSubmit={onSubmitForm}>
             <div className="d-flex flex-column gap-3 my-3">
+                
                 {/* Si aún no cargan los espacios, mostramos un mensaje o spinner para evitar renderizados vacíos */}
                 {!espaciosDisponibles || espaciosDisponibles.length === 0 ? (
                     <p className="text-center text-muted">Cargando espacios disponibles...</p>
@@ -79,6 +83,9 @@ function ReservationForm2({ onSubmitForm, onBack, formData, onCustomChange }) {
                         />
                     ))
                 )}
+            </div>
+            <div>
+
             </div>
             <div className="d-flex justify-content-end gap-2">
                 <button className="btn btn-secondary" onClick={onBack}>

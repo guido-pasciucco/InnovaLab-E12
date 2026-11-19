@@ -214,7 +214,7 @@ export default function NuevaReservaPage() {
             <Box className="bg-light p-3 rounded-3 gap-3">
                 {activeStep === steps.length ? (
                     <ReservaConfirmadaModal
-                        show={true} // 👈 Forzamos en true porque este bloque solo se renderiza si activeStep === steps.length
+                        show={true} // Forzamos en true porque este bloque solo se renderiza si activeStep === steps.length
                         onHide={handleReset}
                         reservaData={formData}
                         onCrearOtra={handleReset}
