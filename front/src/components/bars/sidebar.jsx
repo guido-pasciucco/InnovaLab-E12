@@ -1,5 +1,4 @@
-
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { Row, Col } from 'react-bootstrap'
@@ -13,14 +12,12 @@ import {
   People,
   List,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
 } from 'react-bootstrap-icons'
 
-export default function Sidebar() {
+export default function Sidebar({ collapsed, setCollapsed }) {
   const { getRol } = useContext(AuthContext)
   const rol = getRol()
-
-  const [collapsed, setCollapsed] = useState(false)
 
   const links = [
     { to: '/dashboard', label: 'Inicio', icon: <House /> },
@@ -31,21 +28,27 @@ export default function Sidebar() {
     { to: '/dashboard/alertas', label: 'Alertas', icon: <Bell /> },
     { to: '/dashboard/chatia', label: 'Consultas IA', icon: <ChatDots /> },
     ...(rol === 'Admin'
-      ? [{ to: '/dashboard/usuarios-y-roles', label: 'Usuarios', icon: <People /> }]
-      : [])
+      ? [
+          {
+            to: '/dashboard/usuarios-y-roles',
+            label: 'Usuarios',
+            icon: <People />,
+          },
+        ]
+      : []),
   ]
 
   return (
     <div
       className="text-white p-3 d-flex flex-column background-primary overflow-y-auto"
       style={{
-        width: collapsed ? '110px' : '240px',
-        height: '100vh',
-        position: 'fixed',
-        top: 0,
-        left: 0,
+        width: collapsed ? '113px' : '240px',
         transition: 'width 0.3s ease',
-        zIndex: 1000
+        position: 'fixed',
+        height: '100vh',
+        left: 0,
+        top: 0,
+        zIndex: 1000,
       }}
     >
       {/* Encabezado */}
