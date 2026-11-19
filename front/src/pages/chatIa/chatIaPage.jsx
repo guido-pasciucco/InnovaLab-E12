@@ -8,6 +8,7 @@ import {
 } from 'react-bootstrap'
 import { postChatIa } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
+import { BsSendFill } from 'react-icons/bs'
 
 
 export default function ChatIaPage() {
@@ -136,6 +137,7 @@ export default function ChatIaPage() {
               type="submit"
               className='btn-primary'
             >
+              <BsSendFill />
               Enviar
             </Button>
           </div>

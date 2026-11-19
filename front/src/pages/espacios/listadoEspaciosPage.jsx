@@ -8,6 +8,7 @@ import { AuthContext } from '../../context/AuthContext.jsx'
 import { Modal, Button, Form } from 'react-bootstrap'
 import { getEspaciosApi, postEspaciosApi } from '../../services/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
+import { Plus, PlusCircle } from 'react-bootstrap-icons'
 
 export default function ListadoEspaciosPage() {
   const [showSpinner, setShowSpinner] = useState(true)
@@ -92,6 +93,7 @@ export default function ListadoEspaciosPage() {
         </div>
         <div className="d-flex flex-row gap-2">
           <button className="btn btn-primary text-nowrap" onClick={handleShow}>
+            <PlusCircle className='me-1 mb-1' />
             Agregar espacio
           </button>
         </div>

@@ -6,7 +6,7 @@ import { getReservas } from "../../services/apiRoutes"
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { Spinner } from "react-bootstrap";
 import { getEspaciosApi, getActividades } from "../../services/apiRoutes"
-
+import { PlusCircle } from "react-bootstrap-icons"
 
 export default function CalendarioReservasPage() {
     const [actividades, setActividades] = useState([]);
@@ -61,6 +61,7 @@ export default function CalendarioReservasPage() {
                         Hoy
                     </button>
                     <Link to="/dashboard/nueva-reserva" className="btn btn-primary">
+                        <PlusCircle className="mb-1 me-1"/>
                         Nueva reserva
                     </Link>
                 </div>

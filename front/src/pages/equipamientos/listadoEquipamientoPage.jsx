@@ -10,7 +10,8 @@ import { Spinner } from "react-bootstrap";
 import SelectedBadge from "../../components/badges/SelectedBadge.jsx";
 import MyModal from "../../components/modals/MyModal.jsx";
 import { Link } from "react-router-dom";
-
+import { PlusCircle } from "react-bootstrap-icons";
+import { BsSave, BsTrash } from "react-icons/bs";
 
 export default function ListadoEquipamientoPage() {
   const [showSpinner, setShowSpinner] = useState(true);
@@ -145,6 +146,7 @@ export default function ListadoEquipamientoPage() {
           <button className="btn btn-primary"
             onClick={handleShow}
           >
+            <PlusCircle className="mb-1 me-1"/>
             Agregar equipo
           </button>
         </div>
@@ -351,6 +353,7 @@ export default function ListadoEquipamientoPage() {
             </Form.Group>
 
             <Button variant="primary" type="submit">
+              <BsSave className="me-1"/>
               Guardar
             </Button>
           </Form>

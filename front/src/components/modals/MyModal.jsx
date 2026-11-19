@@ -1,8 +1,9 @@
 import { Modal, Button } from 'react-bootstrap'
+import { BsTrash } from 'react-icons/bs'
 
 export default function MyModal({
   mostrar,
-  title,
+  title="",
   bodyMessage,
   handleConfirm,
   handleCancel,
@@ -20,6 +21,8 @@ export default function MyModal({
           Cancelar
         </Button>
         <Button variant="primary" onClick={handleConfirm}>
+          {title.includes("Eliminar") &&
+          <BsTrash className='me-1'/>}
           Confirmar
         </Button>
       </Modal.Footer>

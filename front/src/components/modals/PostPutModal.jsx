@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Modal, Button, Form, Row, Col, Spinner } from 'react-bootstrap'
+import { BsSaveFill, BsSave } from 'react-icons/bs'
 
 export default function PostPutModal({
   show,
@@ -98,6 +99,7 @@ export default function PostPutModal({
               </Button>
 
               <Button variant="primary" type="submit">
+                <BsSave className='me-1' />
                 Guardar
               </Button>
             </>
