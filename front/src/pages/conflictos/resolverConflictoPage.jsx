@@ -1,9 +1,13 @@
 import Form from 'react-bootstrap/Form';
+import PageHelmet from '../../helmet/PageHelmet';
 
 export default function ResolverConflictoPage() {
 
     return (
         <>
+
+            <PageHelmet title='Conflictos' description='pagina de visualizacion de conflictos' />
+
             <div>
                 <h1 className="text-start">Resolver conflicto</h1>
             </div>

@@ -1,6 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import { BsEye } from 'react-icons/bs';
 
 const badgesDeEstado = {
   disponible: "badge bg-success",
@@ -12,7 +13,7 @@ const badgesDeEstado = {
 
 // borderless hover responsive
 
-function GenericTable({ items }) {
+function TablaGeneral2({ items }) {
   return (
     <Table responsive hover className='table shadow-sm'>
       <thead>
@@ -42,7 +43,8 @@ function GenericTable({ items }) {
               </span>
             </td>
             <td>
-              <Link to={`${item.id}`}>
+              <Link className='text-decoration-none' to={`${item.id}`}>
+              <BsEye />
                 Ver
               </Link>
             </td>
@@ -53,4 +55,4 @@ function GenericTable({ items }) {
   );
 }
 
-export default GenericTable;
+export default TablaGeneral2;

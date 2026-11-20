@@ -1,113 +1,172 @@
-import Search from "../../components/others/search.jsx";
-import GenericSelect from "../../components/others/select.jsx";
-import { Table } from "react-bootstrap";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import { getEquipamientoApi, getEspaciosApi, postEquipamientoApi } from "../../utils/apiRoutes.js";
-import { Modal, Button, Form } from "react-bootstrap";
-import { toast } from 'react-toastify';
-import { Spinner } from "react-bootstrap";
-import SelectedBadge from "../../components/badges/SelectedBadge.jsx";
-import { Link } from "react-router-dom";
-
+import Search from '../../components/others/search.jsx'
+import GenericSelect from '../../components/others/select.jsx'
+import { Table } from 'react-bootstrap'
+import { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../../context/AuthContext.jsx'
+import {
+  getEquipamientoApi,
+  getEspaciosApi,
+  postEquipamientoApi,
+  deleteEquipamientoApi,
+} from '../../services/apiRoutes.js'
+import { Modal, Button, Form } from 'react-bootstrap'
+import { toast } from 'react-toastify'
+import { Spinner } from 'react-bootstrap'
+import SelectedBadge from '../../components/badges/SelectedBadge.jsx'
+import MyModal from '../../components/modals/MyModal.jsx'
+import { Link } from 'react-router-dom'
+import { PlusCircle } from 'react-bootstrap-icons'
+import { BsSave, BsTrash, BsEye } from 'react-icons/bs'
+import PageHelmet from '../../helmet/PageHelmet.jsx'
 
 export default function ListadoEquipamientoPage() {
-  const [showSpinner, setShowSpinner] = useState(true);
-  const [cargando, setCargando] = useState(true);
-  const [terminoBusqueda, setTerminoBusqueda] = useState("");
-  const [show, setShow] = useState(false);
-  const [datosAPI, setDatosAPI] = useState([]);
-  const [espaciosApi, setEspaciosApi] = useState([]);
-  const { getTokken } = useContext(AuthContext);
+  const [showSpinner, setShowSpinner] = useState(true)
+  const [cargando, setCargando] = useState(true)
+  const [terminoBusqueda, setTerminoBusqueda] = useState('')
+  const [terminoBusquedaEstado, setTerminoBusquedaEstado] = useState('')
+  const [terminoBusquedaMovilidad, setTerminoBusquedaMovilidad] = useState('')
+  const [show, setShow] = useState(false)
+  const [datosAPI, setDatosAPI] = useState([])
+  const [espaciosApi, setEspaciosApi] = useState([])
+  const { getTokken } = useContext(AuthContext)
+  const [showModal, setShowModal] = useState(false)
+  const [idParaEliminar, setIdParaEliminar] = useState(null)
 
-  const resultadosFiltrados = datosAPI.filter((item) =>
-    item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()),
-  );
+  const resultadosFiltrados = datosAPI.filter((item) => {
+    console.log(
+      'Item estado:',
+      JSON.stringify(item.estado),
+      ' | Seleccionado:',
+      JSON.stringify(terminoBusquedaEstado),
+    )
+    const coincideNombre = item.nombre
+      ? item.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase())
+      : false
 
+    /* Formateo de data para adaptar al formato de la bd*/
+    const estadoFormateadoSelect = terminoBusquedaEstado
+      .toLowerCase()
+      .trim()
+      .replace(/ /g, '_')
+
+    const coincideEstado =
+      terminoBusquedaEstado === ''
+        ? true
+        : item.estado?.toLowerCase().trim() === estadoFormateadoSelect
+
+    const coincideMovilidad =
+      terminoBusquedaMovilidad === ''
+        ? true
+        : item.tipo_movilidad?.toLowerCase().trim() ===
+          terminoBusquedaMovilidad.toLowerCase().trim()
+
+    return coincideNombre && coincideEstado && coincideMovilidad
+  })
 
   const getData = async () => {
-
     try {
-      setShowSpinner(true);
-      const res = await getEquipamientoApi(getTokken());
+      setShowSpinner(true)
+      const res = await getEquipamientoApi(getTokken())
       const res2 = await getEspaciosApi(getTokken())
-      setDatosAPI(res.data.data);
+      setDatosAPI(res.data.data)
       setEspaciosApi(res2.data.data)
     } catch (err) {
-      console.log("Error al cargar datos:", err);
+      console.log('Error al cargar datos:', err)
     } finally {
-      setShowSpinner(false);
+      setShowSpinner(false)
     }
   }
 
-  const { getTypeAndToken } = useContext(AuthContext);
-  const { token_type, access_token } = getTypeAndToken();
+  const { getTypeAndToken } = useContext(AuthContext)
+  const { token_type, access_token } = getTypeAndToken()
 
   useEffect(() => {
-    getData();
-  }, []);
+    getData()
+  }, [])
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const fueraDeServicio = datosAPI.filter(data => data.estado === "fuera_de_servicio").length;
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+  const fueraDeServicio = datosAPI.filter(
+    (data) => data.estado === 'fuera_de_servicio',
+  ).length
+
+  const confirmarEliminacion = (id) => {
+    console.log('Id:', id)
+    setIdParaEliminar(id)
+    setShowModal(true)
+  }
 
   const estadoInicial = {
-    nombre: "",
-    categoria: "",
-    tipo_movilidad: "",
-    cantidad: "",
-    espacio_habitual_id: "",
-    espacio_actual_id: "",
-    estado: "",
+    nombre: '',
+    categoria: '',
+    tipo_movilidad: '',
+    cantidad: '',
+    espacio_habitual_id: '',
+    espacio_actual_id: '',
+    estado: '',
   }
-  const [formData, setFormData] = useState(estadoInicial);
-
+  const [formData, setFormData] = useState(estadoInicial)
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Datos enviados:", formData);
+    e.preventDefault()
 
-    // acá podrías hacer un fetch/axios POST a tu
     try {
-      await postEquipamientoApi(formData, getTokken());
+      await postEquipamientoApi(formData, getTokken())
 
-      toast.success("Equipo guardado con exito!");
-      console.log("Datos cargados correctamente");
-      setShowSpinner(true);
-      getData();
-      setFormData(estadoInicial);
-      handleClose();
-
+      toast.success('Equipo guardado con exito!')
+      console.log('Datos cargados correctamente')
+      setShowSpinner(true)
+      getData()
+      setFormData(estadoInicial)
+      handleClose()
     } catch (err) {
-      console.log("Error detallado del servidor:", err);
+      console.log('Error detallado del servidor:', err)
 
       if (err.response && err.response.data) {
-        console.log("Mensaje de validación:", err.response.data);
+        console.log('Mensaje de validación:', err.response.data)
       }
 
-      toast.error("Hubo un error al guardar. Revisa los datos.");
+      toast.error('Hubo un error al guardar. Revisa los datos.')
     }
-
-  };
+  }
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
+
+  const handleEliminar = async (id) => {
+    try {
+      await deleteEquipamientoApi(idParaEliminar, getTokken())
+      setDatosAPI((prev) => prev.filter((item) => item.id !== idParaEliminar))
+      setShowModal(false)
+      setIdParaEliminar(null)
+      toast.success('¡Equipo eliminado correctamente!')
+    } catch (error) {
+      console.error('Error al eliminar:', error)
+      alert('No se pudo eliminar el elemento.')
+    }
+  }
 
   return (
     <>
+      <PageHelmet
+        title="Equipamiento"
+        description="pagina del listado de equipamiento"
+      />
+
       <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-column justify-content-center">
           <h1 className="text-start h1">Equipamiento</h1>
-          <p>{datosAPI.length} Equipos - {fueraDeServicio} Fuera de servicio</p>
+          <p>
+            {datosAPI.length} Equipos - {fueraDeServicio} Fuera de servicio
+          </p>
         </div>
         <div className="d-flex flex-row gap-2">
-          <button className="btn btn-primary"
-            onClick={handleShow}
-          >
+          <button className="btn btn-primary" onClick={handleShow}>
+            <PlusCircle className="mb-1 me-1" />
             Agregar equipo
           </button>
         </div>
@@ -116,99 +175,109 @@ export default function ListadoEquipamientoPage() {
         <div className="d-flex justify-content-between align-items-center mb-5  flex-wrap">
           <div
             className="d-flex align-items-center gap-3 w-100"
-            style={{ maxWidth: "75%" }}
+            style={{ maxWidth: '100%' }}
           >
-            <div style={{ minWidth: "250px", width: "100%" }}>
+            <div style={{ minWidth: '250px', width: '70%' }}>
               <Search
                 text="Buscar equipos"
                 terminoBusqueda={terminoBusqueda}
                 setTerminoBusqueda={setTerminoBusqueda}
               />
             </div>
-            <div className="d-flex flex-row gap-3" style={{ minWidth: "100px", width: "40%" }}>
+            <div
+              className="d-flex flex-row gap-3"
+              style={{ minWidth: '150px', width: '30%' }}
+            >
               <GenericSelect
                 text="Movilidad"
-                opciones={[
-                  "Fijo",
-                  "Trasladable",
-                ]}
+                opciones={['Fijo', 'Trasladable']}
+                onChange={(e) => setTerminoBusquedaMovilidad(e.target.value)}
               />
               <GenericSelect
                 text="Estado"
                 opciones={[
-                  "Disponible",
-                  "En uso",
-                  "Confirmado",
-                  "Borrador",
-                  "Fuera de servicio",
-                  "En mantenimiento",
+                  'Disponible',
+                  'En uso',
+                  'Confirmado',
+                  'Borrador',
+                  'Fuera de servicio',
+                  'En mantenimiento',
                 ]}
+                onChange={(e) => setTerminoBusquedaEstado(e.target.value)}
               />
             </div>
           </div>
         </div>
-        <Table hover>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Categoría</th>
-              <th>Movilidad</th>
-              <th>Cantidad</th>
-              <th>Espacio</th>
-              <th>Estado</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* 1. Evaluamos si está cargando o si hay datos */}
-            {showSpinner ? (
-              /* Si showSpinner es true, mostramos una fila que ocupe todo el ancho con el Spinner */
+        {showSpinner ? (
+          /* 1. Si está cargando, mostramos SOLO el Spinner centrado (sin la tabla ni su cabecera) */
+          <div className="d-flex justify-content-center align-items-center py-5">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </Spinner>
+          </div>
+        ) : (
+          /* 2. Una vez finalizada la carga, se renderiza la tabla completa */
+          <Table hover>
+            <thead>
               <tr>
-                <td colSpan="6" className="text-center py-4">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                  </Spinner>
-                </td>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Movilidad</th>
+                <th>Cantidad</th>
+                <th>Espacio</th>
+                <th>Estado</th>
+                <th></th>
               </tr>
-            ) : resultadosFiltrados.length === 0 ? (
-              /* Opcional: Si ya cargó pero la búsqueda no arrojó resultados */
-              <tr>
-                <td colSpan="6" className="text-center text-muted py-4">
-                  No se encontraron equipos que coincidan con la búsqueda.
-                </td>
-              </tr>
-            ) : (
-              /* 2. Si ya cargó y hay resultados, hacemos el .map() usando resultadosFiltrados */
-              resultadosFiltrados.map((sim, i) => (
-                <tr key={sim.id || i}>
-                  <td>{sim.nombre}</td>
-                  <td>{sim.categoria}</td>
-                  <td>{sim.tipo_movilidad}</td>
-                  <td>{sim.cantidad}</td>
-                  <td>{sim.espacio_habitual_id}</td>
-                  <td
-                    style={{ color: sim.estado === "disponible" ? "green" : "red" }}
-                  >
-                    <SelectedBadge label={sim.estado} />
-                  </td>
-                  <td>
-                    <div className="d-flex flex-row gap-1">
-                      <Link to={`${sim.id}`}>
-                        Ver -
-                      </Link>
-                      <Link to={`${sim.id}`}>
-                        Eliminar
-                      </Link>
-                    </div>
+            </thead>
+            <tbody>
+              {resultadosFiltrados.length === 0 ? (
+                /* Si ya cargó pero la búsqueda no arrojó resultados */
+                <tr>
+                  <td colSpan="7" className="text-center text-muted py-4">
+                    No se encontraron equipos que coincidan con la búsqueda.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </Table>
+              ) : (
+                /* Si ya cargó y hay resultados, hacemos el .map() */
+                resultadosFiltrados.map((sim, i) => (
+                  <tr key={sim.id || i}>
+                    <td>{sim.nombre}</td>
+                    <td>{sim.categoria}</td>
+                    <td>{sim.tipo_movilidad}</td>
+                    <td>{sim.cantidad}</td>
+                    <td>{sim.espacio_habitual_id}</td>
+                    <td
+                      style={{
+                        color: sim.estado === 'disponible' ? 'green' : 'red',
+                      }}
+                    >
+                      <SelectedBadge label={sim.estado} />
+                    </td>
+                    <td>
+                      <div className="d-flex flex-row gap-1 align-items-center">
+                        <Link className="text-decoration-none" to={`${sim.id}`}>
+                          <BsEye />
+                          Ver
+                        </Link>
+                        <Button
+                          variant="link"
+                          className="text-danger text-decoration-none"
+                          onClick={() => confirmarEliminacion(sim.id)}
+                        >
+                          <BsTrash />
+                          Eliminar
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </Table>
+        )}
         <p className="text-start mt-4">
-          Fijo: Permanece en su espacio.
-          Trasladable: Se reserva con la actividad y puede usarse en otros espacios
+          Fijo: Permanece en su espacio. Trasladable: Se reserva con la
+          actividad y puede usarse en otros espacios
         </p>
       </div>
       {/* modal del post */}
@@ -256,7 +325,7 @@ export default function ListadoEquipamientoPage() {
               <Form.Control
                 type="number"
                 name="cantidad"
-                value={formData.cantidad ?? ""}
+                value={formData.cantidad ?? ''}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -306,13 +375,27 @@ export default function ListadoEquipamientoPage() {
                 ))}
               </Form.Select>
             </Form.Group>
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="secondary" onClick={handleClose}>
+                Cancelar
+              </Button>
 
-            <Button variant="primary" type="submit">
-              Guardar
-            </Button>
+              <Button variant="primary" type="submit">
+                <BsSave className="me-1" />
+                Guardar
+              </Button>
+            </div>
           </Form>
         </Modal.Body>
       </Modal>
+      {/* Modal delete equipos */}
+      <MyModal
+        mostrar={showModal}
+        title="¿Eliminar este equipamiento?"
+        bodyMessage="Esta acción no se puede deshacer. Las reservas futuras del equipo quedaran sin efecto."
+        handleConfirm={handleEliminar}
+        handleCancel={() => setShowModal(false)}
+      />
     </>
-  );
+  )
 }
