@@ -134,7 +134,7 @@ function ReservationForm({ onSubmitForm, formData, handleChange }) {
                     <div className='d-flex mb-2 gap-3'>
                         <p>
                             ¿La actividad no existe ? Crear nueva actividad {''}
-                            <Link to="/dashboard/nueva-actividad" className="text-decoration-none">
+                            <Link to="/dashboard/actividades" className="text-decoration-none">
                                 aquí.
                             </Link>
                         </p>
