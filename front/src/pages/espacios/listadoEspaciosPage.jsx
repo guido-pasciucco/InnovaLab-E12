@@ -51,13 +51,12 @@ export default function ListadoEspaciosPage() {
   // post eequipamiento
   const [show, setShow] = useState(false)
   const [formData, setFormData] = useState({
-    nombre: 'Taller de RCP y Reanimación Avanzada',
-    descripcion: 'Práctica intensiva con simuladores de alta fidelidad',
-    tipo: 'Taller',
-    capacidad: 25,
-    estado: 'planificada',
-    ubicacion: 'Planta baja',
-    docente_id: 1,
+    nombre: '',
+    descripcion: '',
+    tipo: '',
+    capacidad: '',
+    estado: '',
+    ubicacion: '',
   })
 
   const handleClose = () => setShow(false)
@@ -151,7 +150,7 @@ export default function ListadoEspaciosPage() {
       {/* modal del post */}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Formulario</Modal.Title>
+          <Modal.Title>Agregar Espacio</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -162,11 +161,12 @@ export default function ListadoEspaciosPage() {
                 name="nombre"
                 value={formData.nombre}
                 onChange={handleChange}
+                placeholder="Ej. Laboratorio De Simulacion A, Taller de practica 01, Laboratorio de AutoElevadores "
                 required
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formDescripcion">
+            {/* <Form.Group className="mb-3" controlId="formDescripcion">
               <Form.Label>Descripcion</Form.Label>
               <Form.Control
                 type="text"
@@ -175,7 +175,7 @@ export default function ListadoEspaciosPage() {
                 onChange={handleChange}
                 required
               />
-            </Form.Group>
+            </Form.Group> */}
 
             <Form.Group className="mb-3" controlId="formDescripcion">
               <Form.Label>tipo</Form.Label>
@@ -185,6 +185,7 @@ export default function ListadoEspaciosPage() {
                 value={formData.tipo}
                 onChange={handleChange}
                 required
+                placeholder="Ej: Laboratorio, Aula, Taller"
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formDescripcion">
@@ -195,6 +196,7 @@ export default function ListadoEspaciosPage() {
                 value={formData.ubicacion}
                 onChange={handleChange}
                 required
+                placeholder="Ej: Piso 01 - ala sur, Planta baja, "
               />
             </Form.Group>
             <Form.Group>
@@ -204,6 +206,7 @@ export default function ListadoEspaciosPage() {
                 name="capacidad"
                 value={formData.capacidad}
                 onChange={handleChange}
+                placeholder="Cantidad maxima de asistentes"
               />
             </Form.Group>
 
@@ -216,9 +219,11 @@ export default function ListadoEspaciosPage() {
               >
                 <option value="">Seleccione...</option>
                 <option value="disponible">Disponible</option>
+                <option value="mantenimiento">Mantenimiento</option>
               </Form.Select>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formIdDocente">
+
+            {/* <Form.Group className="mb-3" controlId="formIdDocente">
               <Form.Label>Docente Id</Form.Label>
               <Form.Control
                 type="number"
@@ -226,16 +231,21 @@ export default function ListadoEspaciosPage() {
                 value={formData.docente_id}
                 onChange={handleChange}
               />
-            </Form.Group>
+            </Form.Group> */}
 
             <div className="d-flex justify-content-end gap-2">
               <Button variant="secondary" onClick={handleClose}>
                 Cancelar
               </Button>
 
-              <Button variant="primary" type="submit">
+              <Button
+                variant="primary"
+                type="submit"
+                onClick={() => setShowSpinner(true)}
+              >
                 <BsSave2 className="me-1" />
                 Guardar
+                {showSpinner && <Spinner size={'sm'} />}
               </Button>
             </div>
           </Form>

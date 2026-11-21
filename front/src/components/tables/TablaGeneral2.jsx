@@ -21,8 +21,9 @@ function TablaGeneral2({ items }) {
           <th>Nombre</th>
           <th>Tipo</th>
           <th>Capacidad</th>
+          <th>Ubicacion</th>
           <th>Estado</th>
-          <th></th>
+          <th>Acciones</th>
         </tr>
       </thead>
 
@@ -32,6 +33,7 @@ function TablaGeneral2({ items }) {
             <td>{item.nombre}</td>
             <td>{item.tipo}</td>
             <td>{item.capacidad}</td>
+            <td>{item.ubicacion}</td>
             <td className="text-center align-middle">
               <span
                 className={
