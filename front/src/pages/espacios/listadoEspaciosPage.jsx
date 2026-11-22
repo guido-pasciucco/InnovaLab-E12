@@ -6,16 +6,24 @@ import { useState } from 'react'
 import { useContext, useEffect } from 'react'
 import { AuthContext } from '../../context/AuthContext.jsx'
 import { Modal, Button, Form } from 'react-bootstrap'
-import { getEspaciosApi, postEspaciosApi } from '../../services/apiRoutes.js'
+import {
+  getEspaciosApi,
+  postEspaciosApi,
+  deleteEspacioApi,
+} from '../../services/apiRoutes.js'
 import { Spinner } from 'react-bootstrap'
 import { Plus, PlusCircle } from 'react-bootstrap-icons'
 import { BsSave2 } from 'react-icons/bs'
 import PageHelmet from '../../helmet/PageHelmet.jsx'
+import { Toast } from 'react-bootstrap'
+import MyModal from '../../components/modals/MyModal.jsx'
 
 export default function ListadoEspaciosPage() {
   const [showSpinner, setShowSpinner] = useState(true)
+  const [showModal, setShowModal] = useState(false)
   const [terminoBusqueda, setTerminoBusqueda] = useState('')
   const [terminoBusquedaEstado, setTerminoBusquedaEstado] = useState('')
+  const [actualizar, setActualizar] = useState(false)
 
   const [datosAPI, setDatosAPI] = useState([]) // Estado para almacenar los datos obtenidos de la API
   const [cargando, setCargando] = useState(true)
@@ -38,6 +46,7 @@ export default function ListadoEspaciosPage() {
   })
 
   const getData = async () => {
+    setShowSpinner(true)
     const res = await getEspaciosApi(getTokken())
     console.log(res.data.data)
     setDatosAPI(res.data.data)
@@ -46,7 +55,7 @@ export default function ListadoEspaciosPage() {
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [actualizar])
 
   // post eequipamiento
   const [show, setShow] = useState(false)
@@ -85,6 +94,8 @@ export default function ListadoEspaciosPage() {
 
     handleClose()
   }
+
+  
 
   return (
     <>
@@ -143,7 +154,7 @@ export default function ListadoEspaciosPage() {
             </p>
           </div>
         ) : (
-          <GenericTable items={resultadosFiltrados} />
+          <GenericTable items={resultadosFiltrados}  refresh={setActualizar}/>
         )}
       </div>
 
@@ -251,6 +262,8 @@ export default function ListadoEspaciosPage() {
           </Form>
         </Modal.Body>
       </Modal>
+
+      
     </>
   )
 }

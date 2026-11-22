@@ -1,31 +1,56 @@
-import { Modal, Button } from 'react-bootstrap'
+import { useState } from 'react'
+import { Modal, Button, Spinner } from 'react-bootstrap'
 import { BsTrash } from 'react-icons/bs'
 
 export default function MyModal({
   mostrar,
-  title="",
+  title = '',
   bodyMessage,
   handleConfirm,
   handleCancel,
 }) {
+  const [loading, setLoading] = useState(false)
+
+  const confirmar = async () => {
+    try {
+      setLoading(true)
+      await handleConfirm()
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <Modal show={mostrar} onHide={handleCancel}>
-      <Modal.Header closeButton>
+    <Modal show={mostrar} onHide={loading ? undefined : handleCancel}>
+      <Modal.Header closeButton={!loading}>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
+
       <Modal.Body>{bodyMessage}</Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" className='background-secondary' onClick={handleCancel}>
+        <Button
+          variant="secondary"
+          className="background-secondary"
+          onClick={handleCancel}
+          disabled={loading}
+        >
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleConfirm}>
-          {title.includes("Eliminar") &&
-          <BsTrash className='me-1'/>}
-          Confirmar
+
+        <Button variant="primary" onClick={confirmar} disabled={loading}>
+          {loading ? (
+            <>
+              <Spinner size="sm"/>
+            </>
+          ) : (
+            <>
+              {title.includes('Eliminar') && <BsTrash className="me-1" />}
+              Confirmar
+            </>
+          )}
         </Button>
       </Modal.Footer>
     </Modal>
   )
-} 
+}
