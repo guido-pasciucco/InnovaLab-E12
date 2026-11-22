@@ -15,8 +15,9 @@ import { Spinner } from 'react-bootstrap'
 import { Plus, PlusCircle } from 'react-bootstrap-icons'
 import { BsSave2 } from 'react-icons/bs'
 import PageHelmet from '../../helmet/PageHelmet.jsx'
-import { Toast } from 'react-bootstrap'
 import MyModal from '../../components/modals/MyModal.jsx'
+import { toast } from 'react-toastify'
+
 
 export default function ListadoEspaciosPage() {
   const [showSpinner, setShowSpinner] = useState(true)
@@ -85,11 +86,13 @@ export default function ListadoEspaciosPage() {
     try {
       await postEspaciosApi(formData, getTokken())
       console.log('Datos cargados correctamente')
+      toast.success("Datos guardados con exito")
       setShowSpinner(true)
       getData()
     } catch (err) {
       console.log('Error:')
       console.log(err.response?.data)
+      toast.error("Error al guardar los datos.")
     }
 
     handleClose()

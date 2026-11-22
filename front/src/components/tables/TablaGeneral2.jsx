@@ -9,6 +9,7 @@ import { useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { deleteEspacioApi } from '../../services/apiRoutes'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const badgesDeEstado = {
   disponible: 'badge bg-success',
@@ -31,12 +32,13 @@ function TablaGeneral2({ items, refresh }) {
     try {
       setShowSpinner(true)
       await deleteEspacioApi(idItem, getTokken())
-      console.log('Registro eliminado con exito')
+      toast.success("Registro eliminado con exito")
       setShowModal(false)
       setShowSpinner(false)
       refresh((prev) => !prev)
     } catch (err) {
       console.log('Error al eliminar el registro: ', err)
+      toast.error("Error al eliminar el registro.")
     }
   }
   return (
