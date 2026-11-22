@@ -23,6 +23,7 @@ import AlertasPage from '../pages/alertas/AlertasPage'
 import ChatIaPage from "../pages/chatIa/chatIaPage";
 // import {listaEspacios} from "../services/espacios";
 import EquipamientoDetallePage from "../pages/equipamientos/EquipamientoDetallePage";
+import NotFound from "../pages/not_found/NotFound";
 
 export default function RouterApp() {
   return (
@@ -182,7 +183,7 @@ export default function RouterApp() {
           {/* agarrar todas */}
           <Route
             path="*"
-            element={<h1 className="h1"> Pagina no encontrada</h1>}
+            element={<NotFound />}
           />
         </Routes>
       </Router>
