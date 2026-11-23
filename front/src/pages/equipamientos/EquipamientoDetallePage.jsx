@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { getEquipamientoApiId } from '../../services/apiRoutes'
 import { useParams } from 'react-router-dom'
 import PageHelmet from '../../helmet/PageHelmet'
+import ButtonVolver from '../../components/butons/ButtonVolver'
 
 export default function EquipamientoDetallePage() {
   const [dataApi, setDataApi] = useState(null)
@@ -32,6 +33,7 @@ export default function EquipamientoDetallePage() {
         description="pagina con detalle del equipamiento elegido"
       />
       <Container>
+        <ButtonVolver link_volver={'/dashboard/equipamiento'}/>
         <h1 className="h1">Equipamiento Detalle</h1>
         <RecursoCard recurso={dataApi} />
 
