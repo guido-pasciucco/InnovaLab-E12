@@ -18,6 +18,7 @@ import PageHelmet from '../../helmet/PageHelmet.jsx'
 import MyModal from '../../components/modals/MyModal.jsx'
 import { toast } from 'react-toastify'
 
+import AlertInfo from '../../components/alerts/AlertInfo.jsx'
 
 export default function ListadoEspaciosPage() {
   const [showSpinner, setShowSpinner] = useState(true)
@@ -86,25 +87,28 @@ export default function ListadoEspaciosPage() {
     try {
       await postEspaciosApi(formData, getTokken())
       console.log('Datos cargados correctamente')
-      toast.success("Datos guardados con exito")
+      toast.success('Datos guardados con exito')
       setShowSpinner(true)
       getData()
     } catch (err) {
       console.log('Error:')
       console.log(err.response?.data)
-      toast.error("Error al guardar los datos.")
+      toast.error('Error al guardar los datos.')
     }
 
     handleClose()
   }
-
-  
 
   return (
     <>
       <PageHelmet
         title="Espacios"
         description="Pagina con el listado de espacios definidos"
+      />
+
+      <AlertInfo
+        title="Administración de Espacios"
+        description="En esta sección podés consultar y administrar los espacios registrados en la plataforma, visualizar sus características y disponibilidad, agregar nuevos espacios, modificar su información y eliminar registros."
       />
 
       <div className="d-flex flex-row justify-content-between align-items-center">
@@ -157,7 +161,7 @@ export default function ListadoEspaciosPage() {
             </p>
           </div>
         ) : (
-          <GenericTable items={resultadosFiltrados}  refresh={setActualizar}/>
+          <GenericTable items={resultadosFiltrados} refresh={setActualizar} />
         )}
       </div>
 
@@ -265,8 +269,6 @@ export default function ListadoEspaciosPage() {
           </Form>
         </Modal.Body>
       </Modal>
-
-      
     </>
   )
 }

@@ -3,7 +3,8 @@ import TablaGeneral from '../../components/tables/TablaGeneral'
 import { useState, useEffect, useContext } from 'react'
 import { getAlertas } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
-import  Helmet  from '../../helmet/PageHelmet'
+import Helmet from '../../helmet/PageHelmet'
+import AlertInfo from '../../components/alerts/AlertInfo'
 
 export default function AlertasPage() {
   const [data, setData] = useState()
@@ -24,7 +25,10 @@ export default function AlertasPage() {
   return (
     <>
       <Helmet title="Alertas" description="alertas del centro de simulacion" />
-
+      <AlertInfo
+        title="Alertas Activas"
+        description="En esta sección podés consultar las alertas activas relacionadas con los espacios y el equipamiento, identificar inconvenientes y realizar un seguimiento de las situaciones que requieren atención."
+      />
       <Container>
         <h1 className="h1 mb-3">Alertas</h1>
         <TablaGeneral datos={data} showSpinner={showSpinner} />
