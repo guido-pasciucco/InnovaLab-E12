@@ -1,12 +1,14 @@
 // EspacioDetallePage.jsx
 import { useEffect, useState, useContext } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { getEspaciosApiId } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 
-import { Row, Col, Table, Spinner } from 'react-bootstrap'
+import { Row, Col, Table, Spinner, Button } from 'react-bootstrap'
 import SelectedBadge from '../../components/badges/SelectedBadge'
 import PageHelmet from '../../helmet/PageHelmet'
+import { BsArrowLeft } from 'react-icons/bs'
+import ButtonVolver from '../../components/butons/ButtonVolver'
 
 export default function EspacioDetallePage() {
   const { id } = useParams()
@@ -57,6 +59,8 @@ export default function EspacioDetallePage() {
           title={`Espacio Detalle Id: ${id}`}
           description={'pagina con descripcion en detalle del espacio'}
         />
+        <ButtonVolver link_volver="/dashboard/espacios" />
+
         <p style={{ color: 'red' }}>Error: {error}</p>
       </>
     )
@@ -69,6 +73,8 @@ export default function EspacioDetallePage() {
           title={`Espacio Detalle Id: ${id}`}
           description={'pagina con descripcion en detalle del espacio'}
         />
+        <ButtonVolver link_volver="/dashboard/espacios" />
+
         <p>El producto no existe.</p>
       </>
     )
@@ -80,6 +86,9 @@ export default function EspacioDetallePage() {
         title={`Espacio Detalle Id: ${id}`}
         description={'pagina con descripcion en detalle del espacio'}
       />
+
+      <ButtonVolver link_volver="/dashboard/espacios" />
+
       <div className="container mt-4">
         {/* historial */}
         <Row>
