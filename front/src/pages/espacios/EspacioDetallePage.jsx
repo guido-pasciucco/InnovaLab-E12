@@ -87,9 +87,9 @@ export default function EspacioDetallePage() {
         description={'pagina con descripcion en detalle del espacio'}
       />
 
-      <ButtonVolver link_volver="/dashboard/espacios" />
-
       <div className="container mt-4">
+        <ButtonVolver link_volver="/dashboard/espacios" />
+
         {/* historial */}
         <Row>
           <Col>
