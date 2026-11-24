@@ -9,7 +9,7 @@ import {
   postEquipamientoApi,
   deleteEquipamientoApi,
 } from '../../services/apiRoutes.js'
-import { Modal, Button, Form } from 'react-bootstrap'
+import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { Spinner } from 'react-bootstrap'
 import SelectedBadge from '../../components/badges/SelectedBadge.jsx'
@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom'
 import { PlusCircle } from 'react-bootstrap-icons'
 import { BsSave, BsTrash, BsEye } from 'react-icons/bs'
 import PageHelmet from '../../helmet/PageHelmet.jsx'
+import AlertInfo from '../../components/alerts/AlertInfo.jsx'
 
 export default function ListadoEquipamientoPage() {
   const [showSpinner, setShowSpinner] = useState(true)
@@ -157,6 +158,14 @@ export default function ListadoEquipamientoPage() {
         description="pagina del listado de equipamiento"
       />
 
+      <AlertInfo
+        title={'Administracion de equipamiento'}
+        description={
+          'En esta sección podés consultar y administrar el equipamiento registrado, agregar nuevos elementos, visualizar sus características, actualizar su información y eliminar registros.'
+        }
+      />
+
+
       <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-column justify-content-center">
           <h1 className="text-start h1">Equipamiento</h1>
@@ -275,10 +284,10 @@ export default function ListadoEquipamientoPage() {
             </tbody>
           </Table>
         )}
-        <p className="text-start mt-4">
+        {/* <p className="text-start mt-4">
           Fijo: Permanece en su espacio. Trasladable: Se reserva con la
           actividad y puede usarse en otros espacios
-        </p>
+        </p> */}
       </div>
       {/* modal del post */}
       <Modal show={show} onHide={handleClose}>

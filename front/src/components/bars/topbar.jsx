@@ -1,8 +1,8 @@
+
 import { useContext, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import ConfirmModal from '../modals/ConfirmModal'
-import { useNavigate } from 'react-router-dom'
 import { logoutPost } from '../../services/apiRoutes'
 
 import { House, BoxArrowRight } from 'react-bootstrap-icons'
@@ -10,59 +10,72 @@ import { House, BoxArrowRight } from 'react-bootstrap-icons'
 export default function Topbar() {
   const { getRol, limpiarUsuario, getTokken } = useContext(AuthContext)
   const [mostrarModal, setMostrarModal] = useState(false)
-  const navigate = useNavigate()
 
+  const navigate = useNavigate()
   const location = useLocation()
 
-  const path = location.pathname
-
-  const pagina = path.split('/').pop()
+  const pagina = location.pathname.split('/').pop()
 
   const cerrarSesion = async () => {
     await logoutPost(getTokken())
     limpiarUsuario()
-    await navigate('/login')
-    console.log('Sesion cerrada, se limpian credenciales de usuario')
-  }
-
-  const handleCancel = () => {
-    setMostrarModal(false)
+    navigate('/login')
   }
 
   const handleLogOut = () => {
     setMostrarModal(true)
   }
 
+  const handleCancel = () => {
+    setMostrarModal(false)
+  }
+
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary mb-5">
-      <div className="container-fluid">
-        <NavLink className="navbar-brand" to="/dashboard">
-          <House className='mb-1' size={20}/>
-          <span>InnovaLab</span>
-        </NavLink>
-        <span> {pagina} </span>
+    <>
+      <nav className="navbar bg-body-tertiary mb-4 px-2 px-md-3">
+        <div className="container-fluid d-flex flex-wrap align-items-center gap-2">
 
-        <div className="collapse navbar-collapse" id="navbarNavDropdown">
-          {getRol() && (
-            <span className="ms-auto text-muted">
-              Rol: <strong>{getRol()}</strong>
-              <button className="mx-3 btn btn-secondary" onClick={handleLogOut}>
-                <BoxArrowRight  className='mb-1'/>
-                Cerrar sesion
-              </button>
+          {/* Marca */}
+          <NavLink className="navbar-brand mb-0" to="/dashboard">
+            <House className="me-2" size={20} />
+            InnovaLab
+          </NavLink>
+
+          {/* Página actual */}
+          <span className="text-capitalize text-secondary">
+            {pagina}
+          </span>
+
+          {/* Rol y cerrar sesión */}
+          <div className="ms-auto d-flex align-items-center gap-2">
+            <span className="text-muted small">
+              Rol: <strong>{getRol() || 'Sin rol'}</strong>
             </span>
-          )}
-        </div>
-      </div>
 
-      {/* modal para confirmar cancelacion */}
+            <button
+              className="btn btn-secondary"
+              onClick={handleLogOut}
+            >
+              <BoxArrowRight className="me-1" />
+              <span className="d-none d-sm-inline">
+                Cerrar sesión
+              </span>
+              <span className="d-sm-none">
+                Salir
+              </span>
+            </button>
+          </div>
+
+        </div>
+      </nav>
+
       <ConfirmModal
-        title="Cerrar sesion"
+        title="Cerrar sesión"
         bodyMessage="Confirme cerrar sesion"
         mostrar={mostrarModal}
         handleConfirm={cerrarSesion}
         handleCancel={handleCancel}
       />
-    </nav>
+    </>
   )
 }

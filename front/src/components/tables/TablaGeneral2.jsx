@@ -21,10 +21,11 @@ const badgesDeEstado = {
 
 // borderless hover responsive
 
-function TablaGeneral2({ items, refresh }) {
+function TablaGeneral2({ items, refresh, handleEditar }) {
   const [showModal, setShowModal] = useState(false)
   const [idItem, setIdItem] = useState(null)
   const [showSpinner, setShowSpinner] = useState(false)
+  const [data, setData] = useState(null)
 
   const { getTokken } = useContext(AuthContext)
 
@@ -41,6 +42,7 @@ function TablaGeneral2({ items, refresh }) {
       toast.error("Error al eliminar el registro.")
     }
   }
+  
   return (
     <>
       <Table responsive hover className="table shadow-sm">
@@ -103,7 +105,7 @@ function TablaGeneral2({ items, refresh }) {
                   <Button
                     variant="link"
                     className="text-decoration-none"
-                    onClick={() => editarElemento(item.id)}
+                    onClick={() => handleEditar(item)}
                   >
                     <BsPen />
                     Editar

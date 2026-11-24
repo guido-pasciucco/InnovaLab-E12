@@ -8,6 +8,7 @@ import { Spinner } from 'react-bootstrap'
 import { getEspaciosApi, getActividades } from '../../services/apiRoutes'
 import { PlusCircle } from 'react-bootstrap-icons'
 import PageHelmet from '../../helmet/PageHelmet.jsx'
+import AlertInfo from '../../components/alerts/AlertInfo.jsx'
 
 export default function CalendarioReservasPage() {
   const [actividades, setActividades] = useState([])
@@ -63,6 +64,10 @@ export default function CalendarioReservasPage() {
       <PageHelmet
         title="Calendario"
         description="pagina para reserva de actividades"
+      />
+      <AlertInfo
+        title="Calendario y Gestión de Reservas"
+        description="En esta sección podés visualizar las actividades programadas en el calendario, consultar sus fechas, horarios y espacios asignados, así como registrar nuevas reservas de espacios y equipamiento."
       />
 
       <div className="d-flex flex-row justify-content-between align-items-center">

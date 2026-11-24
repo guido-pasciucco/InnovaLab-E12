@@ -5,8 +5,8 @@ import TablaGeneral from '../../components/tables/TablaGeneral'
 import { Container } from 'react-bootstrap'
 import AgregarItemButton from '../../components/butons/AgregarItemButton'
 import { postActividades } from '../../services/apiRoutes'
-
-import  Helmet  from '../../helmet/PageHelmet'
+import Helmet from '../../helmet/PageHelmet'
+import AlertInfo from '../../components/alerts/AlertInfo'
 
 export default function ActividadesPage() {
   const [data, setData] = useState()
@@ -74,12 +74,17 @@ export default function ActividadesPage() {
     },
   ]
   return (
-    <Container>
-      <Helmet title='Actividades' description= "Lista de actividades" />
+    <>
+      <Helmet title="Actividades" description="Lista de actividades" />
+      <AlertInfo
+        title="Resumen de Actividades"
+        description="En esta sección podés consultar un resumen de las actividades programadas, visualizar sus fechas, horarios, espacios asignados y estado, para realizar un seguimiento de la planificación."
+      />
+      <Container>
+        <h1 className="h1 mb-4">Actividades</h1>
 
-      <h1 className="h1 mb-4">Actividades</h1>
-
-      <TablaGeneral datos={data} showSpinner={showSpinner} />
-    </Container>
+        <TablaGeneral datos={data} showSpinner={showSpinner} />
+      </Container>
+    </>
   )
 }

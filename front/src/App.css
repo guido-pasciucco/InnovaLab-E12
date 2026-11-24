@@ -232,3 +232,48 @@
   color: #1d3343;
   border: 1px solid #1d3343;
 }
+
+
+
+.sidebar {
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 1050;
+  overflow-y: auto;
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* Celulares y tablets */
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 240px !important;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+  }
+}
+
+
+
+
+@media (max-width: 991.98px) {
+  .main-content {
+    margin-left: 0 !important;
+  }
+}

@@ -1,9 +1,17 @@
 import { useState, useEffect, useRef, useContext } from 'react'
-import { Card, Form, Button, Spinner } from 'react-bootstrap'
+import {
+  Card,
+  Form,
+  Button,
+  Spinner,
+  Alert,
+  AlertHeading,
+} from 'react-bootstrap'
 import { postChatIa } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 import { BsSendFill } from 'react-icons/bs'
 import PageHelmet from '../../helmet/PageHelmet'
+import AlertInfo from '../../components/alerts/AlertInfo'
 
 export default function ChatIaPage() {
   const [mensaje, setMensaje] = useState('')
@@ -71,6 +79,15 @@ export default function ChatIaPage() {
         title="Chat IA"
         description="chat ia para consultar sobre la aplicacion"
       />
+      <AlertInfo
+        title="Información sobre el servicio"
+        description="Este chat se conecta con un modelo de inteligencia artificial externo
+          para responder consultas. No se envían datos personales del usuario al
+          proveedor del servicio. El servicio puede presentar limitaciones o
+          interrupciones ajenas a la plataforma. Si no está disponible, intentá
+          nuevamente en unos minutos."
+      />
+
       <Card className="shadow-sm h-100">
         <Card.Header className="background-primary text-white">
           <strong>Asistente IA</strong>
