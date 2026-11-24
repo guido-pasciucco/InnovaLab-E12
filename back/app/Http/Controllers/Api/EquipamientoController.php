@@ -7,6 +7,7 @@ use App\Http\Requests\EquipamientoRequest;
 use App\Http\Resources\EquipamientoResource;
 use App\Models\Equipamiento;
 use App\Models\EquipoHistorial;
+use App\Models\Alerta;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
@@ -57,6 +58,17 @@ class EquipamientoController extends Controller
 
         $equipamiento = Equipamiento::create($data);
 
+        // Si se crea directamente en mantenimiento o fuera de servicio, generar alerta activa
+        if (in_array($equipamiento->estado, ['mantenimiento', 'fuera_de_servicio'])) {
+            Alerta::create([
+                'equipamiento_id' => $equipamiento->id,
+                'espacio_id'      => $equipamiento->espacio_actual_id ?? $equipamiento->espacio_habitual_id,
+                'tipo'            => 'incidencia',
+                'mensaje'         => "El equipo '{$equipamiento->nombre}' fue registrado en estado '{$equipamiento->estado}'.",
+                'estado'          => 'activa',
+            ]);
+        }
+
         return (new EquipamientoResource($equipamiento->load(['espacioHabitual', 'espacioActual'])))
             ->response()
             ->setStatusCode(201);
@@ -75,16 +87,39 @@ class EquipamientoController extends Controller
         $data = $request->validated();
 
         $equipamiento->update($data);
+        $nuevoEstado = $equipamiento->estado;
 
-        if ($request->has('estado') && $request->input('estado') !== $estadoAnterior) {
+        if ($request->has('estado') && $nuevoEstado !== $estadoAnterior) {
+            // 1. Registrar entrada en el historial del equipo
             EquipoHistorial::create([
                 'equipamiento_id' => $equipamiento->id,
-                'estado' => $equipamiento->estado,
-                'espacio_id' => $equipamiento->espacio_actual_id,
+                'estado'          => $nuevoEstado,
+                'espacio_id'      => $equipamiento->espacio_actual_id,
                 'ubicacion_texto' => $equipamiento->espacioActual?->nombre ?? 'Sin espacio asignado',
-                'fecha_inicio' => now(),
-                'motivo' => $request->input('motivo', 'Cambio de estado desde API'),
+                'fecha_inicio'    => now(),
+                'motivo'          => $request->input('motivo', 'Cambio de estado desde API'),
             ]);
+
+            // 2. Si pasa a DISPONIBLE -> Resolver automáticamente todas las alertas activas asociadas
+            if ($nuevoEstado === 'disponible') {
+                Alerta::where('equipamiento_id', $equipamiento->id)
+                    ->where('estado', 'activa')
+                    ->update([
+                        'estado'     => 'resuelta',
+                        'updated_at' => now(),
+                    ]);
+            }
+
+            // 3. Si pasa a MANTENIMIENTO o FUERA DE SERVICIO -> Crear alerta activa de incidencia
+            if (in_array($nuevoEstado, ['mantenimiento', 'fuera_de_servicio'])) {
+                Alerta::create([
+                    'equipamiento_id' => $equipamiento->id,
+                    'espacio_id'      => $equipamiento->espacio_actual_id ?? $equipamiento->espacio_habitual_id,
+                    'tipo'            => 'incidencia',
+                    'mensaje'         => "El equipo '{$equipamiento->nombre}' cambió su estado a '{$nuevoEstado}'.",
+                    'estado'          => 'activa',
+                ]);
+            }
         }
 
         return new EquipamientoResource($equipamiento->load(['espacioHabitual', 'espacioActual']));
