@@ -25,7 +25,7 @@ class DashboardController extends Controller
         $inicioSemana = Carbon::now()->startOfWeek();
         $finSemana = Carbon::now()->endOfWeek();
 
-        // 1. Conteo global de actividades por estado
+        // 1. Conteo global de actividades por estado (Objeto)
         $actividadesPorEstado = DB::table('actividades')
             ->select('estado', DB::raw('COUNT(*) as cantidad'))
             ->groupBy('estado')
@@ -38,6 +38,7 @@ class DashboardController extends Controller
             ->whereNotNull('fecha_resolucion')
             ->value('promedio_horas_resolucion') ?? 0;
 
+        // 3. SOLO valores escalares/numéricos dentro de $kpis
         $kpis = [
             'total_espacios' => Espacio::count(),
             'espacios_disponibles' => Espacio::where('estado', 'disponible')->count(),
@@ -46,7 +47,6 @@ class DashboardController extends Controller
             'reservas_semana' => Reserva::whereBetween('fecha_hora_inicio', [$inicioSemana, $finSemana])->where('estado', 'confirmada')->count(),
             'alertas_activas' => Alerta::where('estado', 'activa')->count(),
             'equipos_fuera_de_servicio' => Equipamiento::whereIn('estado', ['mantenimiento', 'fuera_de_servicio'])->count(),
-            'actividades_por_estado' => $actividadesPorEstado,
             'promedio_horas_resolucion_conflictos' => (float)$promedioResolucion,
         ];
 
@@ -55,8 +55,10 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Devuelve 'actividades_por_estado' en la raíz del JSON para no romper las cards de KPIs
         return response()->json([
             'kpis' => $kpis,
+            'actividades_por_estado' => $actividadesPorEstado,
             'alertas_recientes' => $alertasRecientes,
         ]);
     }
