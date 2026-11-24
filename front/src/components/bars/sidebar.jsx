@@ -1,3 +1,4 @@
+
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
@@ -13,9 +14,15 @@ import {
   List,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'react-bootstrap-icons'
 
-export default function Sidebar({ collapsed, setCollapsed }) {
+export default function Sidebar({
+  collapsed,
+  setCollapsed,
+  mobileOpen,
+  setMobileOpen,
+}) {
   const { getRol } = useContext(AuthContext)
   const rol = getRol()
 
@@ -39,60 +46,83 @@ export default function Sidebar({ collapsed, setCollapsed }) {
   ]
 
   return (
-    <div
-      className="text-white p-3 d-flex flex-column background-primary overflow-y-auto"
-      style={{
-        width: collapsed ? '113px' : '240px',
-        transition: 'width 0.3s ease',
-        position: 'fixed',
-        height: '100vh',
-        left: 0,
-        top: 0,
-        zIndex: 1000,
-      }}
-    >
-      {/* Encabezado */}
-      <Row className="align-items-center">
-        <Col className="d-flex align-items-center gap-2">
-          <img src="/icon_cs.png" alt="InnovaLab" width={34} height={34} />
-          {!collapsed && <span>Innova.lab</span>}
-        </Col>
-      </Row>
-
-      {!collapsed && (
-        <>
-          <h5 className="mt-3 mb-2">Centro de simulación</h5>
-          <h6 className="small text-secondary">Rol: {rol}</h6>
-        </>
+    <>
+      {/* Fondo oscuro para dispositivos móviles */}
+      {mobileOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setMobileOpen(false)}
+        />
       )}
 
-      {/* Botón colapsar / expandir */}
-      <button
-        type="button"
-        className="btn btn-outline-light btn-sm mt-4"
-        onClick={() => setCollapsed(!collapsed)}
-        aria-label={collapsed ? 'Expandir menú' : 'Contraer menú'}
-        title={collapsed ? 'Expandir menú' : 'Contraer menú'}
+      <aside
+        className={`sidebar text-white p-3 d-flex flex-column background-primary ${
+          mobileOpen ? 'sidebar-open' : ''
+        }`}
+        style={{
+          width: collapsed ? '103px' : '240px',
+        }}
       >
-        {collapsed ? <ChevronRight /> : <ChevronLeft />}
-      </button>
+        {/* Encabezado */}
+        <Row className="align-items-center">
+          <Col className="d-flex align-items-center gap-2">
+            <img
+              src="/icon_cs.png"
+              alt="InnovaLab"
+              width={34}
+              height={34}
+            />
+            {!collapsed && <span>Innova.lab</span>}
+          </Col>
 
-      {/* Navegación */}
-      <ul className="nav flex-column mt-4 gap-2">
-        {links.map((link) => (
-          <li className="nav-item" key={link.to}>
-            <NavLink
-              to={link.to}
-              end={link.to === '/dashboard'}
-              className="nav-link text-white d-flex align-items-center gap-3"
-              title={collapsed ? link.label : ''}
+          {/* Botón cerrar móvil */}
+          <Col xs="auto" className="d-lg-none">
+            <button
+              type="button"
+              className="btn btn-outline-light btn-sm"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Cerrar menú"
             >
-              {link.icon}
-              {!collapsed && <span>{link.label}</span>}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
-    </div>
+              <X />
+            </button>
+          </Col>
+        </Row>
+
+        {!collapsed && (
+          <>
+            <h5 className="mt-3 mb-2">Centro de simulación</h5>
+            <h6 className="small text-secondary">Rol: {rol}</h6>
+          </>
+        )}
+
+        {/* Contraer / expandir escritorio */}
+        <button
+          type="button"
+          className="btn btn-outline-light btn-sm mt-4 d-none d-lg-block"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? 'Expandir menú' : 'Contraer menú'}
+        >
+          {collapsed ? <ChevronRight /> : <ChevronLeft />}
+        </button>
+
+        {/* Navegación */}
+        <ul className="nav flex-column mt-4 gap-2">
+          {links.map((link) => (
+            <li className="nav-item" key={link.to}>
+              <NavLink
+                to={link.to}
+                end={link.to === '/dashboard'}
+                onClick={() => setMobileOpen(false)}
+                className="nav-link text-white d-flex align-items-center gap-3"
+                title={collapsed ? link.label : ''}
+              >
+                {link.icon}
+                {!collapsed && <span>{link.label}</span>}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </>
   )
 }
