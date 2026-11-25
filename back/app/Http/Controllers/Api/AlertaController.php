@@ -56,7 +56,7 @@ class AlertaController extends Controller
 
     /**
      * PUT/PATCH /api/v1/alertas/{alerta}
-     * Permite actualizar cualquier campo/estado de una alerta via REST estándar
+     * Actualiza la alerta y aplica el camino inverso si pasa a 'resuelta'
      */
     public function update(Request $request, Alerta $alerta): JsonResponse
     {
@@ -69,6 +69,16 @@ class AlertaController extends Controller
             'updated_at' => now(),
         ]);
 
+        // Camino inverso: Si pasa a 'resuelta', liberar el recurso
+        if ($validated['estado'] === 'resuelta') {
+            if ($alerta->espacio_id) {
+                $alerta->espacio()->update(['estado' => 'disponible']);
+            }
+            if ($alerta->equipamiento_id) {
+                $alerta->equipamiento()->update(['estado' => 'disponible']);
+            }
+        }
+
         return response()->json([
             'message' => 'Estado de alerta actualizado correctamente',
             'alerta'  => $alerta->fresh(['espacio', 'equipamiento']),
@@ -77,20 +87,30 @@ class AlertaController extends Controller
 
     /**
      * PUT /api/v1/alertas/{id}/resolver
-     * Marca una alerta como 'resuelta' (coincide con tu ruta específica)
+     * Marca la alerta como 'resuelta' y libera automáticamente el espacio o equipamiento
      */
     public function resolver($id): JsonResponse
     {
         $alerta = Alerta::findOrFail($id);
 
+        // 1. Marcar alerta como resuelta
         $alerta->update([
             'estado'     => 'resuelta',
             'updated_at' => now(),
         ]);
 
+        // 2. Camino inverso: Marcar el espacio o equipamiento como 'disponible'
+        if ($alerta->espacio_id) {
+            $alerta->espacio()->update(['estado' => 'disponible']);
+        }
+
+        if ($alerta->equipamiento_id) {
+            $alerta->equipamiento()->update(['estado' => 'disponible']);
+        }
+
         return response()->json([
-            'message' => 'Alerta marcada como resuelta correctamente',
-            'alerta'  => $alerta->load(['espacio', 'equipamiento']),
+            'message' => 'Alerta resuelta y recurso marcado como disponible automáticamente',
+            'alerta'  => $alerta->fresh(['espacio', 'equipamiento']),
         ]);
     }
 }
