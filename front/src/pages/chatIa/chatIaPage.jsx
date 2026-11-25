@@ -6,12 +6,14 @@ import {
   Spinner,
   Alert,
   AlertHeading,
+  Toast,
 } from 'react-bootstrap'
 import { postChatIa } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 import { BsSendFill } from 'react-icons/bs'
 import PageHelmet from '../../helmet/PageHelmet'
 import AlertInfo from '../../components/alerts/AlertInfo'
+import { toast } from 'react-toastify'
 
 export default function ChatIaPage() {
   const [mensaje, setMensaje] = useState('')
@@ -36,10 +38,20 @@ export default function ChatIaPage() {
   }, [mensajes])
 
   const recibirMensajeApi = async () => {
-    console.log('Haciendo consulta mensaje: ', mensaje)
-    const res = await postChatIa(token, mensaje)
-    console.log('Respuesta api chat ia: ', res)
-    return res.data?.respuesta
+    try {
+      console.log('Haciendo consulta mensaje: ', mensaje)
+      const res = await postChatIa(token, mensaje)
+      console.log('Respuesta api chat ia: ', res)
+      return res.data?.respuesta
+    } catch (err) {
+      const mensajeError =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.message ||
+        'Error al consultar el asistente IA'
+
+      throw new Error(mensajeError)
+    }
   }
 
   const enviarMensaje = async (e) => {
@@ -54,23 +66,16 @@ export default function ChatIaPage() {
     setMensaje('')
     setCargando(true)
 
-    const mensajeIa = await recibirMensajeApi()
+    try {
+      const mensajeIa = await recibirMensajeApi()
 
-    setMensajes((prev) => [...prev, { tipo: 'ia', texto: mensajeIa }])
-
-    setCargando(false)
-    // Simulación de respuesta de IA
-    // setTimeout(() => {
-    //   setMensajes(prev => [
-    //     ...prev,
-    //     {
-    //       tipo: 'ia',
-    //       texto: 'Esta es una respuesta simulada de la inteligencia artificial.'
-    //     }
-    //   ])
-
-    //   setCargando(false)
-    // }, 1500)
+      setMensajes((prev) => [...prev, { tipo: 'ia', texto: mensajeIa }])
+    } catch (err) {
+      const mensaje = 'Intente nuevamente: ' + err.message
+      setMensajes((prev) => [...prev, { tipo: 'ia', texto: mensaje }])
+    } finally {
+      setCargando(false)
+    }
   }
 
   return (
