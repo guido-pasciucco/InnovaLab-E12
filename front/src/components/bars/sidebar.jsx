@@ -35,7 +35,7 @@ export default function Sidebar({
     { to: '/dashboard/alertas', label: 'Alertas', icon: <Bell /> },
     { to: '/dashboard/chatia', label: 'Consultas IA', icon: <ChatDots /> },
     { to: '/dashboard/info', label: 'Informacion', icon: <Info /> },
-    ...(rol === 'Admin'
+    ...(rol === 1
       ? [
           {
             to: '/dashboard/usuarios-y-roles',

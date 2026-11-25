@@ -11,10 +11,7 @@ export const AuthProvider = ({ children }) => {
       nombre: null,
       email: null,
       activo: null,
-      rol: {
-        id: null,
-        nombre: null,
-      },
+      rol_id: null,
       created_at: null,
     },
   });
@@ -22,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   // Al iniciar, leemos el rol guardado
 
   const getRol = () => {
-    return authData.user?.nombre.split(" ")[0] || ""; 
+    return authData.user?.rol_id; 
   };
 
   const getTypeAndToken = () => {

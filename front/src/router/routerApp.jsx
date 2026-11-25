@@ -38,9 +38,7 @@ export default function RouterApp() {
             <Route
               index
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
               }
@@ -49,9 +47,7 @@ export default function RouterApp() {
             <Route
               path="desarrollo"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
               }
@@ -59,7 +55,7 @@ export default function RouterApp() {
             <Route
               path="usuarios-y-roles"
               element={
-                <ProtectedRoute protectedRoles={['Admin']}>
+                <ProtectedRoute protectedRoles={[1]}>
                   <UsuariosYrolesPage />
                 </ProtectedRoute>
               }
@@ -67,9 +63,7 @@ export default function RouterApp() {
             <Route
               path="espacios"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ListadoEspaciosPage />
                 </ProtectedRoute>
               }
@@ -77,9 +71,7 @@ export default function RouterApp() {
             <Route
               path="espacios/:id"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <EspacioDetallePage />
                 </ProtectedRoute>
               }
@@ -87,9 +79,7 @@ export default function RouterApp() {
             <Route
               path="equipamiento"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ListadoEquipamientoPage />
                 </ProtectedRoute>
               }
@@ -98,9 +88,7 @@ export default function RouterApp() {
             <Route
               path="equipamiento/:id"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinador']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <EquipamientoDetallePage />
                 </ProtectedRoute>
               }
@@ -108,9 +96,7 @@ export default function RouterApp() {
             <Route
               path="nueva-reserva"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <NuevaReservaPage />
                 </ProtectedRoute>
               }
@@ -118,9 +104,7 @@ export default function RouterApp() {
             <Route
               path="resolver-conflicto"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ResolverConflictoPage />
                 </ProtectedRoute>
               }
@@ -128,9 +112,7 @@ export default function RouterApp() {
             <Route
               path="espacios/:id/editar-espacio"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <EditarEspacioPage />
                 </ProtectedRoute>
               }
@@ -138,9 +120,7 @@ export default function RouterApp() {
             <Route
               path="calendario"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <CalendarioReservasPage />
                 </ProtectedRoute>
               }
@@ -149,9 +129,7 @@ export default function RouterApp() {
             <Route
               path="actividades"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ActividadesPage />
                 </ProtectedRoute>
               }
@@ -160,9 +138,7 @@ export default function RouterApp() {
             <Route
               path="alertas"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <AlertasPage />
                 </ProtectedRoute>
               }
@@ -171,9 +147,7 @@ export default function RouterApp() {
             <Route
               path="chatia"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ChatIaPage />
                 </ProtectedRoute>
               }
@@ -182,9 +156,7 @@ export default function RouterApp() {
             <Route
               path="info"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <InfoPage />
                 </ProtectedRoute>
               }
