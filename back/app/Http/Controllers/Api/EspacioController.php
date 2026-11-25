@@ -58,14 +58,36 @@ class EspacioController extends Controller
     {
         $estadoAnterior = $espacio->estado;
         $espacio->update($request->validated());
+        $nuevoEstado = $espacio->estado;
 
-        if ($request->has('estado') && $request->input('estado') !== $estadoAnterior) {
+        if ($request->has('estado') && $nuevoEstado !== $estadoAnterior) {
+            // 1. Historial del espacio
             EspacioHistorial::create([
-                'espacio_id' => $espacio->id,
-                'estado' => $espacio->estado,
+                'espacio_id'   => $espacio->id,
+                'estado'       => $nuevoEstado,
                 'fecha_inicio' => now(),
-                'motivo' => $request->input('motivo', 'Cambio de estado desde API'),
+                'motivo'       => $request->input('motivo', 'Cambio de estado desde API'),
             ]);
+
+            // 2. Si pasa a DISPONIBLE -> Cerrar automáticamente alertas activas del espacio
+            if ($nuevoEstado === 'disponible') {
+                Alerta::where('espacio_id', $espacio->id)
+                    ->where('estado', 'activa')
+                    ->update([
+                        'estado'     => 'resuelta',
+                        'updated_at' => now(),
+                    ]);
+            }
+
+            // 3. Si pasa a MANTENIMIENTO o FUERA DE SERVICIO -> Crear alerta de incidencia
+            if (in_array($nuevoEstado, ['mantenimiento', 'fuera_de_servicio'])) {
+                Alerta::create([
+                    'espacio_id' => $espacio->id,
+                    'tipo'       => 'incidencia',
+                    'mensaje'    => "El espacio '{$espacio->nombre}' cambió su estado a '{$nuevoEstado}'.",
+                    'estado'     => 'activa',
+                ]);
+            }
         }
 
         return new EspacioResource($espacio);
