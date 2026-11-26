@@ -14,6 +14,11 @@ export default function Calendario({ eventos, onRefrescarEventos }) {
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
 
+  //Clave para manejar los cambios de estado de las reservas dentro de la grilla del calendario
+  const calendarKey = eventos
+    .map((ev) => `${ev.id}-${ev.estado}-${ev.fecha_hora_inicio}-${ev.fecha_hora_fin}`)
+    .join('|');
+
   const getData = async () => {
     const res = await getActividades(getTokken());
     setActividades(res.data.data);
@@ -30,16 +35,40 @@ export default function Calendario({ eventos, onRefrescarEventos }) {
 
   const nombresDeSalas = eventos.map((ev) => ev.espacio?.nombre || 'Sala sin nombre');
 
-  const eventosFormatados = eventos.map((ev, index) => ({
-    id: String(ev.id),
-    title: `${nombresDeEventos[index]} - ${nombresDeSalas[index]}`,
-    start: ev.fecha_hora_inicio,
-    end: ev.fecha_hora_fin,
-    extendedProps: {
-      reserva: ev,
-    },
-  }));
+  const obtenerEstilosPorEstado = (estado) => {
+    const normalizado = String(estado || '').toLowerCase();
 
+    if (normalizado === 'suspendida' || normalizado === 'cancelada') {
+      return {
+        backgroundColor: '#ffc107',
+        borderColor: '#ffc107',
+        textColor: '#212529',
+      };
+    }
+
+    return {
+      backgroundColor: '#6c757d',
+      borderColor: '#6c757d',
+      textColor: '#ffffff',
+    };
+  };
+
+  const eventosFormatados = eventos.map((ev, index) => {
+    const colores = obtenerEstilosPorEstado(ev.estado);
+
+    return {
+      id: String(ev.id),
+      title: `${nombresDeEventos[index]} - ${nombresDeSalas[index]}`,
+      start: ev.fecha_hora_inicio,
+      end: ev.fecha_hora_fin,
+      backgroundColor: colores.backgroundColor,
+      borderColor: colores.borderColor,
+      textColor: colores.textColor,
+      extendedProps: {
+        reserva: ev,
+      },
+    };
+  });
   const handleEventClick = (info) => {
     const reserva =
       info.event.extendedProps.reserva ||
@@ -62,7 +91,7 @@ export default function Calendario({ eventos, onRefrescarEventos }) {
         La clave 'key={eventos.length}' recrea FullCalendar cuando cambia la cantidad de eventos.
       */}
       <FullCalendar
-        key={eventos.length}
+        key={calendarKey}
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
         locale={esLocale}

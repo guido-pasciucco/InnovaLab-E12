@@ -108,7 +108,11 @@ export default function CalendarioReservasPage() {
           <span className="bg-danger p-1 rounded-3 shadow-sm">Conflicto</span> */}
         </div>
       </div>
-      {showSpinner ? <Spinner /> : <Calendario eventos={reservas} />}
+      {showSpinner ? <Spinner /> :
+        <Calendario
+          eventos={reservas}
+          onRefrescarEventos={getData}
+        />}
     </>
   )
 }

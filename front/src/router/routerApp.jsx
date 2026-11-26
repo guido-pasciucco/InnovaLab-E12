@@ -130,7 +130,7 @@ export default function RouterApp() {
               path="nueva-actividad"
               element={
                 <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
+                  protectedRoles={[1, 2]}
                 >
                   <NuevaActividadPage />
                 </ProtectedRoute>

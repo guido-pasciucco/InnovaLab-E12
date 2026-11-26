@@ -2,10 +2,24 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import GenericSelect from '../others/select';
 import { Link } from 'react-router-dom';
 import { Spinner } from "react-bootstrap";
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { getEspaciosApi, getActividades, getReservas, getEquipamientoApi, postActividades } from "../../services/apiRoutes.js";
+
+const ESTADO_INICIAL = {
+    nombre: "",
+    tipo: "",
+    responsable: "",
+    responsable_id: "",
+    fecha: "",
+    hora_inicio: "",
+    hora_fin: "",
+    participantes_estimados: "",
+    duracion: "",
+    espacio: "",
+    estado: "programada",
+};
 
 function ActivityForm() {
     const [actividades, setActividades] = useState([]);
@@ -14,59 +28,44 @@ function ActivityForm() {
     const [equipamientoApi, setEquipamientoApi] = useState([]);
     const [showSpinner, setShowSpinner] = useState(false);
     const { getTokken } = useContext(AuthContext);
-    const tipos = ['Taller', "Curso", "Charla"];
-    const estadoInicial = {
-        nombre: "",
-        tipo: "",
-        responsable_id: "",
-        fecha: "",
-        hora_inicio: "",
-        hora_fin: "",
-        participantes_estimados: "",
-        estado: "programada",
-    };
-    const [formData, setFormData] = useState(estadoInicial);
+    const tipos = ['Taller', 'Curso', 'Charla'];
+    const [formData, setFormData] = useState(ESTADO_INICIAL);
 
-
-    console.log('Actividades actuales: ', actividades);
     const getData = async () => {
-
         try {
             setShowSpinner(true);
-            const [espaciosRes, actividadesRes,
-                reservasRes, equipamientoRes] = await Promise.all([
-                    getEspaciosApi(getTokken()),
-                    getActividades(getTokken()),
-                    getReservas(getTokken()),
-                    getEquipamientoApi(getTokken())
-                ]);
-            setEspaciosApi(espaciosRes.data.data);
-            setActividades(actividadesRes.data.data);
-            setReservas(reservasRes.data.data);
-            setEquipamientoApi(equipamientoRes.data.data)
+            const [espaciosRes, actividadesRes, reservasRes, equipamientoRes] = await Promise.all([
+                getEspaciosApi(getTokken()),
+                getActividades(getTokken()),
+                getReservas(getTokken()),
+                getEquipamientoApi(getTokken())
+            ]);
+            setEspaciosApi(espaciosRes.data.data || []);
+            setActividades(actividadesRes.data.data || []);
+            setReservas(reservasRes.data.data || []);
+            setEquipamientoApi(equipamientoRes.data.data || []);
         } catch (err) {
             console.error("Error al cargar datos:", err);
         } finally {
             setShowSpinner(false);
         }
-    }
+    };
 
     useEffect(() => {
         getData();
     }, []);
 
     const handleChange = (e) => {
-
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [e.target.name]: e.target.value,
+            [name]: value,
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const completeData = formData;
-        console.log("Data: ", completeData);
 
         const actividadEncontrada = actividades.find(act =>
             String(act.id) === String(completeData.actividad_id) ||
@@ -75,22 +74,20 @@ function ActivityForm() {
         );
         const actividadId = actividadEncontrada ? actividadEncontrada.id : (actividades[0]?.id || 1);
 
-        const espacioId = espaciosApi.find(esp => esp.nombre === completeData.espacio)?.id || null;
+        const espacioId = espaciosApi.find(esp =>
+            esp.nombre === completeData.espacio || esp.tipo === completeData.espacio
+        )?.id || null;
         const equipamientoId = equipamientoApi?.find(eq => eq.nombre === completeData.equipamiento)?.id || null;
 
-        // Valores por defecto para MVP si aún no vienen del formulario
-        const fecha = completeData.fecha || new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+        const fecha = completeData.fecha || new Date().toISOString().split("T")[0];
         const horaInicio = completeData.hora_inicio || "09:00";
         const horaFin = completeData.hora_fin || "10:00";
-
-        // Ajustá este ID a un usuario/responsable válido que exista en tu BD (ej. usuario actual o 1)
         const responsableId = Number(completeData.responsable_id) || 1;
 
-        // Ajustá este valor al enum exacto que acepta tu back (ej. "programada", "activa", "borrador", etc.)
         const estadosValidos = ["programada", "en_curso", "finalizada", "cancelada"];
         const estado = estadosValidos.includes(completeData.estado)
             ? completeData.estado
-            : "programada";;
+            : "programada";
 
         const fechaInicioCompleta = `${fecha}T${horaInicio.length === 5 ? horaInicio + ":00" : horaInicio}`;
         const fechaFinCompleta = `${fecha}T${horaFin.length === 5 ? horaFin + ":00" : horaFin}`;
@@ -103,6 +100,7 @@ function ActivityForm() {
             hora_inicio: horaInicio,
             hora_fin: horaFin,
             participantes_estimados: completeData.participantes_estimados ? Number(completeData.participantes_estimados) : 1,
+            duracion: completeData.duracion || "",
             estado,
             actividad_id: actividadId,
             espacio_id: espacioId,
@@ -110,15 +108,12 @@ function ActivityForm() {
             fecha_hora_inicio: fechaInicioCompleta,
             fecha_hora_fin: fechaFinCompleta
         };
-        console.log("Datos a datosParaEnviar: ", datosParaEnviar);
+
         try {
             await postActividades(getTokken(), datosParaEnviar);
-
             toast.success("Actividad guardada con exito!");
-            setShowSpinner(true);
+            setFormData(ESTADO_INICIAL);
             await getData();
-            setFormData(estadoInicial);
-            handleClose();
         } catch (err) {
             console.log("Error detallado del servidor:", err);
             if (err.response && err.response.data) {
@@ -128,13 +123,13 @@ function ActivityForm() {
         }
     };
 
-    return (
+    if (showSpinner) {
+        return <Spinner animation="border" />;
+    }
 
+    return (
         <div className='d-flex flex-row gap-3'>
             <form onSubmit={handleSubmit} style={{ width: '80%' }}>
-                {/* <div className='d-flex mb-2'>
-                    <h3>Datos de la actividad</h3>
-                </div> */}
                 <div className="bg-light p-3 rounded-3 d-flex flex-column mb-5">
                     <div className="d-flex flex-column align-items-start mb-2 w-100">
                         <label htmlFor="nombre" className="form-label">Actividad</label>
@@ -151,15 +146,12 @@ function ActivityForm() {
                     </div>
                     <div className='d-flex mb-2 gap-3'>
                         <div className="d-flex flex-column align-items-start mb-3 w-50">
-                            <label htmlFor="tipo" className="form-label">
-                                Tipo
-                            </label>
+                            <label htmlFor="tipo" className="form-label">Tipo</label>
                             <GenericSelect
                                 name='tipo'
                                 id='tipo'
-                                text="Elige el tipo de espacio"
-                                // opciones={[...new Set(espaciosApi.map((item) => item.tipo))]}
-                                opciones={tipos.map(tipo => tipo)}
+                                text="Elige el tipo de actividad"
+                                opciones={tipos}
                                 value={formData.tipo}
                                 onChange={handleChange}
                                 required
@@ -171,16 +163,13 @@ function ActivityForm() {
                                 type='text'
                                 name='responsable'
                                 id='responsable'
-                                placeholder=''
-                                text="Responsable..."
+                                placeholder='Responsable...'
                                 className="form-control"
                                 value={formData.responsable}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
-                    </div>
-                    <div className='d-flex mb-2 gap-3'>
                     </div>
                     <div className='d-flex mb-2 gap-3'>
                         <div className="d-flex flex-column align-items-start mb-3 w-50">
@@ -210,13 +199,13 @@ function ActivityForm() {
                             />
                         </div>
                         <div className="d-flex flex-column align-items-start mb-3 w-50">
-                            <label htmlFor="tipo" className="form-label">Tipo de espacio</label>
+                            <label htmlFor="espacio" className="form-label">Tipo de espacio</label>
                             <GenericSelect
-                                name='tipo'
-                                id='tipo'
+                                name='espacio'
+                                id='espacio'
                                 text="Elige el tipo de espacio"
-                                opciones={[...new Set(espaciosApi.map((item) => item.tipo))]}
-                                value={formData.tipo}
+                                opciones={[...new Set(espaciosApi.map((item) => item.tipo).filter(Boolean))]}
+                                value={formData.espacio}
                                 onChange={handleChange}
                                 required
                             />
@@ -255,7 +244,7 @@ function ActivityForm() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default ActivityForm;
