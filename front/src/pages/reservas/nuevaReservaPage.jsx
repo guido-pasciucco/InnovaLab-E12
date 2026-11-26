@@ -119,7 +119,20 @@ export default function NuevaReservaPage() {
         const espacioId = espaciosApi.find(esp => esp.nombre === completeData.espacio)?.id || null;
 
         // 3. Mapeo del equipamiento (si aplica)
-        const equipamientoId = equipamientoApi.find(eq => eq.nombre === completeData.equipamiento)?.id || null;
+        // const equipamientoId = equipamientoApi.find(eq => eq.nombre === completeData.equipamiento)?.id || null;
+        // Toma el valor desde equipamientoMovil o, si no existe, desde equipamiento (string o primer elemento de array)
+        const rawEquipamiento =
+            completeData.equipamientoMovil ??
+            (Array.isArray(completeData.equipamiento)
+                ? completeData.equipamiento[0]
+                : completeData.equipamiento);
+
+        const equipamientoEncontrado = equipamientoApi.find(
+            (eq) =>
+                String(eq.id) === String(rawEquipamiento) ||
+                eq.nombre === rawEquipamiento
+        );
+        const equipamientoId = equipamientoEncontrado ? equipamientoEncontrado.id : null;
 
         // 4. Formato ISO estándar requerido por tu backend (YYYY-MM-DDTHH:mm:ss)
         const fechaInicioCompleta = (completeData.fecha && completeData.hora_inicio)
@@ -129,6 +142,8 @@ export default function NuevaReservaPage() {
         const fechaFinCompleta = (completeData.fecha && completeData.hora_fin)
             ? `${completeData.fecha}T${completeData.hora_fin.length === 5 ? completeData.hora_fin + ':00' : completeData.hora_fin}`
             : null;
+
+
 
         const datosParaEnviar = {
             nombre: completeData.nombre || "",
@@ -154,11 +169,18 @@ export default function NuevaReservaPage() {
         } catch (err) {
             console.error("Error detallado del servidor:", err);
 
-            if (err.response && err.response.data) {
-                console.error("Mensaje de validación del backend:", err.response.data);
+            const backendData = err.response?.data;
+            const backendMessage = backendData?.message;
+
+            if (backendData) {
+                console.error("Mensaje de validación del backend:", backendData);
             }
 
-            toast.error("Hubo un error al guardar la reserva. Revisa los datos.");
+            if (backendMessage === "No se puede procesar la reserva debido a conflictos de horarios.") {
+                toast.error("Error espacio ya reservado para el horario elegido, por favor seleccione otro horario");
+            } else {
+                toast.error(backendMessage || "Hubo un error al guardar la reserva. Revisa los datos.");
+            }
         }
     };
 

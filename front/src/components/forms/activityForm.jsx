@@ -192,9 +192,8 @@ function ActivityForm() {
                                 id='duracion'
                                 type="text"
                                 className="form-control"
-                                placeholder='2h'
-                                value={formData.duracion}
-                                onChange={handleChange}
+                                value="2h"
+                                readOnly
                                 required
                             />
                         </div>

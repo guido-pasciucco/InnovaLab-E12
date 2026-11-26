@@ -1,7 +1,6 @@
 import ActivityForm from '../../components/forms/activityForm';
 
 import PageHelmet from '../../helmet/PageHelmet';
-import { Form } from 'react-bootstrap';
 
 function NuevaActividadPage() {
     return (
