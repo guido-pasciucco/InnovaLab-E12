@@ -230,6 +230,7 @@ export default function ListadoEquipamientoPage() {
           <Table hover>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Nombre</th>
                 <th>Categoría</th>
                 <th>Movilidad</th>
@@ -251,6 +252,7 @@ export default function ListadoEquipamientoPage() {
                 /* Si ya cargó y hay resultados, hacemos el .map() */
                 resultadosFiltrados.map((sim, i) => (
                   <tr key={sim.id || i}>
+                    <td>{sim.id}</td>
                     <td>{sim.nombre}</td>
                     <td>{sim.categoria}</td>
                     <td>{sim.tipo_movilidad}</td>

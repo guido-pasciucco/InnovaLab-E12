@@ -33,21 +33,22 @@ function TablaGeneral2({ items, refresh, handleEditar }) {
     try {
       setShowSpinner(true)
       await deleteEspacioApi(idItem, getTokken())
-      toast.success("Registro eliminado con exito")
+      toast.success('Registro eliminado con exito')
       setShowModal(false)
       setShowSpinner(false)
       refresh((prev) => !prev)
     } catch (err) {
       console.log('Error al eliminar el registro: ', err)
-      toast.error("Error al eliminar el registro.")
+      toast.error('Error al eliminar el registro.')
     }
   }
-  
+
   return (
     <>
       <Table responsive hover className="table shadow-sm">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Nombre</th>
             <th>Tipo</th>
             <th>Capacidad</th>
@@ -60,6 +61,7 @@ function TablaGeneral2({ items, refresh, handleEditar }) {
         <tbody>
           {items.map((item) => (
             <tr key={item.id}>
+              <td>{item.id}</td>
               <td>{item.nombre}</td>
               <td>{item.tipo}</td>
               <td>{item.capacidad}</td>

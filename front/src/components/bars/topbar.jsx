@@ -1,4 +1,3 @@
-
 import { useContext, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
@@ -34,7 +33,6 @@ export default function Topbar() {
     <>
       <nav className="navbar bg-body-tertiary mb-4 px-2 px-md-3">
         <div className="container-fluid d-flex flex-wrap align-items-center gap-2">
-
           {/* Marca */}
           <NavLink className="navbar-brand mb-0" to="/dashboard">
             <House className="me-2" size={20} />
@@ -42,30 +40,27 @@ export default function Topbar() {
           </NavLink>
 
           {/* Página actual */}
-          <span className="text-capitalize text-secondary">
-            {pagina}
-          </span>
+          <span className="text-capitalize text-secondary">{pagina}</span>
 
           {/* Rol y cerrar sesión */}
           <div className="ms-auto d-flex align-items-center gap-2">
             <span className="text-muted small">
-              Rol: <strong>{getRol() || 'Sin rol'}</strong>
+              Rol:{' '}
+              <strong>
+                {getRol() === 1
+                  ? 'Admin'
+                  : getRol() === 2
+                    ? 'Coordinador'
+                    : 'Sin rol'}
+              </strong>{' '}
             </span>
 
-            <button
-              className="btn btn-secondary"
-              onClick={handleLogOut}
-            >
+            <button className="btn btn-secondary" onClick={handleLogOut}>
               <BoxArrowRight className="me-1" />
-              <span className="d-none d-sm-inline">
-                Cerrar sesión
-              </span>
-              <span className="d-sm-none">
-                Salir
-              </span>
+              <span className="d-none d-sm-inline">Cerrar sesión</span>
+              <span className="d-sm-none">Salir</span>
             </button>
           </div>
-
         </div>
       </nav>
 
