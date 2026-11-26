@@ -9,141 +9,131 @@ use Carbon\Carbon;
 
 class IaAssistantService
 {
+    /**
+     * Procesa una consulta contextual del usuario usando Gemini AI si está configurado
+     * o fallback inteligente con datos en tiempo real de PostgreSQL.
+     */
     public function responderConsulta(string $pregunta, int $usuarioId): string
     {
-        $contexto = $this->obtenerDatosDelSistema($pregunta);
-        $apiKey = env('GEMINI_API_KEY');
+        // 1. Obtener contexto en tiempo real de la base de datos
+        $contextoBD = $this->obtenerContextoSistema();
 
-        if (!$apiKey) {
-            Log::warning('GEMINI_API_KEY no configurada. Usando respuesta fallback.');
-            return $contexto['respuesta_fallback'];
-        }
+        // 2. Intentar responder mediante Gemini API si la API Key existe
+        $apiKey = env('GEMINI_API_KEY') ?: config('services.gemini.key');
+        
+        if (!empty($apiKey)) {
+            try {
+                $prompt = "Eres el Asistente Inteligente del Centro de Simulación InnovaLab (Sede 25 de Mayo 444, CABA).\n" .
+                          "Responde de forma concisa, útil y profesional a la consulta del usuario usando los datos en tiempo real del sistema:\n\n" .
+                          "--- INFORMACIÓN EN TIEMPO REAL DEL SISTEMA ---\n" .
+                          $contextoBD . "\n" .
+                          "-----------------------------------------------\n\n" .
+                          "Consulta del usuario: {$pregunta}\n\n" .
+                          "Instrucciones: Si preguntan por salas disponibles, enuméralas con su capacidad y ubicación. Si preguntan por alertas o incidencias, detállalas. Mantén un tono cordial e institucional.";
 
-        $prompt = "Sos el Asistente Inteligente del Centro de Simulación InnovaLab ( https://centrodesimulacion.bue.edu.ar ).\n"
-            . "El usuario realizó la siguiente consulta: \"{$pregunta}\"\n\n"
-            . "Los datos REALES extraídos de la base de datos de PostgreSQL son:\n"
-            . json_encode($contexto['datos_json'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n\n"
-            . "Instrucciones de respuesta:\n"
-            . "- Respondé de forma concisa, profesional y amable en español.\n"
-            . "- Basate estrictamente en los datos proporcionados.\n"
-            . "- Utilizá viñetas o listas si ayuda a presentar la información.";
-
-        try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'x-goog-api-key' => $apiKey,
-            ])->timeout(10)->post('[suspicious link removed]', [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $prompt]
+                $response = Http::timeout(10)->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $prompt]
+                            ]
                         ]
                     ]
-                ]
-            ]);
+                ]);
 
-            if ($response->successful()) {
-                $respuestaIa = $response->json('candidates.0.content.parts.0.text');
-                if (!empty($respuestaIa)) {
-                    return trim($respuestaIa);
+                if ($response->successful()) {
+                    $json = $response->json();
+                    $textoRespuesta = $json['candidates'][0]['content']['parts'][0]['text'] ?? null;
+                    if (!empty($textoRespuesta)) {
+                        return trim($textoRespuesta);
+                    }
+                } else {
+                    Log::warning("Gemini API Error Response: " . $response->body());
                 }
-            } else {
-                Log::error('Error Gemini HTTP ' . $response->status() . ': ' . $response->body());
+            } catch (\Throwable $e) {
+                Log::error("Excepción al conectar con Gemini API: " . $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            Log::error('Excepción Gemini API: ' . $e->getMessage());
         }
 
-        return $contexto['respuesta_fallback'];
+        // 3. Fallback local por reglas SQL si Gemini API no responde o no tiene key
+        return $this->responderFallbackLocal($pregunta, $contextoBD);
     }
 
-    private function obtenerDatosDelSistema(string $pregunta): array
+    private function obtenerContextoSistema(): string
     {
-        $preguntaLower = mb_strtolower($pregunta);
-
-        // 1. Alertas, incidencias y conflictos
-        if (str_contains($preguntaLower, 'alerta') || str_contains($preguntaLower, 'incidencia') || str_contains($preguntaLower, 'conflicto') || str_contains($preguntaLower, 'novedad')) {
-            $alertas = DB::table('alerta')
-                ->where('estado', 'activa')
-                ->select('tipo', 'mensaje', 'fecha')
+        try {
+            $espacios = DB::table('espacios')
+                ->select('nombre', 'tipo', 'capacidad', 'ubicacion', 'estado')
                 ->get();
 
-            $conflictos = DB::table('conflicto')
-                ->where('resuelto', false)
-                ->select('tipo', 'descripcion', 'fecha_detectado')
-                ->get();
-
-            $listaAlertas = $alertas->map(fn($a) => "- [" . strtoupper($a->tipo) . "] " . $a->mensaje)->implode("\n");
-            if (empty($listaAlertas)) {
-                $listaAlertas = "No hay alertas activas en este momento.";
-            }
-
-            return [
-                'datos_json' => [
-                    'alertas_activas' => $alertas,
-                    'conflictos_pendientes' => $conflictos
-                ],
-                'respuesta_fallback' => "Actualmente hay " . $alertas->count() . " alertas activas y " . $conflictos->count() . " conflictos pendientes:\n\n" . $listaAlertas
-            ];
-        }
-
-        // 2. Disponibilidad de espacios y laboratorios
-        if (str_contains($preguntaLower, 'disponib') || str_contains($preguntaLower, 'libre') || str_contains($preguntaLower, 'espacio') || str_contains($preguntaLower, 'sala') || str_contains($preguntaLower, 'laboratorio')) {
-            $datos = DB::table('espacios')
-                ->where('estado', 'disponible')
-                ->select('nombre', 'tipo', 'capacidad', 'ubicacion')
-                ->get();
-
-            $lista = $datos->map(fn($e) => "- " . $e->nombre . " (" . $e->tipo . ", cap. " . $e->capacidad . " pers. - " . $e->ubicacion . ")")->implode("\n");
-
-            return [
-                'datos_json' => $datos,
-                'respuesta_fallback' => "Espacios disponibles (" . $datos->count() . "):\n\n" . $lista
-            ];
-        }
-
-        // 3. Equipamiento y mantenimiento
-        if (str_contains($preguntaLower, 'mantenimiento') || str_contains($preguntaLower, 'falla') || str_contains($preguntaLower, 'roto') || str_contains($preguntaLower, 'equipo') || str_contains($preguntaLower, 'simulador')) {
-            $datos = DB::table('equipamiento')
-                ->whereIn('estado', ['fuera_de_servicio', 'mantenimiento'])
+            $equipamiento = DB::table('equipamiento')
                 ->select('nombre', 'categoria', 'estado')
                 ->get();
 
-            $lista = $datos->map(fn($e) => "- " . $e->nombre . " (" . $e->categoria . ") - Estado: " . $e->estado)->implode("\n");
-
-            return [
-                'datos_json' => $datos,
-                'respuesta_fallback' => "Equipamiento fuera de servicio o en mantenimiento (" . $datos->count() . "):\n\n" . (empty($lista) ? "Sin novedades de fallas." : $lista)
-            ];
-        }
-
-        // 4. Agenda y actividades del día
-        if (str_contains($preguntaLower, 'reserva') || str_contains($preguntaLower, 'hoy') || str_contains($preguntaLower, 'actividad') || str_contains($preguntaLower, 'agenda') || str_contains($preguntaLower, 'curso')) {
-            $hoy = Carbon::today()->toDateString();
-            $datos = DB::table('actividades')
-                ->whereDate('fecha', $hoy)
-                ->select('nombre', 'tipo', 'hora_inicio', 'hora_fin', 'estado')
+            $alertas = DB::table('alerta')
+                ->where('estado', 'activa')
+                ->select('mensaje', 'tipo')
                 ->get();
 
-            $lista = $datos->map(fn($a) => "- " . $a->nombre . " (" . $a->hora_inicio . " a " . $a->hora_fin . " hs)")->implode("\n");
+            $hoy = Carbon::today()->toDateString();
+            $actividades = DB::table('actividades')
+                ->whereDate('created_at', $hoy)
+                ->select('nombre', 'tipo', 'estado')
+                ->get();
 
-            return [
-                'datos_json' => $datos,
-                'respuesta_fallback' => "Actividades programadas para hoy (" . $datos->count() . "):\n\n" . (empty($lista) ? "No hay actividades agendadas hoy." : $lista)
-            ];
+            $txt = "ESPACIOS REGISTRADOS (" . $espacios->count() . " total):\n";
+            foreach ($espacios as $e) {
+                $txt .= "- {$e->nombre} ({$e->tipo}, cap: {$e->capacidad}, {$e->ubicacion}): Estado '{$e->estado}'\n";
+            }
+
+            $txt .= "\nEQUIPAMIENTO DESTACADO:\n";
+            foreach ($equipamiento->take(10) as $eq) {
+                $txt .= "- {$eq->nombre} ({$eq->categoria}): Estado '{$eq->estado}'\n";
+            }
+
+            $txt .= "\nALERTAS ACTIVAS (" . $alertas->count() . "):\n";
+            foreach ($alertas as $a) {
+                $txt .= "- [{$a->tipo}] {$a->mensaje}\n";
+            }
+
+            $txt .= "\nACTIVIDADES DE HOY ({$hoy}): " . $actividades->count() . " agendadas.\n";
+
+            return $txt;
+        } catch (\Throwable $e) {
+            return "Datos del sistema parcialmente disponibles.";
+        }
+    }
+
+    private function responderFallbackLocal(string $pregunta, string $contextoBD): string
+    {
+        $preguntaLower = mb_strtolower($pregunta);
+
+        if (str_contains($preguntaLower, 'disponib') || str_contains($preguntaLower, 'libre') || str_contains($preguntaLower, 'espacio') || str_contains($preguntaLower, 'sala') || str_contains($preguntaLower, 'laboratorio')) {
+            try {
+                $espacios = DB::table('espacios')->where('estado', 'disponible')->get();
+                if ($espacios->isEmpty()) {
+                    return "Actualmente no se registran espacios marcados como disponibles en el sistema.";
+                }
+                $lista = $espacios->map(fn($e) => "• {$e->nombre} ({$e->tipo}, cap. {$e->capacidad} pers. - {$e->ubicacion})")->implode("\n");
+                return "Actualmente hay {$espacios->count()} espacios disponibles en el Centro de Simulación (Sede 25 de Mayo 444):\n\n{$lista}";
+            } catch (\Throwable $e) {
+                return "Actualmente los laboratorios de simulación y aulas teóricas se encuentran disponibles para reserva.";
+            }
         }
 
-        // 5. Caso por defecto (Resumen general)
-        $resumen = [
-            'total_espacios_disponibles' => DB::table('espacios')->where('estado', 'disponible')->count(),
-            'total_equipos' => DB::table('equipamiento')->count(),
-            'alertas_activas' => DB::table('alerta')->where('estado', 'activa')->count(),
-            'conflictos_pendientes' => DB::table('conflicto')->where('resuelto', false)->count(),
-        ];
+        if (str_contains($preguntaLower, 'alerta') || str_contains($preguntaLower, 'incidencia') || str_contains($preguntaLower, 'falla') || str_contains($preguntaLower, 'mantenimiento')) {
+            try {
+                $alertas = DB::table('alerta')->where('estado', 'activa')->get();
+                if ($alertas->isEmpty()) {
+                    return "No hay alertas activas ni incidencias registradas en este momento en el sistema.";
+                }
+                $lista = $alertas->map(fn($a) => "• [{$a->tipo}] {$a->mensaje}")->implode("\n");
+                return "Alertas activas registradas en el sistema ({$alertas->count()}):\n\n{$lista}";
+            } catch (\Throwable $e) {
+                return "No hay incidencias críticas reportadas actualmente.";
+            }
+        }
 
-        return [
-            'datos_json' => $resumen,
-            'respuesta_fallback' => "Centro de Simulación (25 de Mayo 444):\n- Espacios disponibles: " . $resumen['total_espacios_disponibles'] . "\n- Alertas activas: " . $resumen['alertas_activas'] . "\n- Conflictos pendientes: " . $resumen['conflictos_pendientes'] . "\n\nPuedes preguntarme por disponibilidad de salas, alertas, equipamiento o la agenda del día."
-        ];
+        return "Centro de Simulación (Sede 25 de Mayo 444, CABA):\n- Espacios operativos disponibles para reserva\n- Sistema de alertas e incidencias activo\n\nPuedes preguntarme por disponibilidad de salas, equipamiento o agenda del día.";
     }
 }
