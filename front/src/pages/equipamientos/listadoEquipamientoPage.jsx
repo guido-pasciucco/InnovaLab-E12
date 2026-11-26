@@ -71,6 +71,7 @@ export default function ListadoEquipamientoPage() {
       const res2 = await getEspaciosApi(getTokken())
       setDatosAPI(res.data.data)
       setEspaciosApi(res2.data.data)
+      console.log('Equipos: ',datosAPI)
     } catch (err) {
       console.log('Error al cargar datos:', err)
     } finally {

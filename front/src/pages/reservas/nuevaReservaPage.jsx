@@ -147,7 +147,7 @@ export default function NuevaReservaPage() {
         };
 
         try {
-            await postReserva(datosParaEnviar, getTokken());
+            await postReserva(getTokken(), datosParaEnviar);
 
             setActiveStep(steps.length);
             toast.success("¡Reserva guardada con éxito!");

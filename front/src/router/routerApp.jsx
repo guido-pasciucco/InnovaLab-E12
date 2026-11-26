@@ -18,6 +18,7 @@ import EditarEspacioPage from '../pages/espacios/editarEspacioPage'
 import NuevaReservaPage from '../pages/reservas/nuevaReservaPage'
 import CalendarioReservasPage from '../pages/calendario/calendarioReservasPage'
 import ActividadesPage from '../pages/actividades/ActividadesPage'
+import NuevaActividadPage from '../pages/actividades/nuevaActividadPage'
 import AlertasPage from '../pages/alertas/AlertasPage'
 import ChatIaPage from '../pages/chatIa/chatIaPage'
 // import {listaEspacios} from "../services/espacios";
@@ -145,7 +146,16 @@ export default function RouterApp() {
                 </ProtectedRoute>
               }
             />
-
+            <Route
+              path="nueva-actividad"
+              element={
+                <ProtectedRoute
+                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
+                >
+                  <NuevaActividadPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="actividades"
               element={

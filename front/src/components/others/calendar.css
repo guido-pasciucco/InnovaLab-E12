@@ -1,0 +1,24 @@
+.calendario-wrapper .fc .fc-toolbar-title {
+  color: #111827;
+}
+
+.calendario-wrapper .fc .fc-col-header-cell-cushion {
+  color: #1f2937;
+  text-decoration: none;
+}
+
+.calendario-wrapper .fc {
+  --fc-neutral-text-color: #1f2937;
+}
+
+/* .calendario-wrapper .fc .fc-timegrid-event .fc-event-main {
+  padding: 2px 4px;
+}
+
+.calendario-wrapper .fc .fc-timegrid-event .fc-event-title {
+  font-size: 0.72rem;
+  line-height: 1.15;
+  white-space: normal;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+} */
