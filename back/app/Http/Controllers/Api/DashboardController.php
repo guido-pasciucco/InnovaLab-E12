@@ -7,8 +7,6 @@ use App\Models\Espacio;
 use App\Models\Equipamiento;
 use App\Models\Reserva;
 use App\Models\Alerta;
-use App\Models\Actividad;
-use App\Models\Conflicto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -17,131 +15,136 @@ class DashboardController extends Controller
 {
     /**
      * GET /api/v1/dashboard/resumen
-     * KPIs principales en tiempo real para las tarjetas superiores del Dashboard
+     * KPIs principales en tiempo real para el Dashboard principal.
      */
-    public function resumen()
+    public function resumen(): \Illuminate\Http\JsonResponse
     {
         $hoy = Carbon::today();
         $inicioSemana = Carbon::now()->startOfWeek();
         $finSemana = Carbon::now()->endOfWeek();
 
-        // 1. Conteo global de actividades por estado (Objeto)
-        $actividadesPorEstado = DB::table('actividades')
-            ->select('estado', DB::raw('COUNT(*) as cantidad'))
-            ->groupBy('estado')
-            ->pluck('cantidad', 'estado');
+        // 1. Conteo de alertas activas
+        $alertasActivasCount = Alerta::where('estado', 'activa')->count();
+        
+        // 2. Conteo de conflictos pendientes en la tabla 'conflicto'
+        $conflictosPendientesCount = DB::table('conflicto')->where('resuelto', false)->count();
 
-        // 2. Tiempo promedio de resolución de conflictos (en horas)
-        $promedioResolucion = DB::table('conflicto')
-            ->select(DB::raw('ROUND(AVG(EXTRACT(EPOCH FROM (fecha_resolucion - fecha_detectado))/3600), 1) as promedio_horas_resolucion'))
-            ->where('resuelto', true)
-            ->whereNotNull('fecha_resolucion')
-            ->value('promedio_horas_resolucion') ?? 0;
-
-        // 3. SOLO valores escalares/numéricos dentro de $kpis
         $kpis = [
             'total_espacios' => Espacio::count(),
-            'espacios_disponibles' => Espacio::where('estado', 'disponible')->count(),
+            // Soporta tanto 'disponible' (seeders/base CABA) como 'operativo'
+            'espacios_operativos' => Espacio::whereIn('estado', ['disponible', 'operativo'])->count(),
             'espacios_mantenimiento' => Espacio::where('estado', 'mantenimiento')->count(),
             'reservas_hoy' => Reserva::whereDate('fecha_hora_inicio', $hoy)->where('estado', 'confirmada')->count(),
             'reservas_semana' => Reserva::whereBetween('fecha_hora_inicio', [$inicioSemana, $finSemana])->where('estado', 'confirmada')->count(),
-            'alertas_activas' => Alerta::where('estado', 'activa')->count(),
+            'alertas_activas' => $alertasActivasCount,
+            'conflictos_pendientes' => $conflictosPendientesCount,
             'equipos_fuera_de_servicio' => Equipamiento::whereIn('estado', ['mantenimiento', 'fuera_de_servicio'])->count(),
-            'promedio_horas_resolucion_conflictos' => (float)$promedioResolucion,
         ];
 
-        $alertasRecientes = Alerta::where('estado', 'activa')
+        // Se inyectan las relaciones 'espacio' y 'equipamiento' para que el Front muestre los nombres sin ser undefined
+        $alertasRecientes = Alerta::with(['espacio', 'equipamiento'])
+            ->where('estado', 'activa')
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->take(10)
             ->get();
 
-        // Devuelve 'actividades_por_estado' en la raíz del JSON para no romper las cards de KPIs
         return response()->json([
             'kpis' => $kpis,
-            'actividades_por_estado' => $actividadesPorEstado,
             'alertas_recientes' => $alertasRecientes,
         ]);
     }
 
     /**
-     * GET /api/v1/dashboard/ocupacion-espacios (KPI 2 Fix)
-     * Porcentaje de ocupación dinámico para el mes en curso
+     * GET /api/v1/dashboard/ocupacion-espacios
      */
-    public function ocupacionEspacios(Request $request)
+    public function ocupacionEspacios(Request $request): \Illuminate\Http\JsonResponse
     {
-        // Fix KPI 2: Si no vienen fechas por QueryParam, calcula el mes en curso dinámicamente
-        $fechaDesde = $request->query('fecha_desde', Carbon::now()->startOfMonth()->toDateTimeString());
-        $fechaHasta = $request->query('fecha_hasta', Carbon::now()->endOfMonth()->toDateTimeString());
+        $fechaDesde = $request->query('fecha_desde', Carbon::now()->startOfMonth()->toDateString());
+        $fechaHasta = $request->query('fecha_hasta', Carbon::now()->endOfMonth()->toDateString());
 
-        // Consulta directa en PostgreSQL usando DATE_TRUNC para mes en curso
-        $espaciosConOcupacion = DB::table('espacios as e')
-            ->leftJoin('reserva_espacios as re', function ($join) {
-                $join->on('e.id', '=', 're.espacio_id')
-                     ->whereRaw("DATE_TRUNC('month', re.hora_inicio) = DATE_TRUNC('month', CURRENT_DATE)");
-            })
-            ->select(
-                'e.id as espacio_id',
-                'e.nombre',
-                'e.tipo',
-                DB::raw("COUNT(re.id) as total_reservas"),
-                DB::raw("COALESCE(ROUND(SUM(EXTRACT(EPOCH FROM (re.hora_fin - re.hora_inicio))/3600), 1), 0) as horas_reservadas")
-            )
-            ->groupBy('e.id', 'e.nombre', 'e.tipo')
-            ->get()
-            ->map(function ($item) {
-                // Capitalización para enviar legible al frontend
-                $item->nombre_formateado = ucwords($item->nombre);
-                
-                // Estándar mensual estimado: 160 hs (8hs x 20 días)
-                $disponibilidadTotal = 160;
-                $item->porcentaje_ocupacion = $disponibilidadTotal > 0 
-                    ? min(100, round(($item->horas_reservadas / $disponibilidadTotal) * 100, 1)) 
-                    : 0;
+        $espacios = Espacio::all();
 
-                return $item;
-            });
+        $desglose = $espacios->map(function ($espacio) use ($fechaDesde, $fechaHasta) {
+            $reservas = Reserva::where('espacio_id', $espacio->id)
+                ->whereBetween('fecha_hora_inicio', [$fechaDesde, $fechaHasta])
+                ->where('estado', 'confirmada')
+                ->get();
+
+            $horasReservadas = 0;
+            foreach ($reservas as $r) {
+                $inicio = Carbon::parse($r->fecha_hora_inicio);
+                $fin = Carbon::parse($r->fecha_hora_fin);
+                $horasReservadas += $fin->diffInHours($inicio);
+            }
+
+            $disponibilidadTotal = 160; 
+            $porcentaje = $disponibilidadTotal > 0 ? min(100, round(($horasReservadas / $disponibilidadTotal) * 100, 1)) : 0;
+
+            return [
+                'espacio_id' => $espacio->id,
+                'nombre' => $espacio->nombre,
+                'tipo' => $espacio->tipo,
+                'total_reservas' => $reservas->count(),
+                'horas_reservadas' => $horasReservadas,
+                'porcentaje_ocupacion' => $porcentaje,
+            ];
+        });
 
         return response()->json([
             'periodo' => [
                 'desde' => $fechaDesde,
                 'hasta' => $fechaHasta,
             ],
-            'espacios_mas_utilizados' => $espaciosConOcupacion->sortByDesc('horas_reservadas')->values(),
+            'espacios_mas_utilizados' => $desglose->sortByDesc('horas_reservadas')->values(),
         ]);
     }
 
     /**
-     * GET /api/v1/dashboard/agenda-diaria (KPI 5 Mejorado)
-     * Retorna la agenda del día incluyendo el nombre del espacio asignado
+     * GET /api/v1/dashboard/uso-equipamiento
      */
-    public function agendaDiaria()
+    public function usoEquipamiento(Request $request): \Illuminate\Http\JsonResponse
     {
-        $actividadesHoy = DB::table('actividades as a')
-            ->leftJoin('espacios as e', 'a.espacio_id', '=', 'e.id')
+        $equiposDemandados = DB::table('equipamiento')
+            ->leftJoin('equipamiento_reserva', 'equipamiento.id', '=', 'equipamiento_reserva.equipamiento_id')
             ->select(
-                'a.id',
-                'a.titulo',
-                'a.tipo',
-                'a.estado',
-                'a.hora_inicio',
-                'a.hora_fin',
-                'a.espacio_id',
-                DB::raw("COALESCE(e.nombre, 'Sin espacio asignado') as espacio_asignado")
+                'equipamiento.id',
+                'equipamiento.nombre',
+                'equipamiento.categoria',
+                'equipamiento.tipo_movilidad',
+                'equipamiento.estado',
+                DB::raw('COUNT(equipamiento_reserva.reserva_id) as total_reservas')
             )
-            ->whereDate('a.hora_inicio', Carbon::today())
-            ->orderBy('a.hora_inicio', 'asc')
-            ->get()
-            ->map(function ($actividad) {
-                if ($actividad->espacio_asignado !== 'Sin espacio asignado') {
-                    $actividad->espacio_asignado = ucwords($actividad->espacio_asignado);
-                }
-                return $actividad;
-            });
+            ->groupBy('equipamiento.id', 'equipamiento.nombre', 'equipamiento.categoria', 'equipamiento.tipo_movilidad', 'equipamiento.estado')
+            ->orderBy('total_reservas', 'desc')
+            ->get();
+
+        $equipamientoCritico = Equipamiento::whereIn('estado', ['mantenimiento', 'fuera_de_servicio'])
+            ->get(['id', 'nombre', 'categoria', 'estado', 'updated_at']);
 
         return response()->json([
-            'fecha' => Carbon::today()->toDateString(),
-            'total_actividades' => $actividadesHoy->count(),
-            'agenda' => $actividadesHoy,
+            'equipos_mas_demandados' => $equiposDemandados,
+            'equipamiento_critico_mantenimiento' => $equipamientoCritico,
+        ]);
+    }
+
+    /**
+     * GET /api/v1/dashboard/metricas-conflictos
+     */
+    public function metricasConflictos(): \Illuminate\Http\JsonResponse
+    {
+        $totalAlertas = Alerta::count();
+        $resueltas = Alerta::where('estado', 'resuelta')->count();
+        $pendientes = Alerta::where('estado', 'activa')->count();
+
+        $desglose = Alerta::select('tipo', DB::raw('count(*) as cantidad'))
+            ->groupBy('tipo')
+            ->pluck('cantidad', 'tipo');
+
+        return response()->json([
+            'total_conflictos_detectados' => $totalAlertas,
+            'conflictos_resueltos' => $resueltas,
+            'conflictos_pendientes' => $pendientes,
+            'desglose_por_tipo' => $desglose,
         ]);
     }
 }
