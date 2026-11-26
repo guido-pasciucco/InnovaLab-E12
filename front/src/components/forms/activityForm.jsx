@@ -14,11 +14,8 @@ function ActivityForm() {
     const [equipamientoApi, setEquipamientoApi] = useState([]);
     const [showSpinner, setShowSpinner] = useState(false);
     const { getTokken } = useContext(AuthContext);
-    const token = getTokken();
-    console.log('Token actual:', token, typeof token);
-    const [nuevaActividad, setNuevaActividad] = useState([]);
     const tipos = ['Taller', "Curso", "Charla"];
-    const [formData, setFormData] = useState({
+    const estadoInicial = {
         nombre: "",
         tipo: "",
         responsable_id: "",
@@ -27,7 +24,8 @@ function ActivityForm() {
         hora_fin: "",
         participantes_estimados: "",
         estado: "programada",
-    });
+    };
+    const [formData, setFormData] = useState(estadoInicial);
 
 
     console.log('Actividades actuales: ', actividades);
@@ -181,19 +179,6 @@ function ActivityForm() {
                                 required
                             />
                         </div>
-                        {/* <div className="d-flex flex-column align-items-start mb-3 w-50">
-                            <label htmlFor="horaFin" className="form-label">Hora de fín</label>
-                            <input
-                                name='hora_fin'
-                                id='hora_fin'
-                                type="time"
-                                className="form-control"
-                                placeholder='13:00'
-                                value={formData.hora_fin}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div> */}
                     </div>
                     <div className='d-flex mb-2 gap-3'>
                     </div>
@@ -237,22 +222,6 @@ function ActivityForm() {
                             />
                         </div>
                     </div>
-                    {/* <div className='d-flex mb-2 gap-3'>
-                        <p>
-                            ¿La actividad no existe ? Crear nueva actividad {''}
-                            <Link to="/dashboard/actividades" className="text-decoration-none">
-                                aquí.
-                            </Link>
-                        </p>
-                    </div>
-                    <div className="d-flex justify-content-end mb-2 gap-3">
-                        <Link to="/dashboard/calendario" className="btn btn-secondary">
-                            Cancelar
-                        </Link>
-                        <button type="submit" className="btn btn-primary text-nowrap">
-                            Continuar
-                        </button>
-                    </div> */}
                     <div className="d-flex justify-content-end mb-2 gap-3">
                         <Link to="/dashboard/calendario" className="btn btn-secondary">
                             Cancelar

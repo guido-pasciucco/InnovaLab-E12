@@ -146,9 +146,8 @@ export default function ModalEditarReserva({
                             onChange={handleChange}
                         >
                             <option value="programada">Programada</option>
-                            <option value="en_curso">En curso</option>
                             <option value="finalizada">Finalizada</option>
-                            <option value="cancelada">Cancelada / Suspendida</option>
+                            <option value="suspendida">Suspendida</option>
                         </Form.Select>
                     </Form.Group>
                 </Modal.Body>
