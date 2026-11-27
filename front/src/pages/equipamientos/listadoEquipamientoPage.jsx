@@ -7,6 +7,7 @@ import {
   getEquipamientoApi,
   getEspaciosApi,
   postEquipamientoApi,
+  putEquipamientoApi,
   deleteEquipamientoApi,
 } from '../../services/apiRoutes.js'
 import { Modal, Button, Form, Alert } from 'react-bootstrap'
@@ -16,7 +17,7 @@ import SelectedBadge from '../../components/badges/SelectedBadge.jsx'
 import MyModal from '../../components/modals/MyModal.jsx'
 import { Link } from 'react-router-dom'
 import { PlusCircle } from 'react-bootstrap-icons'
-import { BsSave, BsTrash, BsEye } from 'react-icons/bs'
+import { BsSave, BsTrash, BsEye, BsSave2, BsPen } from 'react-icons/bs'
 import PageHelmet from '../../helmet/PageHelmet.jsx'
 import AlertInfo from '../../components/alerts/AlertInfo.jsx'
 
@@ -32,6 +33,7 @@ export default function ListadoEquipamientoPage() {
   const { getTokken } = useContext(AuthContext)
   const [showModal, setShowModal] = useState(false)
   const [idParaEliminar, setIdParaEliminar] = useState(null)
+  const [showModalPut, setShowModalPut] = useState(false)
 
   const resultadosFiltrados = datosAPI.filter((item) => {
     console.log(
@@ -59,7 +61,7 @@ export default function ListadoEquipamientoPage() {
       terminoBusquedaMovilidad === ''
         ? true
         : item.tipo_movilidad?.toLowerCase().trim() ===
-          terminoBusquedaMovilidad.toLowerCase().trim()
+        terminoBusquedaMovilidad.toLowerCase().trim()
 
     return coincideNombre && coincideEstado && coincideMovilidad
   })
@@ -71,7 +73,7 @@ export default function ListadoEquipamientoPage() {
       const res2 = await getEspaciosApi(getTokken())
       setDatosAPI(res.data.data)
       setEspaciosApi(res2.data.data)
-      console.log('Equipos: ',datosAPI)
+      console.log('Equipos: ', datosAPI)
     } catch (err) {
       console.log('Error al cargar datos:', err)
     } finally {
@@ -87,7 +89,13 @@ export default function ListadoEquipamientoPage() {
   }, [])
 
   const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
+
+  // Al abrir el modal de crear, limpia el formulario:
+  const handleShow = () => {
+    setFormData(estadoInicial)
+    setShow(true)
+  }
+
   const fueraDeServicio = datosAPI.filter(
     (data) => data.estado === 'fuera_de_servicio',
   ).length
@@ -152,6 +160,47 @@ export default function ListadoEquipamientoPage() {
     }
   }
 
+  const handleSubmitEdit = async (e) => {
+    e.preventDefault()
+    try {
+      setShowSpinner(true)
+
+      const payload = {
+        nombre: formData.nombre,
+        categoria: formData.categoria,
+        tipo_movilidad: formData.tipo_movilidad,
+        cantidad: formData.cantidad === '' ? null : Number(formData.cantidad),
+        estado: formData.estado,
+        espacio_habitual_id: formData.espacio_habitual_id,
+        espacio_actual_id: formData.espacio_actual_id,
+      }
+
+      await putEquipamientoApi(formData.id, getTokken(), payload)
+      toast.success('Elemento modificado correctamente')
+      setShowModalPut(false)
+      await getData()
+    } catch (err) {
+      console.log(err)
+      toast.error('Error al modificar el elemento')
+    } finally {
+      setShowSpinner(false)
+    }
+  }
+
+  const handleEditar = (data) => {
+    setFormData({
+      id: data.id,
+      nombre: data.nombre ?? '',
+      categoria: data.categoria ?? '',
+      tipo_movilidad: data.tipo_movilidad ?? '',
+      cantidad: data.cantidad ?? '',
+      estado: data.estado ?? '',
+      espacio_habitual_id: data.espacio_habitual_id ?? '',
+      espacio_actual_id: data.espacio_actual_id ?? '',
+    })
+    setShowModalPut(true)
+  }
+
   return (
     <>
       <PageHelmet
@@ -207,11 +256,11 @@ export default function ListadoEquipamientoPage() {
                 text="Estado"
                 opciones={[
                   'Disponible',
-                  'En uso',
-                  'Confirmado',
-                  'Borrador',
+                  // 'En uso',
+                  // 'Confirmado',
+                  // 'Borrador',
                   'Fuera de servicio',
-                  'En mantenimiento',
+                  'Mantenimiento',
                 ]}
                 onChange={(e) => setTerminoBusquedaEstado(e.target.value)}
               />
@@ -237,14 +286,14 @@ export default function ListadoEquipamientoPage() {
                 <th>Cantidad</th>
                 <th>Espacio</th>
                 <th>Estado</th>
-                <th></th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {resultadosFiltrados.length === 0 ? (
                 /* Si ya cargó pero la búsqueda no arrojó resultados */
                 <tr>
-                  <td colSpan="7" className="text-center text-muted py-4">
+                  <td colSpan="8" className="text-center text-muted py-4">
                     No se encontraron equipos que coincidan con la búsqueda.
                   </td>
                 </tr>
@@ -279,6 +328,14 @@ export default function ListadoEquipamientoPage() {
                           <BsTrash />
                           Eliminar
                         </Button>
+                        <Button
+                          variant="link"
+                          className="text-decoration-none"
+                          onClick={() => handleEditar(sim)}
+                        >
+                          <BsPen />
+                          Editar
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -310,7 +367,7 @@ export default function ListadoEquipamientoPage() {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formDescripcion">
+            <Form.Group className="mb-3" controlId="formCategoria">
               <Form.Label>Categoría</Form.Label>
               <Form.Control
                 type="text"
@@ -321,7 +378,7 @@ export default function ListadoEquipamientoPage() {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formDescripcion">
+            <Form.Group className="mb-3" controlId="formTipoMovilidad">
               <Form.Label>Tipo</Form.Label>
               <Form.Control
                 type="text"
@@ -400,6 +457,7 @@ export default function ListadoEquipamientoPage() {
           </Form>
         </Modal.Body>
       </Modal>
+
       {/* Modal delete equipos */}
       <MyModal
         mostrar={showModal}
@@ -408,6 +466,117 @@ export default function ListadoEquipamientoPage() {
         handleConfirm={handleEliminar}
         handleCancel={() => setShowModal(false)}
       />
+
+      {/* modal del put */}
+      <Modal show={showModalPut} onHide={() => setShowModalPut(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modificar Equipamiento</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmitEdit}>
+            <Form.Group className="mb-3" controlId="editNombre">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                name="nombre"
+                value={formData.nombre ?? ''}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="editCategoria">
+              <Form.Label>Categoría</Form.Label>
+              <Form.Control
+                type="text"
+                name="categoria"
+                value={formData.categoria ?? ''}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="editMovilidad">
+              <Form.Label>Tipo de movilidad</Form.Label>
+              <Form.Control
+                type="text"
+                name="tipo_movilidad"
+                value={formData.tipo_movilidad ?? ''}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="editCantidad">
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control
+                type="number"
+                name="cantidad"
+                value={formData.cantidad ?? ''}
+                onChange={handleChange}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="editEstado">
+              <Form.Label>Estado</Form.Label>
+              <Form.Select
+                name="estado"
+                value={formData.estado ?? ''}
+                onChange={handleChange}
+              >
+                <option value="">Seleccione...</option>
+                <option value="disponible">Disponible</option>
+                <option value="mantenimiento">Mantenimiento</option>
+                <option value="fuera_de_servicio">Fuera de servicio</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="editEspacioHabitual">
+              <Form.Label>Ubicación habitual</Form.Label>
+              <Form.Select
+                name="espacio_habitual_id"
+                value={formData.espacio_habitual_id ?? ''}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Seleccione un espacio...</option>
+                {espaciosApi.map((espacio) => (
+                  <option key={espacio.id} value={espacio.id}>
+                    {espacio.nombre}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="editEspacioActual">
+              <Form.Label>Ubicación actual</Form.Label>
+              <Form.Select
+                name="espacio_actual_id"
+                value={formData.espacio_actual_id ?? ''}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Seleccione un espacio...</option>
+                {espaciosApi.map((espacio) => (
+                  <option key={espacio.id} value={espacio.id}>
+                    {espacio.nombre}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="secondary" onClick={() => setShowModalPut(false)}>
+                Cancelar
+              </Button>
+              <Button variant="primary" type="submit">
+                <BsSave2 className="me-1" />
+                Guardar
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </>
   )
 }

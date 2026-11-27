@@ -174,6 +174,20 @@ export const postEquipamientoApi = async (data, token) => {
   }
 }
 
+export const putEquipamientoApi = async (id, token, data) => {
+  try {
+    const res = await api.put(`${EQUIPAMIENTO_ROUTE}/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return res
+  } catch (err) {
+    console.log('error', err.response?.data)
+    throw err
+  }
+}
+
 export const deleteEquipamientoApi = async (id, token) => {
   try {
     const res = await api.delete(`${EQUIPAMIENTO_ROUTE}/${id}`, {
