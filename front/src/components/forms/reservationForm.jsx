@@ -48,15 +48,19 @@ function ReservationForm({ onSubmitForm, formData, handleChange }) {
                 <div className="d-flex flex-column mb-5">
                     <div className="d-flex flex-column align-items-start mb-2 w-100">
                         <label htmlFor="nombre" className="form-label">Actividad</label>
-                        <GenericSelect
-                            name='nombre'
-                            id='nombre'
-                            text="Elige una actividad"
-                            opciones={actividades.map((item) => item.nombre)}
-                            value={formData.nombre}
-                            onChange={handleChange}
-                            required
-                        />
+                        {showSpinner ? (
+                            <Spinner animation="border" />
+                        ) : (
+                            <GenericSelect
+                                name='nombre'
+                                id='nombre'
+                                text="Elige una actividad"
+                                opciones={actividades.map((item) => item.nombre)}
+                                value={formData.nombre}
+                                onChange={handleChange}
+                                required
+                            />
+                        )}
                     </div>
                     <div className='d-flex mb-2 gap-3'>
                         <div className="d-flex flex-column align-items-start mb-3 w-50">
@@ -134,7 +138,7 @@ function ReservationForm({ onSubmitForm, formData, handleChange }) {
                     <div className='d-flex mb-2 gap-3'>
                         <p>
                             ¿La actividad no existe ? Crear nueva actividad {''}
-                            <Link to="/dashboard/actividades" className="text-decoration-none">
+                            <Link to="/dashboard/nueva-actividad" className="text-decoration-none">
                                 aquí.
                             </Link>
                         </p>

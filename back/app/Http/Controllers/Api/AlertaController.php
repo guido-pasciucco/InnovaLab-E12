@@ -4,103 +4,113 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alerta;
-use App\Http\Requests\AlertaRequest;
-use App\Http\Resources\AlertaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class AlertaController extends Controller
 {
     /**
-     * Listado de alertas con filtros de estado y tipo.
+     * GET /api/v1/alertas
+     * Permite listar alertas, opcionalmente filtrando por estado (ej: ?estado=activa)
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Alerta::query();
+        $query = Alerta::query()->with(['espacio', 'equipamiento']);
 
         if ($request->has('estado')) {
             $query->where('estado', $request->query('estado'));
-        } else {
-            // Muestra alertas 'activa' primero
-            $query->orderByRaw("CASE WHEN estado = 'activa' THEN 1 WHEN estado = 'resuelta' THEN 2 ELSE 3 END");
         }
 
-        if ($request->has('tipo')) {
-            $query->where('tipo', $request->query('tipo'));
-        }
+        $alertas = $query->orderBy('created_at', 'desc')->get();
 
-        if ($request->has('search')) {
-            $search = $request->query('search');
-            $query->where('mensaje', 'like', "%{$search}%");
-        }
-
-        $alertas = $query->latest()->get();
-
-        return response()->json([
-            'data' => AlertaResource::collection($alertas)
-        ]);
+        return response()->json($alertas);
     }
 
     /**
-     * Reportar manualmente una nueva alerta o incidencia.
+     * POST /api/v1/alertas
+     * Permite crear una nueva alerta manualmente
      */
-    public function store(AlertaRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        $data = $request->validated();
-        $data['fecha'] = now();
-        $data['estado'] = $data['estado'] ?? 'activa'; // 👈 Se asigna 'activa' por defecto
+        $validated = $request->validate([
+            'tipo'            => 'required|string|max:100',
+            'mensaje'         => 'required|string',
+            'espacio_id'      => 'nullable|exists:espacios,id',
+            'equipamiento_id' => 'nullable|exists:equipamiento,id',
+            'estado'          => 'sometimes|in:activa,resuelta,ignorada',
+        ]);
 
-        $alerta = Alerta::create($data);
+        $alerta = Alerta::create([
+            'tipo'            => $validated['tipo'],
+            'mensaje'         => $validated['mensaje'],
+            'espacio_id'      => $validated['espacio_id'] ?? null,
+            'equipamiento_id' => $validated['equipamiento_id'] ?? null,
+            'estado'          => $validated['estado'] ?? 'activa',
+        ]);
 
         return response()->json([
-            'message' => 'Alerta/Incidencia registrada exitosamente',
-            'data' => new AlertaResource($alerta)
+            'message' => 'Alerta creada correctamente',
+            'alerta'  => $alerta->load(['espacio', 'equipamiento']),
         ], 201);
     }
 
     /**
-     * Ver el detalle de una alerta específica.
+     * PUT/PATCH /api/v1/alertas/{alerta}
+     * Actualiza la alerta y aplica el camino inverso si pasa a 'resuelta'
      */
-    public function show($id): JsonResponse
+    public function update(Request $request, Alerta $alerta): JsonResponse
     {
-        $alerta = Alerta::findOrFail($id);
-
-        return response()->json([
-            'data' => new AlertaResource($alerta)
-        ]);
-    }
-
-    /**
-     * Marcar una alerta como 'resuelta' o 'ignorada'.
-     */
-    public function resolver(Request $request, $id): JsonResponse
-    {
-        $request->validate([
-            'estado' => 'required|in:activa,resuelta,ignorada'
+        $validated = $request->validate([
+            'estado' => 'required|string|in:activa,resuelta,ignorada',
         ]);
 
-        $alerta = Alerta::findOrFail($id);
         $alerta->update([
-            'estado' => $request->estado,
-            'fecha_resolucion' => $request->estado === 'resuelta' ? now() : null
+            'estado'     => $validated['estado'],
+            'updated_at' => now(),
         ]);
 
+        // Camino inverso: Si pasa a 'resuelta', liberar el recurso
+        if ($validated['estado'] === 'resuelta') {
+            if ($alerta->espacio_id) {
+                $alerta->espacio()->update(['estado' => 'disponible']);
+            }
+            if ($alerta->equipamiento_id) {
+                $alerta->equipamiento()->update(['estado' => 'disponible']);
+            }
+        }
+
         return response()->json([
-            'message' => "Estado de la alerta actualizado a '{$request->estado}'",
-            'data' => new AlertaResource($alerta)
+            'message' => 'Estado de alerta actualizado correctamente',
+            'alerta'  => $alerta->fresh(['espacio', 'equipamiento']),
         ]);
     }
 
     /**
-     * Eliminar una alerta.
+     * PUT /api/v1/alertas/{id}/resolver
+     * Marca la alerta como 'resuelta' y libera automáticamente el espacio o equipamiento
      */
-    public function destroy($id): JsonResponse
+    public function resolver($id): JsonResponse
     {
         $alerta = Alerta::findOrFail($id);
-        $alerta->delete();
+
+        // 1. Marcar alerta como resuelta
+        $alerta->update([
+            'estado'     => 'resuelta',
+            'updated_at' => now(),
+        ]);
+
+        // 2. Camino inverso: Marcar el espacio o equipamiento como 'disponible'
+        if ($alerta->espacio_id) {
+            $alerta->espacio()->update(['estado' => 'disponible']);
+        }
+
+        if ($alerta->equipamiento_id) {
+            $alerta->equipamiento()->update(['estado' => 'disponible']);
+        }
 
         return response()->json([
-            'message' => 'Alerta eliminada exitosamente'
+            'message' => 'Alerta resuelta y recurso marcado como disponible automáticamente',
+            'alerta'  => $alerta->fresh(['espacio', 'equipamiento']),
         ]);
     }
 }

@@ -234,7 +234,7 @@ export const getActividades = async (token) => {
     },
   })
 
-  return res
+  return res;
 }
 
 export const postActividades = async (token, data) => {
@@ -254,7 +254,7 @@ export const getAlertas = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   })
-  return res.data
+  return res.data;
 }
 
 // modulo IA
@@ -271,7 +271,7 @@ export const postChatIa = async (token, pregunta) => {
     },
   )
 
-  return res.data
+  return res.data;
 }
 
 //gestión de reservas
@@ -283,17 +283,31 @@ export const getReservas = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   })
-  return res
+  return res;
 }
 
-export const postReserva = async (data, token) => {
+export const postReserva = async (token, data) => {
   try {
     const res = await api.post(RESERVAS_ROUTE, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-    return res
+    return res;
+  } catch (err) {
+    console.log('error', err.response?.data)
+    throw err
+  }
+}
+
+export const actualizarReserva = async (token, id, data) => {
+  try {
+    const res = await api.put(`${RESERVAS_ROUTE}/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
   } catch (err) {
     console.log('error', err.response?.data)
     throw err

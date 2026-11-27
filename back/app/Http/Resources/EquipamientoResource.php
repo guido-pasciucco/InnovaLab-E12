@@ -18,8 +18,6 @@ class EquipamientoResource extends JsonResource
             'estado' => $this->estado,
             'espacio_habitual_id' => $this->espacio_habitual_id,
             'espacio_habitual' => new EspacioResource($this->whenLoaded('espacioHabitual')),
-            'espacio_actual_id' => $this->espacio_actual_id,
-            'espacio_actual' => new EspacioResource($this->whenLoaded('espacioActual')),
             'historial' => $this->whenLoaded('historial'),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),

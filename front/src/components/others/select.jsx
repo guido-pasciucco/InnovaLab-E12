@@ -1,13 +1,13 @@
 import Form from 'react-bootstrap/Form';
 
-function GenericSelect({ text, opciones, onChange, name, id, value, required }) {
+function GenericSelect({ text, opciones = [], onChange = () => {}, name, id, value = "", required }) {
   return (
     <Form.Select
       aria-label="Default select example"
       name={name}
       id={id}
       className="form-control"
-      value={value}
+      value={value ?? ""}
       onChange={onChange}
       required={required}
     >

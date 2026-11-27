@@ -7,13 +7,13 @@ use App\Http\Requests\EquipamientoRequest;
 use App\Http\Resources\EquipamientoResource;
 use App\Models\Equipamiento;
 use App\Models\EquipoHistorial;
+use App\Models\Alerta;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 
 class EquipamientoController extends Controller
 {
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
         $query = Equipamiento::query();
 
@@ -32,8 +32,10 @@ class EquipamientoController extends Controller
         if ($request->has('espacio_id')) {
             $espacioId = $request->query('espacio_id');
             $query->where(function ($q) use ($espacioId) {
-                $q->where('espacio_habitual_id', $espacioId)
-                  ->orWhere('espacio_actual_id', $espacioId);
+                $q->where('espacio_habitual_id', $espacioId);
+                if (in_array('espacio_actual_id', (new Equipamiento)->getFillable())) {
+                    $q->orWhere('espacio_actual_id', $espacioId);
+                }
             });
         }
 
@@ -42,58 +44,90 @@ class EquipamientoController extends Controller
             $query->where('nombre', 'like', "%{$search}%");
         }
 
-        $equipamientos = $query->with(['espacioHabitual', 'espacioActual'])->get();
+        $equipamientos = $query->with(['espacioHabitual'])->get();
 
-        return EquipamientoResource::collection($equipamientos);
+        return response()->json([
+            'data' => EquipamientoResource::collection($equipamientos)
+        ]);
     }
 
     public function store(EquipamientoRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        if (!isset($data['espacio_actual_id']) && isset($data['espacio_habitual_id'])) {
-            $data['espacio_actual_id'] = $data['espacio_habitual_id'];
-        }
-
         $equipamiento = Equipamiento::create($data);
 
-        return (new EquipamientoResource($equipamiento->load(['espacioHabitual', 'espacioActual'])))
-            ->response()
-            ->setStatusCode(201);
+        return response()->json([
+            'message' => 'Equipamiento creado correctamente',
+            'data' => new EquipamientoResource($equipamiento->load(['espacioHabitual']))
+        ], 201);
     }
 
-    public function show(Equipamiento $equipamiento): EquipamientoResource
+    public function show(Equipamiento $equipamiento): JsonResponse
     {
-        $equipamiento->load(['espacioHabitual', 'espacioActual', 'historial']);
+        $equipamiento->load(['espacioHabitual', 'historial']);
 
-        return new EquipamientoResource($equipamiento);
+        return response()->json([
+            'data' => new EquipamientoResource($equipamiento)
+        ]);
     }
 
-    public function update(EquipamientoRequest $request, Equipamiento $equipamiento): EquipamientoResource
+    public function update(EquipamientoRequest $request, Equipamiento $equipamiento): JsonResponse
     {
         $estadoAnterior = $equipamiento->estado;
         $data = $request->validated();
 
         $equipamiento->update($data);
+        $nuevoEstado = $equipamiento->estado;
 
-        if ($request->has('estado') && $request->input('estado') !== $estadoAnterior) {
+        if ($request->has('estado') && $nuevoEstado !== $estadoAnterior) {
             EquipoHistorial::create([
                 'equipamiento_id' => $equipamiento->id,
-                'estado' => $equipamiento->estado,
-                'espacio_id' => $equipamiento->espacio_actual_id,
-                'ubicacion_texto' => $equipamiento->espacioActual?->nombre ?? 'Sin espacio asignado',
-                'fecha_inicio' => now(),
-                'motivo' => $request->input('motivo', 'Cambio de estado desde API'),
+                'estado'          => $nuevoEstado,
+                'fecha_inicio'    => now(),
+                'motivo'          => $request->input('motivo', 'Cambio de estado desde API'),
             ]);
+
+            if ($nuevoEstado === 'disponible') {
+                Alerta::where(function($q) use ($equipamiento) {
+                    $q->where('equipamiento_id', $equipamiento->id)
+                      ->orWhere(function($q2) use ($equipamiento) {
+                          $q2->where('referencia_tipo', 'equipamiento')
+                             ->where('referencia_id', $equipamiento->id);
+                      });
+                })
+                ->whereIn('estado', ['activa', 'pendiente'])
+                ->update([
+                    'estado'           => 'resuelta',
+                    'fecha_resolucion' => now(),
+                    'updated_at'       => now(),
+                ]);
+            }
+
+            if (in_array($nuevoEstado, ['mantenimiento', 'fuera_de_servicio'])) {
+                Alerta::create([
+                    'tipo'            => 'incidencia',
+                    'referencia_tipo' => 'equipamiento',
+                    'referencia_id'   => $equipamiento->id,
+                    'mensaje'         => "El equipamiento '{$equipamiento->nombre}' cambió su estado a '{$nuevoEstado}'.",
+                    'estado'          => 'activa',
+                    'fecha'           => now(),
+                ]);
+            }
         }
 
-        return new EquipamientoResource($equipamiento->load(['espacioHabitual', 'espacioActual']));
+        return response()->json([
+            'message' => 'Equipamiento actualizado correctamente',
+            'data' => new EquipamientoResource($equipamiento->load(['espacioHabitual']))
+        ]);
     }
 
     public function destroy(Equipamiento $equipamiento): JsonResponse
     {
         $equipamiento->delete();
 
-        return response()->json(['message' => 'Equipamiento eliminado correctamente'], 200);
+        return response()->json([
+            'message' => 'Equipamiento eliminado correctamente',
+        ]);
     }
 }

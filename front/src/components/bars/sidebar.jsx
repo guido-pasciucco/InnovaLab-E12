@@ -1,4 +1,3 @@
-
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
@@ -15,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Info,
 } from 'react-bootstrap-icons'
 
 export default function Sidebar({
@@ -34,7 +34,8 @@ export default function Sidebar({
     { to: '/dashboard/calendario', label: 'Calendario', icon: <Calendar /> },
     { to: '/dashboard/alertas', label: 'Alertas', icon: <Bell /> },
     { to: '/dashboard/chatia', label: 'Consultas IA', icon: <ChatDots /> },
-    ...(rol === 'Admin'
+    { to: '/dashboard/info', label: 'Informacion', icon: <Info /> },
+    ...(rol === 1
       ? [
           {
             to: '/dashboard/usuarios-y-roles',
@@ -49,10 +50,7 @@ export default function Sidebar({
     <>
       {/* Fondo oscuro para dispositivos móviles */}
       {mobileOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setMobileOpen(false)}
-        />
+        <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />
       )}
 
       <aside
@@ -66,12 +64,7 @@ export default function Sidebar({
         {/* Encabezado */}
         <Row className="align-items-center">
           <Col className="d-flex align-items-center gap-2">
-            <img
-              src="/icon_cs.png"
-              alt="InnovaLab"
-              width={34}
-              height={34}
-            />
+            <img src="/icon_cs.png" alt="InnovaLab" width={34} height={34} />
             {!collapsed && <span>Innova.lab</span>}
           </Col>
 

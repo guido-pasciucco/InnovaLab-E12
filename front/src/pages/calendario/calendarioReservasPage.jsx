@@ -95,20 +95,24 @@ export default function CalendarioReservasPage() {
             opciones={actividades.map((item) => item.nombre)}
           />
         </div>
-        <div className="bg-danger p-3 rounded-3 shadow-sm">
+        {/* <div className="bg-danger p-3 rounded-3 shadow-sm">
           Alerta de superposición
-        </div>
+        </div> */}
         <div className="d-flex flex-row gap-2">
-          <span className="bg-success p-1 rounded-3 shadow-sm">Confirmada</span>
-          <span className="bg-primary p-1 rounded-3 shadow-sm">Programada</span>
-          <span className="bg-warning p-1 rounded-3 shadow-sm">Pendiente</span>
+          <span className="bg-secondary p-1 rounded-3 shadow-sm">Confirmada</span>
+          <span className="bg-warning p-1 rounded-3 shadow-sm">Suspendida</span>
+          {/* <span className="bg-warning p-1 rounded-3 shadow-sm">Pendiente</span>
           <span className="bg-warning p-1 rounded-3 shadow-sm">
             Mantenimiento
           </span>
-          <span className="bg-danger p-1 rounded-3 shadow-sm">Conflicto</span>
+          <span className="bg-danger p-1 rounded-3 shadow-sm">Conflicto</span> */}
         </div>
       </div>
-      {showSpinner ? <Spinner /> : <Calendario eventos={reservas} />}
+      {showSpinner ? <Spinner /> :
+        <Calendario
+          eventos={reservas}
+          onRefrescarEventos={getData}
+        />}
     </>
   )
 }

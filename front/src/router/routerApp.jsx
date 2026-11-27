@@ -3,27 +3,28 @@ import {
   Route,
   Routes,
   Navigate,
-} from "react-router-dom";
-import Layout from "../layout/layout";
-
-import LoginPage from "../pages/login/loginPage";
-import DashboardPrincipalPage from "../pages/dashboard/dashboardPrincipalPage";
-import ListadoEspaciosPage from "../pages/espacios/listadoEspaciosPage";
-import ProtectedRoute from "./ProtectedRoute";
-import UsuariosYrolesPage from "../pages/usuarios/usuariosYrolesPage";
-import ListadoEquipamientoPage from "../pages/equipamientos/listadoEquipamientoPage";
-import EspacioDetallePage from "../pages/espacios/EspacioDetallePage";
-import ListadoReservasPage from "../pages/reservas/ListadoReservasPage";
-import ResolverConflictoPage from "../pages/conflictos/resolverConflictoPage";
-import EditarEspacioPage from "../pages/espacios/editarEspacioPage";
-import NuevaReservaPage from "../pages/reservas/nuevaReservaPage";
-import CalendarioReservasPage from "../pages/calendario/calendarioReservasPage";
-import ActividadesPage from "../pages/actividades/ActividadesPage";
+} from 'react-router-dom'
+import Layout from '../layout/layout'
+import LoginPage from '../pages/login/loginPage'
+import DashboardPrincipalPage from '../pages/dashboard/dashboardPrincipalPage'
+import ListadoEspaciosPage from '../pages/espacios/listadoEspaciosPage'
+import ProtectedRoute from './ProtectedRoute'
+import UsuariosYrolesPage from '../pages/usuarios/usuariosYrolesPage'
+import ListadoEquipamientoPage from '../pages/equipamientos/listadoEquipamientoPage'
+import EspacioDetallePage from '../pages/espacios/EspacioDetallePage'
+import ListadoReservasPage from '../pages/reservas/ListadoReservasPage'
+import ResolverConflictoPage from '../pages/conflictos/resolverConflictoPage'
+import EditarEspacioPage from '../pages/espacios/editarEspacioPage'
+import NuevaReservaPage from '../pages/reservas/nuevaReservaPage'
+import CalendarioReservasPage from '../pages/calendario/calendarioReservasPage'
+import ActividadesPage from '../pages/actividades/ActividadesPage'
+import NuevaActividadPage from '../pages/actividades/nuevaActividadPage'
 import AlertasPage from '../pages/alertas/AlertasPage'
-import ChatIaPage from "../pages/chatIa/chatIaPage";
+import ChatIaPage from '../pages/chatIa/chatIaPage'
 // import {listaEspacios} from "../services/espacios";
-import EquipamientoDetallePage from "../pages/equipamientos/EquipamientoDetallePage";
-import NotFound from "../pages/not_found/NotFound";
+import EquipamientoDetallePage from '../pages/equipamientos/EquipamientoDetallePage'
+import NotFound from '../pages/not_found/NotFound'
+import InfoPage from '../pages/info/InfoPage'
 
 export default function RouterApp() {
   return (
@@ -38,9 +39,7 @@ export default function RouterApp() {
             <Route
               index
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <DashboardPrincipalPage />
                 </ProtectedRoute>
               }
@@ -49,9 +48,7 @@ export default function RouterApp() {
             <Route
               path="desarrollo"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <h1 className="h1"> Paniga en desarrollo</h1>
                 </ProtectedRoute>
               }
@@ -59,7 +56,7 @@ export default function RouterApp() {
             <Route
               path="usuarios-y-roles"
               element={
-                <ProtectedRoute protectedRoles={["Admin"]}>
+                <ProtectedRoute protectedRoles={[1]}>
                   <UsuariosYrolesPage />
                 </ProtectedRoute>
               }
@@ -67,9 +64,7 @@ export default function RouterApp() {
             <Route
               path="espacios"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ListadoEspaciosPage />
                 </ProtectedRoute>
               }
@@ -77,9 +72,7 @@ export default function RouterApp() {
             <Route
               path="espacios/:id"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <EspacioDetallePage />
                 </ProtectedRoute>
               }
@@ -87,30 +80,24 @@ export default function RouterApp() {
             <Route
               path="equipamiento"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ListadoEquipamientoPage />
                 </ProtectedRoute>
               }
             />
 
-            <Route 
-            path="equipamiento/:id"
-            element={
-              <ProtectedRoute
-              protectedRoles={["Admin", "Coordinador", "Coordinador"]}
-              >
-                <EquipamientoDetallePage />
-              </ProtectedRoute>
-            }
+            <Route
+              path="equipamiento/:id"
+              element={
+                <ProtectedRoute protectedRoles={[1, 2]}>
+                  <EquipamientoDetallePage />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="nueva-reserva"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <NuevaReservaPage />
                 </ProtectedRoute>
               }
@@ -118,9 +105,7 @@ export default function RouterApp() {
             <Route
               path="resolver-conflicto"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ResolverConflictoPage />
                 </ProtectedRoute>
               }
@@ -128,9 +113,7 @@ export default function RouterApp() {
             <Route
               path="espacios/:id/editar-espacio"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <EditarEspacioPage />
                 </ProtectedRoute>
               }
@@ -138,20 +121,25 @@ export default function RouterApp() {
             <Route
               path="calendario"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <CalendarioReservasPage />
                 </ProtectedRoute>
               }
             />
-
+            <Route
+              path="nueva-actividad"
+              element={
+                <ProtectedRoute
+                  protectedRoles={[1, 2]}
+                >
+                  <NuevaActividadPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="actividades"
               element={
-                <ProtectedRoute
-                  protectedRoles={["Admin", "Coordinador", "Coordinadora"]}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ActividadesPage />
                 </ProtectedRoute>
               }
@@ -160,9 +148,7 @@ export default function RouterApp() {
             <Route
               path="alertas"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <AlertasPage />
                 </ProtectedRoute>
               }
@@ -171,22 +157,26 @@ export default function RouterApp() {
             <Route
               path="chatia"
               element={
-                <ProtectedRoute
-                  protectedRoles={['Admin', 'Coordinador', 'Coordinadora']}
-                >
+                <ProtectedRoute protectedRoles={[1, 2]}>
                   <ChatIaPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="info"
+              element={
+                <ProtectedRoute protectedRoles={[1, 2]}>
+                  <InfoPage />
                 </ProtectedRoute>
               }
             />
           </Route>
 
           {/* agarrar todas */}
-          <Route
-            path="*"
-            element={<NotFound />}
-          />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </>
-  );
+  )
 }

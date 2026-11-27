@@ -7,108 +7,167 @@ use App\Models\Espacio;
 use App\Models\Equipamiento;
 use App\Models\Reserva;
 use App\Models\Alerta;
-use App\Models\Actividad;
-use App\Models\Conflicto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function resumen(Request $request)
+    /**
+     * GET /api/v1/dashboard/resumen
+     * KPIs principales en tiempo real para el Dashboard principal.
+     */
+    public function resumen(): \Illuminate\Http\JsonResponse
     {
         $hoy = Carbon::today();
         $inicioSemana = Carbon::now()->startOfWeek();
         $finSemana = Carbon::now()->endOfWeek();
 
-        // 1. Métricas superiores (KPIs)
-        $totalEspacios = Espacio::count();
-        $reservasSemana = Reserva::whereBetween('fecha_hora_inicio', [$inicioSemana, $finSemana])
-            ->where('estado', 'confirmada')
-            ->count();
-
-        // Estimación de ocupación global de espacios (base 40hs semanales por espacio)
-        $horasOcupadas = Reserva::whereBetween('fecha_hora_inicio', [$inicioSemana, $finSemana])
-            ->where('estado', 'confirmada')
-            ->get()
-            ->sum(function ($r) {
-                return Carbon::parse($r->fecha_hora_fin)->diffInHours(Carbon::parse($r->fecha_hora_inicio));
-            });
+        // 1. Conteo de alertas en la tabla 'alerta' (soporta estados 'activa' y 'pendiente')
+        $alertasActivasCount = Alerta::whereIn('estado', ['activa', 'pendiente'])->count();
         
-        $capacidadTotalHoras = max(1, $totalEspacios * 40);
-        $porcentajeOcupacionEspacios = min(100, round(($horasOcupadas / $capacidadTotalHoras) * 100));
+        // 2. Conteo de conflictos pendientes en la tabla 'conflicto'
+        $conflictosPendientesCount = DB::table('conflicto')->where('resuelto', false)->count();
 
-        // Utilización de equipamiento
-        $totalEquipos = Equipamiento::count();
-        $equiposEnUso = DB::table('equipamiento_reserva')
-            ->join('reservas', 'equipamiento_reserva.reserva_id', '=', 'reservas.id')
-            ->whereBetween('reservas.fecha_hora_inicio', [$inicioSemana, $finSemana])
-            ->distinct('equipamiento_reserva.equipamiento_id')
-            ->count('equipamiento_reserva.equipamiento_id');
-        $porcentajeUsoEquipamiento = $totalEquipos > 0 ? min(100, round(($equiposEnUso / $totalEquipos) * 100)) : 0;
+        // Si la tabla 'alerta' no tiene registros pero sí hay conflictos pendientes, consolidar KPI
+        $totalAlertasCalculado = $alertasActivasCount > 0 ? $alertasActivasCount : $conflictosPendientesCount;
 
         $kpis = [
-            'ocupacion_espacios_pct' => $porcentajeOcupacionEspacios,
-            'ocupacion_diff_semana_anterior' => 6, // pts porcentuales de tendencia
-            'utilizacion_equipamiento_pct' => $porcentajeUsoEquipamiento,
-            'utilizacion_diff_semana_anterior' => -3,
-            'actividades_programadas' => Actividad::whereBetween('fecha', [$inicioSemana->toDateString(), $finSemana->toDateString()])->count(),
-            'conflictos_abiertos' => Conflicto::where('resuelto', false)->count(),
-            'asignaciones_pendientes' => Reserva::where('estado', 'pendiente')->count(),
+            'total_espacios' => Espacio::count(),
+            'espacios_operativos' => Espacio::whereIn('estado', ['disponible', 'operativo'])->count(),
+            'espacios_mantenimiento' => Espacio::where('estado', 'mantenimiento')->count(),
+            'reservas_hoy' => Reserva::whereDate('fecha_hora_inicio', $hoy)->where('estado', 'confirmada')->count(),
+            'reservas_semana' => Reserva::whereBetween('fecha_hora_inicio', [$inicioSemana, $finSemana])->where('estado', 'confirmada')->count(),
+            'alertas_activas' => $totalAlertasCalculado,
+            'conflictos_pendientes' => $conflictosPendientesCount,
+            'equipos_fuera_de_servicio' => Equipamiento::whereIn('estado', ['mantenimiento', 'fuera_de_servicio'])->count(),
         ];
 
-        // 2. Ocupación por Espacio (Top utilizados)
-        $espacios = Espacio::all();
-        $ocupacionPorEspacio = $espacios->map(function ($espacio) use ($inicioSemana, $finSemana) {
-            $horas = Reserva::where('espacio_id', $espacio->id)
-                ->whereBetween('fecha_hora_inicio', [$inicioSemana, $finSemana])
-                ->where('estado', 'confirmada')
-                ->get()
-                ->sum(fn($r) => Carbon::parse($r->fecha_hora_fin)->diffInHours(Carbon::parse($r->fecha_hora_inicio)));
-            
-            return [
-                'id' => $espacio->id,
-                'nombre' => $espacio->nombre,
-                'porcentaje' => min(100, round(($horas / 40) * 100)),
-            ];
-        })->sortByDesc('porcentaje')->values()->take(5);
-
-        // 3. Recursos con mayor demanda
-        $recursosMayorDemanda = DB::table('equipamiento')
-            ->leftJoin('equipamiento_reserva', 'equipamiento.id', '=', 'equipamiento_reserva.equipamiento_id')
-            ->select('equipamiento.nombre', DB::raw('COUNT(equipamiento_reserva.reserva_id) as total_reservas'))
-            ->groupBy('equipamiento.id', 'equipamiento.nombre')
-            ->orderBy('total_reservas', 'desc')
-            ->take(5)
-            ->get();
-
-        // 4. Alertas del centro
-        $alertas = Alerta::where('estado', 'activa')
+        // 3. Obtener alertas recientes con eager loading
+        $alertasRecientes = Alerta::with(['espacio', 'equipamiento'])
+            ->whereIn('estado', ['activa', 'pendiente'])
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->take(10)
             ->get();
 
-        // 5. Actividades de hoy
-        $actividadesHoy = Actividad::whereDate('fecha', $hoy)
-            ->with(['responsable'])
-            ->get()
-            ->map(function ($act) {
-                $reserva = Reserva::where('actividad_id', $act->id)->first();
+        // Fallback: Si la tabla 'alerta' está vacía pero hay registros en 'conflicto', mapear los conflictos para el widget
+        if ($alertasRecientes->isEmpty() && $conflictosPendientesCount > 0) {
+            $conflictosRaw = DB::table('conflicto')
+                ->where('resuelto', false)
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
+
+            $alertasRecientes = $conflictosRaw->map(function ($item) {
                 return [
-                    'id' => $act->id,
-                    'hora' => Carbon::parse($act->hora_inicio)->format('H:i'),
-                    'actividad' => $act->nombre,
-                    'espacio' => $reserva?->espacio?->nombre ?? 'Sin espacio',
-                    'estado' => ucfirst($act->estado),
+                    'id' => $item->id,
+                    'tipo' => $item->tipo ?? 'conflicto_reserva',
+                    'mensaje' => $item->descripcion ?? 'Conflicto de horario detectado',
+                    'estado' => 'activa',
+                    'created_at' => $item->created_at ?? $item->fecha_detectado ?? now(),
+                    'espacio' => property_exists($item, 'espacio_id') && $item->espacio_id ? Espacio::find($item->espacio_id) : null,
+                    'equipamiento' => property_exists($item, 'equipamiento_id') && $item->equipamiento_id ? Equipamiento::find($item->equipamiento_id) : null,
                 ];
             });
+        }
 
         return response()->json([
             'kpis' => $kpis,
-            'ocupacion_por_espacio' => $ocupacionPorEspacio,
-            'recursos_mayor_demanda' => $recursosMayorDemanda,
-            'alertas' => $alertas,
-            'actividades_hoy' => $actividadesHoy,
+            'alertas_recientes' => $alertasRecientes,
+        ]);
+    }
+
+    /**
+     * GET /api/v1/dashboard/ocupacion-espacios
+     */
+    public function ocupacionEspacios(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $fechaDesde = $request->query('fecha_desde', Carbon::now()->startOfMonth()->toDateString());
+        $fechaHasta = $request->query('fecha_hasta', Carbon::now()->endOfMonth()->toDateString());
+
+        $espacios = Espacio::all();
+
+        $desglose = $espacios->map(function ($espacio) use ($fechaDesde, $fechaHasta) {
+            $reservas = Reserva::where('espacio_id', $espacio->id)
+                ->whereBetween('fecha_hora_inicio', [$fechaDesde, $fechaHasta])
+                ->where('estado', 'confirmada')
+                ->get();
+
+            $horasReservadas = 0;
+            foreach ($reservas as $r) {
+                $inicio = Carbon::parse($r->fecha_hora_inicio);
+                $fin = Carbon::parse($r->fecha_hora_fin);
+                $horasReservadas += $fin->diffInHours($inicio);
+            }
+
+            $disponibilidadTotal = 160; 
+            $porcentaje = $disponibilidadTotal > 0 ? min(100, round(($horasReservadas / $disponibilidadTotal) * 100, 1)) : 0;
+
+            return [
+                'espacio_id' => $espacio->id,
+                'nombre' => $espacio->nombre,
+                'tipo' => $espacio->tipo,
+                'total_reservas' => $reservas->count(),
+                'horas_reservadas' => $horasReservadas,
+                'porcentaje_ocupacion' => $porcentaje,
+            ];
+        });
+
+        return response()->json([
+            'periodo' => [
+                'desde' => $fechaDesde,
+                'hasta' => $fechaHasta,
+            ],
+            'espacios_mas_utilizados' => $desglose->sortByDesc('horas_reservadas')->values(),
+        ]);
+    }
+
+    /**
+     * GET /api/v1/dashboard/uso-equipamiento
+     */
+    public function usoEquipamiento(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $equiposDemandados = DB::table('equipamiento')
+            ->leftJoin('equipamiento_reserva', 'equipamiento.id', '=', 'equipamiento_reserva.equipamiento_id')
+            ->select(
+                'equipamiento.id',
+                'equipamiento.nombre',
+                'equipamiento.categoria',
+                'equipamiento.tipo_movilidad',
+                'equipamiento.estado',
+                DB::raw('COUNT(equipamiento_reserva.reserva_id) as total_reservas')
+            )
+            ->groupBy('equipamiento.id', 'equipamiento.nombre', 'equipamiento.categoria', 'equipamiento.tipo_movilidad', 'equipamiento.estado')
+            ->orderBy('total_reservas', 'desc')
+            ->get();
+
+        $equipamientoCritico = Equipamiento::whereIn('estado', ['mantenimiento', 'fuera_de_servicio'])
+            ->get(['id', 'nombre', 'categoria', 'estado', 'updated_at']);
+
+        return response()->json([
+            'equipos_mas_demandados' => $equiposDemandados,
+            'equipamiento_critico_mantenimiento' => $equipamientoCritico,
+        ]);
+    }
+
+    /**
+     * GET /api/v1/dashboard/metricas-conflictos
+     */
+    public function metricasConflictos(): \Illuminate\Http\JsonResponse
+    {
+        $totalAlertas = Alerta::count();
+        $resueltas = Alerta::where('estado', 'resuelta')->count();
+        $pendientes = Alerta::whereIn('estado', ['activa', 'pendiente'])->count();
+
+        $desglose = Alerta::select('tipo', DB::raw('count(*) as cantidad'))
+            ->groupBy('tipo')
+            ->pluck('cantidad', 'tipo');
+
+        return response()->json([
+            'total_conflictos_detectados' => $totalAlertas,
+            'conflictos_resueltos' => $resueltas,
+            'conflictos_pendientes' => $pendientes,
+            'desglose_por_tipo' => $desglose,
         ]);
     }
 }

@@ -13,7 +13,7 @@ fi
 # Correr migraciones y seeders automáticamente en PostgreSQL
 echo "🗄️ Ejecutando migraciones y seeders..."
 php artisan migrate --force
-php artisan db:seed --force
+#php artisan db:seed --force
 
 # Optimizar caché
 echo "⚡ Optimizando caché de Laravel..."
