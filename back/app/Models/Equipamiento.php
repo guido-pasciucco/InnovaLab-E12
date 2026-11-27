@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Equipamiento extends Model
 {
-    use HasFactory;
+    protected  = 'equipamiento';
 
-    protected $table = 'equipamiento';
-
-    protected $fillable = [
+    protected  = [
         'nombre',
         'categoria',
         'tipo_movilidad',
@@ -23,57 +20,25 @@ class Equipamiento extends Model
         'estado',
     ];
 
-    protected $casts = [
-        'cantidad'            => 'integer',
-        'espacio_habitual_id' => 'integer',
-        'espacio_actual_id'   => 'integer',
-    ];
-
-    /* ==========================================
-     | Mutadores para normalizar a minúsculas
-     + ========================================== */
-
-    public function setNombreAttribute($value): void
-    {
-        $this->attributes['nombre'] = is_null($value) ? null : mb_strtolower($value, 'UTF-8');
-    }
-
-    public function setCategoriaAttribute($value): void
-    {
-        $this->attributes['categoria'] = is_null($value) ? null : mb_strtolower($value, 'UTF-8');
-    }
-
-    public function setTipoMovilidadAttribute($value): void
-    {
-        $this->attributes['tipo_movilidad'] = is_null($value) ? null : mb_strtolower($value, 'UTF-8');
-    }
-
-    public function setEstadoAttribute($value): void
-    {
-        $this->attributes['estado'] = is_null($value) ? null : mb_strtolower($value, 'UTF-8');
-    }
-
-    /* ==========================================
-     | Relaciones Eloquent
-     + ========================================== */
-
     public function espacioHabitual(): BelongsTo
     {
-        return $this->belongsTo(Espacio::class, 'espacio_habitual_id');
+        return ->belongsTo(Espacio::class, 'espacio_habitual_id');
     }
 
     public function espacioActual(): BelongsTo
     {
-        return $this->belongsTo(Espacio::class, 'espacio_actual_id');
+        return ->belongsTo(Espacio::class, 'espacio_actual_id')->withDefault(function () {
+            return ->espacioHabitual;
+        });
     }
 
     public function reservas(): HasMany
     {
-        return $this->hasMany(ReservaEquipamiento::class, 'equipamiento_id');
+        return ->hasMany(ReservaEquipamiento::class, 'equipamiento_id');
     }
 
     public function historial(): HasMany
     {
-        return $this->hasMany(EquipoHistorial::class, 'equipamiento_id');
+        return ->hasMany(EquipoHistorial::class, 'equipamiento_id');
     }
 }
