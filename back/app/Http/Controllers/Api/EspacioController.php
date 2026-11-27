@@ -9,12 +9,11 @@ use App\Models\Espacio;
 use App\Models\EspacioHistorial;
 use App\Models\Alerta;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 
 class EspacioController extends Controller
 {
-    public function index(Request ): AnonymousResourceCollection
+    public function index(Request ): JsonResponse
     {
          = Espacio::query();
 
@@ -36,7 +35,7 @@ class EspacioController extends Controller
 
          = ->with(['equipamientosHabituales'])->get();
 
-        return EspacioResource::collection();
+        return response()->json(EspacioResource::collection());
     }
 
     public function store(EspacioRequest ): JsonResponse
@@ -55,19 +54,19 @@ class EspacioController extends Controller
             ->setStatusCode(201);
     }
 
-    public function show(Espacio ): EspacioResource
+    public function show(Espacio ): JsonResponse
     {
-        return new EspacioResource(->load(['equipamientosHabituales', 'historial']));
+        ->load(['equipamientosHabituales', 'historial']);
+        return response()->json(new EspacioResource());
     }
 
-    public function update(EspacioRequest , Espacio ): EspacioResource
+    public function update(EspacioRequest , Espacio ): JsonResponse
     {
          = ->estado;
         ->update(->validated());
          = ->estado;
 
         if (->has('estado') &&  !== ) {
-            // 1. Historial del espacio
             EspacioHistorial::create([
                 'espacio_id'   => ->id,
                 'estado'       => ,
@@ -75,21 +74,19 @@ class EspacioController extends Controller
                 'motivo'       => ->input('motivo', 'Cambio de estado desde API'),
             ]);
 
-            // 2. Si pasa a DISPONIBLE -> Cerrar automáticamente alertas activas del espacio
             if ( === 'disponible') {
                 Alerta::where(function () use () {
-                    ->where('referencia_tipo', 'espacio')
-                      ->where('referencia_id', ->id);
-                })
-                ->where('estado', 'activa')
-                ->update([
-                    'estado'           => 'resuelta',
-                    'fecha_resolucion' => now(),
-                    'updated_at'       => now(),
+                    ->where('espacio_id', ->id)
+                      ->orWhere(function () use () {
+                          ->where('referencia_tipo', 'espacio')
+                             ->where('referencia_id', ->id);
+                      });
+                })->where('estado', 'activa')->update([
+                    'estado'     => 'resuelta',
+                    'updated_at' => now(),
                 ]);
             }
 
-            // 3. Si pasa a MANTENIMIENTO o FUERA DE SERVICIO -> Crear alerta de incidencia
             if (in_array(, ['mantenimiento', 'fuera_de_servicio'])) {
                 Alerta::create([
                     'tipo'            => 'incidencia',
@@ -102,15 +99,13 @@ class EspacioController extends Controller
             }
         }
 
-        return new EspacioResource();
+        return response()->json(new EspacioResource());
     }
 
     public function destroy(Espacio ): JsonResponse
     {
         ->delete();
 
-        return response()->json([
-            'message' => 'Espacio eliminado correctamente',
-        ]);
+        return response()->json(['message' => 'Espacio eliminado correctamente'], 200);
     }
 }
