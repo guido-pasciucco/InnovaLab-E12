@@ -9,11 +9,13 @@ use App\Models\Equipamiento;
 use App\Models\EquipoHistorial;
 use App\Models\Alerta;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Schema;
 
 class EquipamientoController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): AnonymousResourceCollection
     {
         $query = Equipamiento::query();
 
@@ -32,22 +34,26 @@ class EquipamientoController extends Controller
         if ($request->has('espacio_id')) {
             $espacioId = $request->query('espacio_id');
             $query->where(function ($q) use ($espacioId) {
-                $q->where('espacio_habitual_id', $espacioId)
-                  ->orWhere('espacio_actual_id', $espacioId);
+                $q->where('espacio_habitual_id', $espacioId);
+                if (Schema::hasColumn('equipamiento', 'espacio_actual_id')) {
+                    $q->orWhere('espacio_actual_id', $espacioId);
+                }
             });
         }
 
         if ($request->has('search')) {
             $search = $request->query('search');
             $query->where(function ($q) use ($search) {
-                $q->where('nombre', 'like', "%{$search}%")
-                  ->orWhere('numero_identificacion', 'like', "%{$search}%");
+                $q->where('nombre', 'like', "%{$search}%");
+                if (Schema::hasColumn('equipamiento', 'numero_identificacion')) {
+                    $q->orWhere('numero_identificacion', 'like', "%{$search}%");
+                }
             });
         }
 
-        $equipamientos = $query->with(['espacioHabitual', 'espacioActual'])->get();
+        $equipamientos = $query->with(['espacioHabitual'])->get();
 
-        return response()->json(EquipamientoResource::collection($equipamientos));
+        return EquipamientoResource::collection($equipamientos);
     }
 
     public function store(EquipamientoRequest $request): JsonResponse
@@ -60,14 +66,14 @@ class EquipamientoController extends Controller
 
         $equipamiento = Equipamiento::create($data);
 
-        return (new EquipamientoResource($equipamiento->load(['espacioHabitual', 'espacioActual'])))
+        return (new EquipamientoResource($equipamiento->load(['espacioHabitual'])))
             ->response()
             ->setStatusCode(201);
     }
 
     public function show(Equipamiento $equipamiento): JsonResponse
     {
-        $equipamiento->load(['espacioHabitual', 'espacioActual', 'historial']);
+        $equipamiento->load(['espacioHabitual', 'historial']);
         return response()->json(new EquipamientoResource($equipamiento));
     }
 
@@ -83,8 +89,8 @@ class EquipamientoController extends Controller
             EquipoHistorial::create([
                 'equipamiento_id' => $equipamiento->id,
                 'estado'          => $nuevoEstado,
-                'espacio_id'      => $equipamiento->espacio_actual_id,
-                'ubicacion_texto' => $equipamiento->espacioActual?->nombre ?? 'Sin espacio asignado',
+                'espacio_id'      => $equipamiento->espacio_actual_id ?? $equipamiento->espacio_habitual_id,
+                'ubicacion_texto' => $equipamiento->espacioHabitual?->nombre ?? 'Sin espacio asignado',
                 'fecha_inicio'    => now(),
                 'motivo'          => $request->input('motivo', 'Cambio de estado desde API'),
             ]);
@@ -112,7 +118,7 @@ class EquipamientoController extends Controller
             }
         }
 
-        return response()->json(new EquipamientoResource($equipamiento->load(['espacioHabitual', 'espacioActual'])));
+        return response()->json(new EquipamientoResource($equipamiento->load(['espacioHabitual'])));
     }
 
     public function destroy(Equipamiento $equipamiento): JsonResponse
