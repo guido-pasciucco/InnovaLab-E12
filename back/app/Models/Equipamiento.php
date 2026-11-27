@@ -12,9 +12,9 @@ class Equipamiento extends Model
 
     protected $fillable = [
         'nombre',
+        'numero_identificacion',
         'categoria',
         'tipo_movilidad',
-        'cantidad',
         'espacio_habitual_id',
         'espacio_actual_id',
         'estado',
