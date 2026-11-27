@@ -20,11 +20,11 @@ export default function RecursoCard({ recurso }) {
     switch (estado?.toLowerCase()) {
       case "disponible":
         return "success";
-      case "en uso":
-        return "primary";
-      case "fuera de servicio":
+      // case "en uso":
+      //   return "primary";
+      case "fuera_de_servicio":
         return "danger";
-      case "en mantenimiento":
+      case "mantenimiento":
         return "warning";
       default:
         return "secondary";
@@ -58,8 +58,8 @@ export default function RecursoCard({ recurso }) {
 
         <Row className="g-3">
           <Col xs={6}>
-            <small className="text-muted">Cantidad</small>
-            <p className="fw-semibold mb-0">{recurso.cantidad}</p>
+            <small className="text-muted">Nro.de Identificación</small>
+            <p className="fw-semibold mb-0">{recurso.numero_identificacion}</p>
           </Col>
 
           <Col xs={6}>
