@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Alerta extends Model
 {
-    protected $table = 'alerta';
+    protected  = 'alerta';
 
-    protected $fillable = [
+    protected  = [
         'tipo',
         'referencia_tipo',
         'referencia_id',
@@ -21,18 +21,26 @@ class Alerta extends Model
         'mensaje',
     ];
 
-    protected $casts = [
+    protected  = [
         'fecha' => 'datetime',
         'fecha_resolucion' => 'datetime',
     ];
 
     public function espacio(): BelongsTo
     {
-        return $this->belongsTo(Espacio::class, 'espacio_id');
+        return ->belongsTo(Espacio::class, 'espacio_id')->withDefault(function () {
+            if (->referencia_tipo === 'espacio' && ->referencia_id) {
+                return Espacio::find(->referencia_id);
+            }
+        });
     }
 
     public function equipamiento(): BelongsTo
     {
-        return $this->belongsTo(Equipamiento::class, 'equipamiento_id');
+        return ->belongsTo(Equipamiento::class, 'equipamiento_id')->withDefault(function () {
+            if (->referencia_tipo === 'equipamiento' && ->referencia_id) {
+                return Equipamiento::find(->referencia_id);
+            }
+        });
     }
 }
