@@ -9,11 +9,12 @@ use App\Models\Espacio;
 use App\Models\EspacioHistorial;
 use App\Models\Alerta;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 
 class EspacioController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): AnonymousResourceCollection
     {
         $query = Espacio::query();
 
@@ -35,7 +36,7 @@ class EspacioController extends Controller
 
         $espacios = $query->with(['equipamientosHabituales'])->get();
 
-        return response()->json(EspacioResource::collection($espacios));
+        return EspacioResource::collection($espacios);
     }
 
     public function store(EspacioRequest $request): JsonResponse
