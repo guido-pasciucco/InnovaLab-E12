@@ -7,13 +7,13 @@ use App\Http\Requests\EspacioRequest;
 use App\Http\Resources\EspacioResource;
 use App\Models\Espacio;
 use App\Models\EspacioHistorial;
+use App\Models\Alerta;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 
 class EspacioController extends Controller
 {
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
         $query = Espacio::query();
 
@@ -35,33 +35,38 @@ class EspacioController extends Controller
 
         $espacios = $query->with(['equipamientosHabituales'])->get();
 
-        return EspacioResource::collection($espacios);
+        return response()->json(EspacioResource::collection($espacios));
     }
 
     public function store(EspacioRequest $request): JsonResponse
     {
         $espacio = Espacio::create($request->validated());
 
+        EspacioHistorial::create([
+            'espacio_id'   => $espacio->id,
+            'estado'       => $espacio->estado,
+            'fecha_inicio' => now(),
+            'motivo'       => 'Alta inicial del espacio',
+        ]);
+
         return (new EspacioResource($espacio))
             ->response()
             ->setStatusCode(201);
     }
 
-    public function show(Espacio $espacio): EspacioResource
+    public function show(Espacio $espacio): JsonResponse
     {
         $espacio->load(['equipamientosHabituales', 'historial']);
-
-        return new EspacioResource($espacio);
+        return response()->json(new EspacioResource($espacio));
     }
 
-    public function update(EspacioRequest $request, Espacio $espacio): EspacioResource
+    public function update(EspacioRequest $request, Espacio $espacio): JsonResponse
     {
         $estadoAnterior = $espacio->estado;
         $espacio->update($request->validated());
         $nuevoEstado = $espacio->estado;
 
         if ($request->has('estado') && $nuevoEstado !== $estadoAnterior) {
-            // 1. Historial del espacio
             EspacioHistorial::create([
                 'espacio_id'   => $espacio->id,
                 'estado'       => $nuevoEstado,
@@ -69,34 +74,38 @@ class EspacioController extends Controller
                 'motivo'       => $request->input('motivo', 'Cambio de estado desde API'),
             ]);
 
-            // 2. Si pasa a DISPONIBLE -> Cerrar automáticamente alertas activas del espacio
             if ($nuevoEstado === 'disponible') {
-                Alerta::where('espacio_id', $espacio->id)
-                    ->where('estado', 'activa')
+                Alerta::where('referencia_tipo', 'espacio')
+                    ->where('referencia_id', $espacio->id)
+                    ->whereIn('estado', ['activa', 'pendiente'])
                     ->update([
-                        'estado'     => 'resuelta',
-                        'updated_at' => now(),
+                        'estado'           => 'resuelta',
+                        'fecha_resolucion' => now(),
+                        'updated_at'       => now(),
                     ]);
             }
 
-            // 3. Si pasa a MANTENIMIENTO o FUERA DE SERVICIO -> Crear alerta de incidencia
             if (in_array($nuevoEstado, ['mantenimiento', 'fuera_de_servicio'])) {
                 Alerta::create([
-                    'espacio_id' => $espacio->id,
-                    'tipo'       => 'incidencia',
-                    'mensaje'    => "El espacio '{$espacio->nombre}' cambió su estado a '{$nuevoEstado}'.",
-                    'estado'     => 'activa',
+                    'tipo'            => 'incidencia',
+                    'referencia_tipo' => 'espacio',
+                    'referencia_id'   => $espacio->id,
+                    'mensaje'         => "El espacio '{$espacio->nombre}' cambió su estado a '{$nuevoEstado}'.",
+                    'estado'          => 'activa',
+                    'fecha'           => now(),
                 ]);
             }
         }
 
-        return new EspacioResource($espacio);
+        return response()->json(new EspacioResource($espacio));
     }
 
     public function destroy(Espacio $espacio): JsonResponse
     {
         $espacio->delete();
 
-        return response()->json(['message' => 'Espacio eliminado correctamente'], 200);
+        return response()->json([
+            'message' => 'Espacio eliminado correctamente',
+        ]);
     }
 }

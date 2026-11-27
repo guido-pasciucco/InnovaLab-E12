@@ -12,9 +12,9 @@ class EquipamientoResource extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
+            'numero_identificacion' => $this->numero_identificacion,
             'categoria' => $this->categoria,
             'tipo_movilidad' => $this->tipo_movilidad,
-            'cantidad' => $this->cantidad,
             'estado' => $this->estado,
             'espacio_habitual_id' => $this->espacio_habitual_id,
             'espacio_habitual' => new EspacioResource($this->whenLoaded('espacioHabitual')),
