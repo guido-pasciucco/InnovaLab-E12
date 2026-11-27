@@ -35,9 +35,7 @@ class EspacioController extends Controller
 
         $espacios = $query->with(['equipamientosHabituales'])->get();
 
-        return response()->json([
-            'data' => EspacioResource::collection($espacios)
-        ]);
+        return response()->json(EspacioResource::collection($espacios));
     }
 
     public function store(EspacioRequest $request): JsonResponse
@@ -51,19 +49,15 @@ class EspacioController extends Controller
             'motivo'       => 'Alta inicial del espacio',
         ]);
 
-        return response()->json([
-            'message' => 'Espacio creado correctamente',
-            'data' => new EspacioResource($espacio)
-        ], 201);
+        return (new EspacioResource($espacio))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show(Espacio $espacio): JsonResponse
     {
         $espacio->load(['equipamientosHabituales', 'historial']);
-
-        return response()->json([
-            'data' => new EspacioResource($espacio)
-        ]);
+        return response()->json(new EspacioResource($espacio));
     }
 
     public function update(EspacioRequest $request, Espacio $espacio): JsonResponse
@@ -81,19 +75,14 @@ class EspacioController extends Controller
             ]);
 
             if ($nuevoEstado === 'disponible') {
-                Alerta::where(function($q) use ($espacio) {
-                    $q->where('espacio_id', $espacio->id)
-                      ->orWhere(function($q2) use ($espacio) {
-                          $q2->where('referencia_tipo', 'espacio')
-                             ->where('referencia_id', $espacio->id);
-                      });
-                })
-                ->whereIn('estado', ['activa', 'pendiente'])
-                ->update([
-                    'estado'           => 'resuelta',
-                    'fecha_resolucion' => now(),
-                    'updated_at'       => now(),
-                ]);
+                Alerta::where('referencia_tipo', 'espacio')
+                    ->where('referencia_id', $espacio->id)
+                    ->whereIn('estado', ['activa', 'pendiente'])
+                    ->update([
+                        'estado'           => 'resuelta',
+                        'fecha_resolucion' => now(),
+                        'updated_at'       => now(),
+                    ]);
             }
 
             if (in_array($nuevoEstado, ['mantenimiento', 'fuera_de_servicio'])) {
@@ -101,7 +90,6 @@ class EspacioController extends Controller
                     'tipo'            => 'incidencia',
                     'referencia_tipo' => 'espacio',
                     'referencia_id'   => $espacio->id,
-                    'espacio_id'      => $espacio->id,
                     'mensaje'         => "El espacio '{$espacio->nombre}' cambió su estado a '{$nuevoEstado}'.",
                     'estado'          => 'activa',
                     'fecha'           => now(),
@@ -109,10 +97,7 @@ class EspacioController extends Controller
             }
         }
 
-        return response()->json([
-            'message' => 'Espacio actualizado correctamente',
-            'data' => new EspacioResource($espacio)
-        ]);
+        return response()->json(new EspacioResource($espacio));
     }
 
     public function destroy(Espacio $espacio): JsonResponse
