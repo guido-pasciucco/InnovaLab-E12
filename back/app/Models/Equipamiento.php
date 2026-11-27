@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Equipamiento extends Model
 {
-    protected  = 'equipamiento';
+    protected $table = 'equipamiento';
 
-    protected  = [
+    protected $fillable = [
         'nombre',
         'categoria',
         'tipo_movilidad',
@@ -22,23 +22,23 @@ class Equipamiento extends Model
 
     public function espacioHabitual(): BelongsTo
     {
-        return ->belongsTo(Espacio::class, 'espacio_habitual_id');
+        return $this->belongsTo(Espacio::class, 'espacio_habitual_id');
     }
 
     public function espacioActual(): BelongsTo
     {
-        return ->belongsTo(Espacio::class, 'espacio_actual_id')->withDefault(function () {
-            return ->espacioHabitual;
+        return $this->belongsTo(Espacio::class, 'espacio_actual_id')->withDefault(function () {
+            return $this->espacioHabitual;
         });
     }
 
     public function reservas(): HasMany
     {
-        return ->hasMany(ReservaEquipamiento::class, 'equipamiento_id');
+        return $this->hasMany(ReservaEquipamiento::class, 'equipamiento_id');
     }
 
     public function historial(): HasMany
     {
-        return ->hasMany(EquipoHistorial::class, 'equipamiento_id');
+        return $this->hasMany(EquipoHistorial::class, 'equipamiento_id');
     }
 }

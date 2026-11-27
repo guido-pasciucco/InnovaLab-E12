@@ -13,99 +13,114 @@ use Illuminate\Http\JsonResponse;
 
 class EspacioController extends Controller
 {
-    public function index(Request ): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-         = Espacio::query();
+        $query = Espacio::query();
 
-        if (->has('estado')) {
-            ->where('estado', ->query('estado'));
+        if ($request->has('estado')) {
+            $query->where('estado', $request->query('estado'));
         }
 
-        if (->has('tipo')) {
-            ->where('tipo', ->query('tipo'));
+        if ($request->has('tipo')) {
+            $query->where('tipo', $request->query('tipo'));
         }
 
-        if (->has('search')) {
-             = ->query('search');
-            ->where(function () use () {
-                ->where('nombre', 'like', "%{}%")
-                  ->orWhere('ubicacion', 'like', "%{}%");
+        if ($request->has('search')) {
+            $search = $request->query('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                  ->orWhere('ubicacion', 'like', "%{$search}%");
             });
         }
 
-         = ->with(['equipamientosHabituales'])->get();
+        $espacios = $query->with(['equipamientosHabituales'])->get();
 
-        return response()->json(EspacioResource::collection());
+        return response()->json([
+            'data' => EspacioResource::collection($espacios)
+        ]);
     }
 
-    public function store(EspacioRequest ): JsonResponse
+    public function store(EspacioRequest $request): JsonResponse
     {
-         = Espacio::create(->validated());
+        $espacio = Espacio::create($request->validated());
 
         EspacioHistorial::create([
-            'espacio_id'   => ->id,
-            'estado'       => ->estado,
+            'espacio_id'   => $espacio->id,
+            'estado'       => $espacio->estado,
             'fecha_inicio' => now(),
             'motivo'       => 'Alta inicial del espacio',
         ]);
 
-        return (new EspacioResource())
-            ->response()
-            ->setStatusCode(201);
+        return response()->json([
+            'message' => 'Espacio creado correctamente',
+            'data' => new EspacioResource($espacio)
+        ], 201);
     }
 
-    public function show(Espacio ): JsonResponse
+    public function show(Espacio $espacio): JsonResponse
     {
-        ->load(['equipamientosHabituales', 'historial']);
-        return response()->json(new EspacioResource());
+        $espacio->load(['equipamientosHabituales', 'historial']);
+
+        return response()->json([
+            'data' => new EspacioResource($espacio)
+        ]);
     }
 
-    public function update(EspacioRequest , Espacio ): JsonResponse
+    public function update(EspacioRequest $request, Espacio $espacio): JsonResponse
     {
-         = ->estado;
-        ->update(->validated());
-         = ->estado;
+        $estadoAnterior = $espacio->estado;
+        $espacio->update($request->validated());
+        $nuevoEstado = $espacio->estado;
 
-        if (->has('estado') &&  !== ) {
+        if ($request->has('estado') && $nuevoEstado !== $estadoAnterior) {
             EspacioHistorial::create([
-                'espacio_id'   => ->id,
-                'estado'       => ,
+                'espacio_id'   => $espacio->id,
+                'estado'       => $nuevoEstado,
                 'fecha_inicio' => now(),
-                'motivo'       => ->input('motivo', 'Cambio de estado desde API'),
+                'motivo'       => $request->input('motivo', 'Cambio de estado desde API'),
             ]);
 
-            if ( === 'disponible') {
-                Alerta::where(function () use () {
-                    ->where('espacio_id', ->id)
-                      ->orWhere(function () use () {
-                          ->where('referencia_tipo', 'espacio')
-                             ->where('referencia_id', ->id);
+            if ($nuevoEstado === 'disponible') {
+                Alerta::where(function($q) use ($espacio) {
+                    $q->where('espacio_id', $espacio->id)
+                      ->orWhere(function($q2) use ($espacio) {
+                          $q2->where('referencia_tipo', 'espacio')
+                             ->where('referencia_id', $espacio->id);
                       });
-                })->where('estado', 'activa')->update([
-                    'estado'     => 'resuelta',
-                    'updated_at' => now(),
+                })
+                ->whereIn('estado', ['activa', 'pendiente'])
+                ->update([
+                    'estado'           => 'resuelta',
+                    'fecha_resolucion' => now(),
+                    'updated_at'       => now(),
                 ]);
             }
 
-            if (in_array(, ['mantenimiento', 'fuera_de_servicio'])) {
+            if (in_array($nuevoEstado, ['mantenimiento', 'fuera_de_servicio'])) {
                 Alerta::create([
                     'tipo'            => 'incidencia',
                     'referencia_tipo' => 'espacio',
-                    'referencia_id'   => ->id,
-                    'mensaje'         => "El espacio '{->nombre}' cambió su estado a '{}'.",
+                    'referencia_id'   => $espacio->id,
+                    'espacio_id'      => $espacio->id,
+                    'mensaje'         => "El espacio '{$espacio->nombre}' cambió su estado a '{$nuevoEstado}'.",
                     'estado'          => 'activa',
                     'fecha'           => now(),
                 ]);
             }
         }
 
-        return response()->json(new EspacioResource());
+        return response()->json([
+            'message' => 'Espacio actualizado correctamente',
+            'data' => new EspacioResource($espacio)
+        ]);
     }
 
-    public function destroy(Espacio ): JsonResponse
+    public function destroy(Espacio $espacio): JsonResponse
     {
-        ->delete();
+        $espacio->delete();
 
-        return response()->json(['message' => 'Espacio eliminado correctamente'], 200);
+        return response()->json([
+            'message' => 'Espacio eliminado correctamente',
+        ]);
     }
 }

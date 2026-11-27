@@ -7,19 +7,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class EspacioResource extends JsonResource
 {
-    public function toArray(Request ): array
+    public function toArray(Request $request): array
     {
         return [
-            'id' => ->id,
-            'nombre' => ->nombre,
-            'tipo' => ->tipo,
-            'capacidad' => ->capacidad,
-            'ubicacion' => ->ubicacion,
-            'estado' => ->estado,
-            'equipamientos_habituales' => EquipamientoResource::collection(->whenLoaded('equipamientosHabituales')),
-            'historial' => ->whenLoaded('historial'),
-            'created_at' => ->created_at?->toIso8601String(),
-            'updated_at' => ->updated_at?->toIso8601String(),
+            'id' => $this->id,
+            'nombre' => $this->nombre,
+            'tipo' => $this->tipo,
+            'capacidad' => $this->capacidad,
+            'ubicacion' => $this->ubicacion,
+            'estado' => $this->estado,
+            'equipamientos_habituales' => EquipamientoResource::collection($this->whenLoaded('equipamientosHabituales')),
+            'historial' => $this->whenLoaded('historial'),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

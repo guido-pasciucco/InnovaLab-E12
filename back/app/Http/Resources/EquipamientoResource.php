@@ -7,22 +7,20 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class EquipamientoResource extends JsonResource
 {
-    public function toArray(Request ): array
+    public function toArray(Request $request): array
     {
         return [
-            'id' => ->id,
-            'nombre' => ->nombre,
-            'categoria' => ->categoria,
-            'tipo_movilidad' => ->tipo_movilidad,
-            'cantidad' => ->cantidad,
-            'estado' => ->estado,
-            'espacio_habitual_id' => ->espacio_habitual_id,
-            'espacio_habitual' => new EspacioResource(->whenLoaded('espacioHabitual')),
-            'espacio_actual_id' => ->espacio_actual_id ?? ->espacio_habitual_id,
-            'espacio_actual' => new EspacioResource(->whenLoaded('espacioActual')),
-            'historial' => ->whenLoaded('historial'),
-            'created_at' => ->created_at?->toIso8601String(),
-            'updated_at' => ->updated_at?->toIso8601String(),
+            'id' => $this->id,
+            'nombre' => $this->nombre,
+            'categoria' => $this->categoria,
+            'tipo_movilidad' => $this->tipo_movilidad,
+            'cantidad' => $this->cantidad,
+            'estado' => $this->estado,
+            'espacio_habitual_id' => $this->espacio_habitual_id,
+            'espacio_habitual' => new EspacioResource($this->whenLoaded('espacioHabitual')),
+            'historial' => $this->whenLoaded('historial'),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }
