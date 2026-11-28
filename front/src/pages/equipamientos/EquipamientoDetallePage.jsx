@@ -14,12 +14,28 @@ export default function EquipamientoDetallePage() {
   const { getTokken } = useContext(AuthContext)
 
   const { id } = useParams()
+  
+  const extraerObjeto = (res) => {
+    const payload = res?.data?.data ?? res?.data ?? res
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      return null
+    }
+    return payload
+  }
+
   const getApiDetalle = async () => {
-    console.log(id)
-    const res = await getEquipamientoApiId(getTokken(), id)
-    console.log(res.data.data)
-    setLoadign(false)
-    setDataApi(res.data.data)
+    try {
+      console.log(id)
+      const res = await getEquipamientoApiId(getTokken(), id)
+      const detalle = extraerObjeto(res)
+      console.log('Detalle:', detalle)
+      setDataApi(detalle)
+    } catch (err) {
+      console.log('Error al cargar detalle:', err)
+      setDataApi(null)
+    } finally {
+      setLoadign(false)
+    }
   }
 
   useEffect(() => {
@@ -33,7 +49,7 @@ export default function EquipamientoDetallePage() {
         description="pagina con detalle del equipamiento elegido"
       />
       <Container>
-        <ButtonVolver link_volver={'/dashboard/equipamiento'}/>
+        <ButtonVolver link_volver={'/dashboard/equipamiento'} />
         <h1 className="h1">Equipamiento Detalle</h1>
         <RecursoCard recurso={dataApi} />
 

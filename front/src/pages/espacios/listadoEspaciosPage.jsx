@@ -49,12 +49,24 @@ export default function ListadoEspaciosPage() {
     return coincideEstado && coincideNombre
   })
 
+  const extraerLista = (res) => {
+    const payload = res?.data?.data ?? res?.data ?? res
+    return Array.isArray(payload) ? payload : []
+  }
+
   const getData = async () => {
-    setShowSpinner(true)
-    const res = await getEspaciosApi(getTokken())
-    console.log(res.data.data)
-    setDatosAPI(res.data.data)
-    setShowSpinner(false)
+    try {
+      setShowSpinner(true)
+      const res = await getEspaciosApi(getTokken())
+      const espacios = extraerLista(res)
+      console.log(espacios)
+      setDatosAPI(espacios)
+    } catch (err) {
+      console.log('Error al cargar datos:', err)
+      setDatosAPI([])
+    } finally {
+      setShowSpinner(false)
+    }
   }
 
   useEffect(() => {
@@ -205,11 +217,11 @@ export default function ListadoEspaciosPage() {
                 text="Estado"
                 opciones={[
                   'Disponible',
-                  'En uso',
-                  'Confirmado',
-                  'Borrador',
+                  // 'En uso',
+                  // 'Confirmado',
+                  // 'Borrador',
                   'Fuera de servicio',
-                  'mantenimiento',
+                  'Mantenimiento',
                 ]}
                 onChange={(e) => setTerminoBusquedaEstado(e.target.value)}
               />

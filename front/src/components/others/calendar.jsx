@@ -36,23 +36,42 @@ export default function Calendario({ eventos, onRefrescarEventos }) {
   const nombresDeSalas = eventos.map((ev) => ev.espacio?.nombre || 'Sala sin nombre');
 
   const obtenerEstilosPorEstado = (estado) => {
-    const normalizado = String(estado || '').toLowerCase();
+    const normalizado = String(estado || '').toLowerCase().trim();
 
+    // Suspendidas o canceladas
     if (normalizado === 'suspendida' || normalizado === 'cancelada') {
       return {
-        backgroundColor: '#ffc107',
-        borderColor: '#ffc107',
-        textColor: '#212529',
+        backgroundColor: '#dc3545',
+        borderColor: '#dc3545',
+        textColor: '#ffffff',
       };
     }
 
+    // Finalizadas
+    if (normalizado === 'finalizada') {
+      return {
+        backgroundColor: '#6c757d',
+        borderColor: '#6c757d',
+        textColor: '#ffffff',
+      };
+    }
+
+    // En curso
+    if (normalizado === 'en curso' || normalizado === 'en_curso') {
+      return {
+        backgroundColor: '#198754',
+        borderColor: '#198754',
+        textColor: '#ffffff',
+      };
+    }
+
+    // Programadas (y estado predeterminado)
     return {
-      backgroundColor: '#6c757d',
-      borderColor: '#6c757d',
+      backgroundColor: '#0d6efd',
+      borderColor: '#0d6efd',
       textColor: '#ffffff',
     };
   };
-
   const eventosFormatados = eventos.map((ev, index) => {
     const colores = obtenerEstilosPorEstado(ev.estado);
 

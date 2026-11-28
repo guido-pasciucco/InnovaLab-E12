@@ -50,42 +50,55 @@ export default function ListadoEquipamientoPage() {
     const estadoFormateadoSelect = terminoBusquedaEstado
       .toLowerCase()
       .trim()
-      .replace(/ /g, '_')
+      .replace(/ /g, '_');
 
     const coincideEstado =
       terminoBusquedaEstado === ''
         ? true
-        : item.estado?.toLowerCase().trim() === estadoFormateadoSelect
+        : item.estado?.toLowerCase().trim() === estadoFormateadoSelect;
 
     const coincideMovilidad =
       terminoBusquedaMovilidad === ''
         ? true
         : item.tipo_movilidad?.toLowerCase().trim() ===
-        terminoBusquedaMovilidad.toLowerCase().trim()
+        terminoBusquedaMovilidad.toLowerCase().trim();
 
-    return coincideNombre && coincideEstado && coincideMovilidad
+    return coincideNombre && coincideEstado && coincideMovilidad;
   })
+
+  const extraerLista = (res) => {
+    const payload = res?.data?.data ?? res?.data ?? res;
+    return Array.isArray(payload) ? payload : [];
+  }
 
   const getData = async () => {
     try {
       setShowSpinner(true)
-      const res = await getEquipamientoApi(getTokken())
-      const res2 = await getEspaciosApi(getTokken())
-      setDatosAPI(res.data.data)
-      setEspaciosApi(res2.data.data)
-      console.log('Equipos: ', datosAPI)
+      const [resEquipamiento, espaciosRes] = await Promise.all([
+        getEquipamientoApi(getTokken()),
+        getEspaciosApi(getTokken()),
+      ])
+
+      const equipos = extraerLista(resEquipamiento);
+      const espacios = extraerLista(espaciosRes);
+
+      setDatosAPI(equipos);
+      setEspaciosApi(espacios);
+      console.log('Equipos: ', equipos);
     } catch (err) {
-      console.log('Error al cargar datos:', err)
+      console.log('Error al cargar datos:', err);
+      setDatosAPI([]);
+      setEspaciosApi([]);
     } finally {
-      setShowSpinner(false)
+      setShowSpinner(false);
     }
   }
 
-  const { getTypeAndToken } = useContext(AuthContext)
-  const { token_type, access_token } = getTypeAndToken()
+  const { getTypeAndToken } = useContext(AuthContext);
+  const { token_type, access_token } = getTypeAndToken();
 
   useEffect(() => {
-    getData()
+    getData();
   }, [])
 
   const handleClose = () => setShow(false)
@@ -110,7 +123,7 @@ export default function ListadoEquipamientoPage() {
     nombre: '',
     categoria: '',
     tipo_movilidad: '',
-    cantidad: '',
+    numero_identificacion: '',
     espacio_habitual_id: '',
     espacio_actual_id: '',
     estado: '',
@@ -169,7 +182,10 @@ export default function ListadoEquipamientoPage() {
         nombre: formData.nombre,
         categoria: formData.categoria,
         tipo_movilidad: formData.tipo_movilidad,
-        cantidad: formData.cantidad === '' ? null : Number(formData.cantidad),
+        numero_identificacion:
+          formData.numero_identificacion?.trim() === ''
+            ? null
+            : String(formData.numero_identificacion).trim(),
         estado: formData.estado,
         espacio_habitual_id: formData.espacio_habitual_id,
         espacio_actual_id: formData.espacio_actual_id,
@@ -193,7 +209,7 @@ export default function ListadoEquipamientoPage() {
       nombre: data.nombre ?? '',
       categoria: data.categoria ?? '',
       tipo_movilidad: data.tipo_movilidad ?? '',
-      cantidad: data.cantidad ?? '',
+      numero_identificacion: data.numero_identificacion ?? '',
       estado: data.estado ?? '',
       espacio_habitual_id: data.espacio_habitual_id ?? '',
       espacio_actual_id: data.espacio_actual_id ?? '',
@@ -283,7 +299,7 @@ export default function ListadoEquipamientoPage() {
                 <th>Nombre</th>
                 <th>Categoría</th>
                 <th>Movilidad</th>
-                <th>Cantidad</th>
+                <th>Nro.de Identificación</th>
                 <th>Espacio</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -305,7 +321,7 @@ export default function ListadoEquipamientoPage() {
                     <td>{sim.nombre}</td>
                     <td>{sim.categoria}</td>
                     <td>{sim.tipo_movilidad}</td>
-                    <td>{sim.cantidad}</td>
+                    <td>{sim.numero_identificacion}</td>
                     <td>{sim.espacio_habitual_id}</td>
                     <td
                       style={{
@@ -390,11 +406,11 @@ export default function ListadoEquipamientoPage() {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Cantidad</Form.Label>
+              <Form.Label>Nro.de Identificación</Form.Label>
               <Form.Control
-                type="number"
-                name="cantidad"
-                value={formData.cantidad ?? ''}
+                type="text"
+                name="numero_identificacion"
+                value={formData.numero_identificacion ?? ''}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -507,12 +523,12 @@ export default function ListadoEquipamientoPage() {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="editCantidad">
-              <Form.Label>Cantidad</Form.Label>
+            <Form.Group className="mb-3" controlId="editNumero_identificacion">
+              <Form.Label>Nro.de Identificación</Form.Label>
               <Form.Control
-                type="number"
-                name="cantidad"
-                value={formData.cantidad ?? ''}
+                type="text"
+                name="numero_identificacion"
+                value={formData.numero_identificacion ?? ''}
                 onChange={handleChange}
               />
             </Form.Group>

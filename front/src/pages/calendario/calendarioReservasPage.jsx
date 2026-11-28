@@ -2,10 +2,9 @@ import Calendario from '../../components/others/calendar'
 import GenericSelect from '../../components/others/select'
 import { Link } from 'react-router-dom'
 import { useEffect, useState, useContext } from 'react'
-import { getReservas } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext.jsx'
 import { Spinner } from 'react-bootstrap'
-import { getEspaciosApi, getActividades } from '../../services/apiRoutes'
+import { getEspaciosApi, getActividades, getReservas } from '../../services/apiRoutes'
 import { PlusCircle } from 'react-bootstrap-icons'
 import PageHelmet from '../../helmet/PageHelmet.jsx'
 import AlertInfo from '../../components/alerts/AlertInfo.jsx'
@@ -35,6 +34,10 @@ export default function CalendarioReservasPage() {
   // Resultado armado dinámicamente:
   const textoSemana = `Semana del ${diaInicial} al ${diaFinal} de ${nombreDelMes}`
 
+  const extraerLista = (res) => {
+    const payload = res?.data?.data ?? res?.data ?? res;
+    return Array.isArray(payload) ? payload : [];
+  }
   const getData = async () => {
     try {
       setShowSpinner(true)
@@ -43,9 +46,14 @@ export default function CalendarioReservasPage() {
         getReservas(getTokken()),
         getActividades(getTokken()),
       ])
-      setReservas(reservasRes.data.data)
-      setEspaciosApi(espaciosRes.data.data)
-      setActividades(actividadesRes.data.data)
+      const reservas = extraerLista(reservasRes);
+      const espacios = extraerLista(espaciosRes);
+      const actividades = extraerLista(actividadesRes);
+
+      setReservas(reservas)
+      setEspaciosApi(espacios)
+      setActividades(actividades)
+      
     } catch (err) {
       console.log('Error al cargar datos:', err)
     } finally {
@@ -79,7 +87,7 @@ export default function CalendarioReservasPage() {
           <button className="btn btn-secondary">Hoy</button>
           <Link to="/dashboard/nueva-reserva" className="btn btn-primary">
             <PlusCircle className="mb-1 me-1" />
-            Nueva reserva
+            Nueva reserva / Actividad
           </Link>
         </div>
       </div>
@@ -99,8 +107,10 @@ export default function CalendarioReservasPage() {
           Alerta de superposición
         </div> */}
         <div className="d-flex flex-row gap-2">
-          <span className="bg-secondary p-1 rounded-3 shadow-sm">Confirmada</span>
-          <span className="bg-warning p-1 rounded-3 shadow-sm">Suspendida</span>
+          <span className="bg-primary p-1 rounded-3 shadow-sm text-white">Programada</span>
+          <span className="bg-success p-1 rounded-3 shadow-sm text-white">En curso</span>
+          <span className="bg-secondary p-1 rounded-3 shadow-sm text-white">Finalizada</span>
+          <span className="bg-danger p-1 rounded-3 shadow-sm text-white">Cancelada</span>
           {/* <span className="bg-warning p-1 rounded-3 shadow-sm">Pendiente</span>
           <span className="bg-warning p-1 rounded-3 shadow-sm">
             Mantenimiento
