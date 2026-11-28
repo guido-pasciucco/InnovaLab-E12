@@ -3,8 +3,8 @@ import { AuthContext } from '../../context/AuthContext'
 import { getActividades } from '../../services/apiRoutes'
 import TablaGeneral from '../../components/tables/TablaGeneral'
 import { Container } from 'react-bootstrap'
-import AgregarItemButton from '../../components/butons/AgregarItemButton'
-import { postActividades } from '../../services/apiRoutes'
+import { Link } from 'react-router-dom'
+import { PlusCircle } from 'react-bootstrap-icons'
 import Helmet from '../../helmet/PageHelmet'
 import AlertInfo from '../../components/alerts/AlertInfo'
 
@@ -81,8 +81,17 @@ export default function ActividadesPage() {
         description="En esta sección podés consultar un resumen de las actividades programadas, visualizar sus fechas, horarios, espacios asignados y estado, para realizar un seguimiento de la planificación."
       />
       <Container>
-        <h1 className="h1 mb-4">Actividades</h1>
-
+        <div className="d-flex flex-row justify-content-between align-items-center">
+          <div className="d-flex flex-column justify-content-center">
+            <h1 className="text-start h1 mb-4">Actividades</h1>
+          </div>
+          <div className="d-flex flex-row gap-2">
+            <Link to="/dashboard/nueva-actividad" className="btn btn-primary">
+              <PlusCircle className="mb-1 me-1" />
+              Nueva actividad
+            </Link>
+          </div>
+        </div>
         <TablaGeneral datos={data} showSpinner={showSpinner} />
       </Container>
     </>

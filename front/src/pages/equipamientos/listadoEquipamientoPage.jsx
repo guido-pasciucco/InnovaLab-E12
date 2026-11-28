@@ -74,13 +74,13 @@ export default function ListadoEquipamientoPage() {
   const getData = async () => {
     try {
       setShowSpinner(true)
-      const [resEquipamiento, resEspacios] = await Promise.all([
+      const [resEquipamiento, espaciosRes] = await Promise.all([
         getEquipamientoApi(getTokken()),
         getEspaciosApi(getTokken()),
       ])
 
       const equipos = extraerLista(resEquipamiento);
-      const espacios = extraerLista(resEspacios);
+      const espacios = extraerLista(espaciosRes);
 
       setDatosAPI(equipos);
       setEspaciosApi(espacios);
