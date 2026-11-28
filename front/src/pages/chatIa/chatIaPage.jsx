@@ -12,6 +12,12 @@ import { BsSendFill } from 'react-icons/bs'
 import PageHelmet from '../../helmet/PageHelmet'
 import AlertInfo from '../../components/alerts/AlertInfo'
 
+const preguntasFrecuentes = [
+  '¿Qué salas están libres hoy?',
+  '¿Qué equipamiento está en mantenimiento?',
+  'Resumen del estado operativo',
+]
+
 export default function ChatIaPage() {
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(false)
@@ -46,11 +52,11 @@ export default function ChatIaPage() {
   }
 
   // Consultar API
-  const recibirMensajeApi = async () => {
+  const recibirMensajeApi = async (texto) => {
     try {
-      console.log('Haciendo consulta mensaje:', mensaje)
+      console.log('Haciendo consulta mensaje:', texto)
 
-      const res = await postChatIa(token, mensaje)
+      const res = await postChatIa(token, texto)
 
       console.log('Respuesta api chat ia:', res)
 
@@ -68,12 +74,10 @@ export default function ChatIaPage() {
   }
 
   // Enviar mensaje
-  const enviarMensaje = async (e) => {
-    e.preventDefault()
+  const enviarMensaje = async (texto) => {
+    const nuevoMensaje = texto.trim()
 
-    if (!mensaje.trim() || cargando) return
-
-    const nuevoMensaje = mensaje
+    if (!nuevoMensaje || cargando) return
 
     setMensajes((prev) => [
       ...prev,
@@ -84,11 +88,14 @@ export default function ChatIaPage() {
     setCargando(true)
 
     try {
-      const mensajeIa = await recibirMensajeApi()
+      const mensajeIa = await recibirMensajeApi(nuevoMensaje)
 
       setMensajes((prev) => [
         ...prev,
-        { tipo: 'ia', texto: mensajeIa || 'No se recibió una respuesta.' },
+        {
+          tipo: 'ia',
+          texto: mensajeIa || 'No se recibió una respuesta.',
+        },
       ])
 
     } catch (err) {
@@ -102,6 +109,12 @@ export default function ChatIaPage() {
     } finally {
       setCargando(false)
     }
+  }
+
+  // Enviar desde el formulario
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    enviarMensaje(mensaje)
   }
 
   return (
@@ -183,9 +196,31 @@ export default function ChatIaPage() {
           </div>
         </Card.Body>
 
-        {/* Formulario */}
+        {/* Formulario y preguntas frecuentes */}
         <Card.Footer>
-          <Form onSubmit={enviarMensaje}>
+
+          <div className="mb-3">
+            <small className="text-muted fw-semibold d-block mb-2">
+              Preguntas frecuentes
+            </small>
+
+            <div className="d-flex flex-wrap gap-2">
+              {preguntasFrecuentes.map((pregunta) => (
+                <Button
+                  key={pregunta}
+                  variant="outline-secondary"
+                  size="sm"
+                  className="rounded-pill"
+                  disabled={cargando}
+                  onClick={() => enviarMensaje(pregunta)}
+                >
+                  {pregunta}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <Form onSubmit={handleSubmit}>
             <div className="d-flex gap-2">
 
               <Form.Control
@@ -199,6 +234,7 @@ export default function ChatIaPage() {
               <Button
                 type="submit"
                 className="btn-primary"
+                disabled={cargando || !mensaje.trim()}
               >
                 <BsSendFill className="me-2" />
                 Enviar
