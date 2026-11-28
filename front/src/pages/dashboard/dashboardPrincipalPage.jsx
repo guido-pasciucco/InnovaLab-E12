@@ -251,9 +251,9 @@ export default function DashboardPrincipalPage() {
                   <div className="text-center mt-3">
                     <Spinner />
                   </div>
-                ) : (dataApi?.alertas ?? []).length > 0 ? (
+                ) : (dataApi?.alertas_recientes ?? []).length > 0 ? (
                   <TablaGeneral
-                    datos={dataApi.alertas}
+                    datos={dataApi.alertas_recientes}
                     showSpinner={false}
                   />
                 ) : (

@@ -33,6 +33,7 @@ export default function AlertasPage() {
     try {
       const res = await getAlertas(getTokken())
       setData(res.data ?? [])
+      console.log(res.data)
     } catch (error) {
       console.error('Error al cargar las alertas:', error)
       setData([])
