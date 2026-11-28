@@ -22,6 +22,7 @@ import {
   BsExclamationTriangle,
   BsExclamationCircle,
   BsTools,
+  BsInbox,
 } from 'react-icons/bs'
 
 import TablaGeneral from '../../components/tables/TablaGeneral'
@@ -49,6 +50,21 @@ const rutasKpi = {
   alertas_activas: '/dashboard/alertas',
   conflictos_pendientes: '/dashboard/calendario',
   equipos_fuera_de_servicio: '/dashboard/equipamiento',
+}
+
+// Componente para mostrar listados vacíos
+function EmptyState({ message, description }) {
+  return (
+    <div className="border rounded bg-light text-center py-4 px-3 mt-3">
+      <BsInbox size={32} className="text-secondary mb-3" />
+
+      <h6 className="fw-semibold mb-2">{message}</h6>
+
+      <p className="text-muted small mb-0">
+        {description}
+      </p>
+    </div>
+  )
 }
 
 export default function DashboardPrincipalPage() {
@@ -157,13 +173,13 @@ export default function DashboardPrincipalPage() {
               <Card.Body>
                 <h5>Recursos con mayor demanda</h5>
 
-                <Row className="g-3 mt-1">
-                  {cargando ? (
-                    <Col xs={12} className="text-center">
-                      <Spinner />
-                    </Col>
-                  ) : (
-                    (dataApi?.recursos_mayor_demanda ?? []).map((recurso) => (
+                {cargando ? (
+                  <div className="text-center mt-3">
+                    <Spinner />
+                  </div>
+                ) : (dataApi?.recursos_mayor_demanda ?? []).length > 0 ? (
+                  <Row className="g-3 mt-1">
+                    {dataApi.recursos_mayor_demanda.map((recurso) => (
                       <Col key={recurso.nombre} xs={12} sm={6}>
                         <div className="border rounded p-3 h-100 dashboard-item">
                           <div className="fw-semibold">
@@ -181,9 +197,14 @@ export default function DashboardPrincipalPage() {
                           </small>
                         </div>
                       </Col>
-                    ))
-                  )}
-                </Row>
+                    ))}
+                  </Row>
+                ) : (
+                  <EmptyState
+                    message="No hay recursos con demanda registrada."
+                    description="Los recursos con reservas aparecerán en este listado."
+                  />
+                )}
               </Card.Body>
             </Card>
           </Col>
@@ -194,11 +215,11 @@ export default function DashboardPrincipalPage() {
                 <h5>Ocupación por espacio</h5>
 
                 {cargando ? (
-                  <div className="text-center">
+                  <div className="text-center mt-3">
                     <Spinner />
                   </div>
-                ) : (
-                  (dataApi?.ocupacion_por_espacio ?? []).map((espacio) => (
+                ) : (dataApi?.ocupacion_por_espacio ?? []).length > 0 ? (
+                  dataApi.ocupacion_por_espacio.map((espacio) => (
                     <div key={espacio.id} className="mt-3 mb-4">
                       <div className="d-flex justify-content-between gap-2 mb-2">
                         <span>{espacio.nombre}</span>
@@ -208,6 +229,11 @@ export default function DashboardPrincipalPage() {
                       <ProgressBar now={espacio.porcentaje} />
                     </div>
                   ))
+                ) : (
+                  <EmptyState
+                    message="No hay datos de ocupación disponibles."
+                    description="La ocupación de los espacios aparecerá cuando haya información registrada."
+                  />
                 )}
               </Card.Body>
             </Card>
@@ -221,10 +247,21 @@ export default function DashboardPrincipalPage() {
               <Card.Body>
                 <h5>Alertas recientes</h5>
 
-                <TablaGeneral
-                  datos={dataApi?.alertas ?? []}
-                  showSpinner={cargando}
-                />
+                {cargando ? (
+                  <div className="text-center mt-3">
+                    <Spinner />
+                  </div>
+                ) : (dataApi?.alertas ?? []).length > 0 ? (
+                  <TablaGeneral
+                    datos={dataApi.alertas}
+                    showSpinner={false}
+                  />
+                ) : (
+                  <EmptyState
+                    message="No se registran alertas activas en este momento."
+                    description="Los espacios y equipos no presentan alertas pendientes."
+                  />
+                )}
               </Card.Body>
             </Card>
           </Col>
@@ -237,10 +274,21 @@ export default function DashboardPrincipalPage() {
               <Card.Body>
                 <h5>Actividades de hoy</h5>
 
-                <TablaGeneral
-                  datos={dataApi?.actividades_hoy ?? []}
-                  showSpinner={cargando}
-                />
+                {cargando ? (
+                  <div className="text-center mt-3">
+                    <Spinner />
+                  </div>
+                ) : (dataApi?.actividades_hoy ?? []).length > 0 ? (
+                  <TablaGeneral
+                    datos={dataApi.actividades_hoy}
+                    showSpinner={false}
+                  />
+                ) : (
+                  <EmptyState
+                    message="No hay actividades programadas para hoy."
+                    description="Las actividades que se programen para hoy aparecerán en este listado."
+                  />
+                )}
               </Card.Body>
             </Card>
           </Col>
