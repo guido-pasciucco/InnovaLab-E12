@@ -277,3 +277,47 @@
     margin-left: 0 !important;
   }
 }
+
+
+/* efecto hover dashboard principal */
+
+
+
+
+/* Tarjetas principales del Dashboard */
+.dashboard-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Elementos de recursos */
+.dashboard-item {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-item:hover {
+  background-color: #f1f4f6;
+  border-color: #1D3343 !important;
+}
+
+.dashboard-item:hover {
+  background-color: #ffc107;
+  border-color: #ffc107 !important;
+  transition: all 0.2s ease;
+}
+
+/* .dashboard-card {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.15);
+} */
