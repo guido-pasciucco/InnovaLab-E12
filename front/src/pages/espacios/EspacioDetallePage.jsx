@@ -19,6 +19,13 @@ export default function EspacioDetallePage() {
 
   const fechaDeHoy = new Date().toISOString().split('T')[0] // Obtener la fecha de hoy en formato YYYY-MM-DD
   const { getTokken } = useContext(AuthContext)
+  const extraerObjeto = (res) => {
+    const payload = res?.data?.data ?? res?.data ?? res
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      return null
+    }
+    return payload
+  }
 
   useEffect(() => {
     const getData = async () => {
@@ -27,7 +34,7 @@ export default function EspacioDetallePage() {
 
       try {
         const res = await getEspaciosApiId(getTokken(), id)
-        const data = res.data.data
+        const data = extraerObjeto(res)
         console.log(data)
         setEspacio(data)
       } catch (err) {

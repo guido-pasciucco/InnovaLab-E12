@@ -217,11 +217,11 @@ export default function ListadoEspaciosPage() {
                 text="Estado"
                 opciones={[
                   'Disponible',
-                  'En uso',
-                  'Confirmado',
-                  'Borrador',
+                  // 'En uso',
+                  // 'Confirmado',
+                  // 'Borrador',
                   'Fuera de servicio',
-                  'mantenimiento',
+                  'Mantenimiento',
                 ]}
                 onChange={(e) => setTerminoBusquedaEstado(e.target.value)}
               />
