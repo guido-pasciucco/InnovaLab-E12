@@ -1,0 +1,105 @@
+
+.homeMainContainer {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.imgHomeContainer {
+  flex: 0 0 50%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.imgHomeContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loginContainer {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 430px;
+  padding: 35px;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.loginCardTitleArea {
+  margin-bottom: 30px;
+}
+
+.loginCardTitle {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.formData {
+  margin-bottom: 20px;
+}
+
+/* Tablets */
+@media (max-width: 991.98px) {
+  .imgHomeContainer {
+    flex: 0 0 40%;
+  }
+
+  .loginContainer {
+    padding: 20px;
+  }
+
+  .loginCard {
+    padding: 25px;
+  }
+}
+
+/* Celulares */
+@media (max-width: 767.98px) {
+  .homeMainContainer {
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+  }
+
+  .imgHomeContainer {
+    display: none;
+  }
+
+  .loginContainer {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .loginCard {
+    max-width: 450px;
+    padding: 25px 20px;
+    box-shadow: none;
+  }
+
+  .loginCardTitle {
+    font-size: 1.5rem;
+  }
+}
+
+/* Celulares pequeños */
+@media (max-width: 380px) {
+  .loginContainer {
+    padding: 10px;
+  }
+
+  .loginCard {
+    padding: 20px 15px;
+  }
+}

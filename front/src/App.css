@@ -167,7 +167,7 @@
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
@@ -182,3 +182,142 @@
     border-right-color: var(--border);
   }
 }
+
+/* estilos propios */
+.background-primary {
+  background-color: #1d3343;
+  color: #ffffff;
+}
+
+.background-secondary {
+  background-color: white;
+  color: 1D3343;
+}
+
+.nav-item {
+  display: block;
+  padding: 10px 15px;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+/* Al pasar el mouse */
+.nav-item:hover {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+/* Opción seleccionada */
+.nav-item.active {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn:hover,
+.btn:active {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.btn-primary {
+  background-color: #1d3343;
+  color: #ffffff;
+  
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #1d3343;
+  border: 1px solid #1d3343;
+}
+
+
+
+.sidebar {
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 1050;
+  overflow-y: auto;
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* Celulares y tablets */
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 240px !important;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+  }
+}
+
+
+
+
+@media (max-width: 991.98px) {
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+
+/* efecto hover dashboard principal */
+
+
+
+
+/* Tarjetas principales del Dashboard */
+.dashboard-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Elementos de recursos */
+.dashboard-item {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-item:hover {
+  background-color: #f1f4f6;
+  border-color: #1D3343 !important;
+}
+
+.dashboard-item:hover {
+  background-color: #ffc107;
+  border-color: #ffc107 !important;
+  transition: all 0.2s ease;
+}
+
+/* .dashboard-card {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.15);
+} */
