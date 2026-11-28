@@ -43,6 +43,11 @@ function TablaGeneral2({ items, refresh, handleEditar }) {
     }
   }
 
+  const capitalizarPrimeraLetra = (texto = '') => {
+    const valor = texto.toLowerCase().trim()
+    return valor.charAt(0).toUpperCase() + valor.slice(1)
+  }
+
   return (
     <>
       <Table responsive hover className="table shadow-sm">
@@ -73,7 +78,7 @@ function TablaGeneral2({ items, refresh, handleEditar }) {
                     'badge bg-secondary'
                   }
                 >
-                  {item.estado}
+                  {capitalizarPrimeraLetra(item.estado)}
                 </span>
               </td>
               <td>
