@@ -1,10 +1,9 @@
-
 import { Container } from 'react-bootstrap'
 import { useState, useEffect, useContext } from 'react'
-import { getAlertas } from '../../services/apiRoutes'
+import { getAlertas, resolverAlerta } from '../../services/apiRoutes'
 import { AuthContext } from '../../context/AuthContext'
 import { BsInbox } from 'react-icons/bs'
-
+import {toast} from 'react-toastify'
 import TablaGeneral from '../../components/tables/TablaGeneral'
 import PageHelmet from '../../helmet/PageHelmet'
 import AlertInfo from '../../components/alerts/AlertInfo'
@@ -16,9 +15,7 @@ function EmptyState({ message, description }) {
 
       <h6 className="fw-semibold mb-2">{message}</h6>
 
-      <p className="text-muted small mb-0">
-        {description}
-      </p>
+      <p className="text-muted small mb-0">{description}</p>
     </div>
   )
 }
@@ -31,9 +28,10 @@ export default function AlertasPage() {
 
   const getDataApi = async () => {
     try {
+      setShowSpinner(true)
       const res = await getAlertas(getTokken())
-      setData(res.data ?? [])
-      console.log(res.data)
+      setData(res ?? [])
+      console.log('Data alertas: ' + res.data)
     } catch (error) {
       console.error('Error al cargar las alertas:', error)
       setData([])
@@ -45,6 +43,18 @@ export default function AlertasPage() {
   useEffect(() => {
     getDataApi()
   }, [])
+
+  const handleResolver = async (alerta) => {
+    try {
+      await resolverAlerta(alerta.id, getTokken())
+
+      toast.success('Alerta marcada como resuelta')
+      getDataApi()
+    } catch (error) {
+      console.error('Error al resolver la alerta:', error)
+      toast.error('No se pudo resolver la alerta')
+    }
+  }
 
   return (
     <>
@@ -62,9 +72,17 @@ export default function AlertasPage() {
         <h1 className="h1 mb-3">Alertas</h1>
 
         {showSpinner ? (
-          <TablaGeneral datos={data} showSpinner={true} />
+          <TablaGeneral
+            datos={data}
+            showSpinner={showSpinner}
+            onResolver={handleResolver}
+          />
         ) : data.length > 0 ? (
-          <TablaGeneral datos={data} showSpinner={false} />
+          <TablaGeneral
+            datos={data}
+            showSpinner={showSpinner}
+            onResolver={handleResolver}
+          />
         ) : (
           <EmptyState
             message="No se registran alertas activas en este momento."

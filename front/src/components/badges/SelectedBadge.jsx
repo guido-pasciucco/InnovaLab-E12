@@ -3,6 +3,7 @@ import Badge from "react-bootstrap/Badge";
 const VARIANTE_POR_ESTADO = {
   disponible: "success",
   confirmada: "success",
+  resuelta:"success",
   fuera_de_servicio: "danger",
   cancelada: "danger",
   programada: "primary",

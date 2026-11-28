@@ -271,6 +271,17 @@ export const getAlertas = async (token) => {
   return res.data;
 }
 
+const ALERTA_RESUELTA = `/api/v1/alertas/{id}/resolver`
+export const resolverAlerta = async (id, token)=>{
+  const res = await api.put(`${API_BASE}/api/v1/alertas/${id}/resolver`,null,{
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  })
+  return res
+
+}
+
 // modulo IA
 const CHAT_IA_ROUTE = `${API_BASE}/api/v1/consultas-ia`
 
