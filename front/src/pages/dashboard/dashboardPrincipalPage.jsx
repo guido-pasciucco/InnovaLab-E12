@@ -1,7 +1,9 @@
 
 import { getDashboardApi } from '../../services/apiRoutes'
 import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
+
 import {
   Row,
   Col,
@@ -10,6 +12,7 @@ import {
   Container,
   Spinner,
 } from 'react-bootstrap'
+
 import {
   BsBuilding,
   BsCheckCircle,
@@ -24,6 +27,7 @@ import {
 import TablaGeneral from '../../components/tables/TablaGeneral'
 import PageHelmet from '../../helmet/PageHelmet'
 
+// Íconos para cada KPI
 const iconosKpi = {
   total_espacios: BsBuilding,
   espacios_operativos: BsCheckCircle,
@@ -35,10 +39,24 @@ const iconosKpi = {
   equipos_fuera_de_servicio: BsTools,
 }
 
+// Rutas de navegación para cada KPI
+const rutasKpi = {
+  total_espacios: '/dashboard/espacios',
+  espacios_operativos: '/dashboard/espacios',
+  espacios_mantenimiento: '/dashboard/espacios',
+  reservas_hoy: '/dashboard/calendario',
+  reservas_semana: '/dashboard/calendario',
+  alertas_activas: '/dashboard/alertas',
+  conflictos_pendientes: '/dashboard/calendario',
+  equipos_fuera_de_servicio: '/dashboard/equipamiento',
+}
+
 export default function DashboardPrincipalPage() {
   const [dataApi, setDataApi] = useState(null)
   const { getTokken } = useContext(AuthContext)
   const [showSpinner, setShowSpinner] = useState(true)
+
+  const navigate = useNavigate()
 
   const getData = async () => {
     try {
@@ -86,10 +104,24 @@ export default function DashboardPrincipalPage() {
                     Object.entries(dataApi?.kpis ?? {}).map(
                       ([clave, valor]) => {
                         const Icono = iconosKpi[clave] || BsBuilding
+                        const ruta = rutasKpi[clave]
 
                         return (
                           <Col key={clave} xs={12} md={6} lg={3}>
-                            <Card className="h-100 shadow-sm dashboard-card">
+                            <Card
+                              className="h-100 shadow-sm dashboard-card"
+                              role="button"
+                              tabIndex={0}
+                              onClick={() => ruta && navigate(ruta)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && ruta) {
+                                  navigate(ruta)
+                                }
+                              }}
+                              style={{
+                                cursor: ruta ? 'pointer' : 'default',
+                              }}
+                            >
                               <Card.Body>
                                 <div className="d-flex justify-content-between align-items-center gap-2">
                                   <Card.Title className="text-capitalize mb-0">
