@@ -2,9 +2,38 @@
 import { getDashboardApi } from '../../services/apiRoutes'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../context/AuthContext'
-import { Row, Col, Card, ProgressBar, Container, Spinner } from 'react-bootstrap'
+import {
+  Row,
+  Col,
+  Card,
+  ProgressBar,
+  Container,
+  Spinner,
+} from 'react-bootstrap'
+import {
+  BsBuilding,
+  BsCheckCircle,
+  BsWrench,
+  BsCalendarCheck,
+  BsCalendarWeek,
+  BsExclamationTriangle,
+  BsExclamationCircle,
+  BsTools,
+} from 'react-icons/bs'
+
 import TablaGeneral from '../../components/tables/TablaGeneral'
 import PageHelmet from '../../helmet/PageHelmet'
+
+const iconosKpi = {
+  total_espacios: BsBuilding,
+  espacios_operativos: BsCheckCircle,
+  espacios_mantenimiento: BsWrench,
+  reservas_hoy: BsCalendarCheck,
+  reservas_semana: BsCalendarWeek,
+  alertas_activas: BsExclamationTriangle,
+  conflictos_pendientes: BsExclamationCircle,
+  equipos_fuera_de_servicio: BsTools,
+}
 
 export default function DashboardPrincipalPage() {
   const [dataApi, setDataApi] = useState(null)
@@ -44,7 +73,7 @@ export default function DashboardPrincipalPage() {
         {/* KPI */}
         <Row className="g-3">
           <Col xs={12}>
-            <Card className="h-100 shadow-sm dashboard-card">
+            <Card className="h-100 shadow-sm">
               <Card.Body>
                 <h4>KPIs</h4>
 
@@ -55,21 +84,32 @@ export default function DashboardPrincipalPage() {
                     </Col>
                   ) : (
                     Object.entries(dataApi?.kpis ?? {}).map(
-                      ([clave, valor]) => (
-                        <Col key={clave} xs={12} md={6} lg={4}>
-                          <Card className="h-100 shadow-sm dashboard-card">
-                            <Card.Body>
-                              <Card.Title>
-                                {clave.replaceAll('_', ' ')}
-                              </Card.Title>
+                      ([clave, valor]) => {
+                        const Icono = iconosKpi[clave] || BsBuilding
 
-                              <Card.Text className="fs-3 fw-bold">
-                                {valor}
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-                      ),
+                        return (
+                          <Col key={clave} xs={12} md={6} lg={3}>
+                            <Card className="h-100 shadow-sm dashboard-card">
+                              <Card.Body>
+                                <div className="d-flex justify-content-between align-items-center gap-2">
+                                  <Card.Title className="text-capitalize mb-0">
+                                    {clave.replaceAll('_', ' ')}
+                                  </Card.Title>
+
+                                  <Icono
+                                    size={28}
+                                    className="dashboard-kpi-icon"
+                                  />
+                                </div>
+
+                                <Card.Text className="fs-3 fw-bold mt-3 mb-0">
+                                  {valor}
+                                </Card.Text>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                        )
+                      },
                     )
                   )}
                 </Row>
@@ -178,4 +218,3 @@ export default function DashboardPrincipalPage() {
     </>
   )
 }
-
